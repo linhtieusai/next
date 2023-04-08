@@ -1,5 +1,6 @@
 import "bootstrap/dist/css/bootstrap.css"
 import ProvidersWrapper from './ProvidersWrapper'
+import TopNavBar from '../components/TopNavBar'
 
 export default function RootLayout({
   children,
@@ -15,6 +16,8 @@ export default function RootLayout({
       <head />
       <body>
         <ProvidersWrapper>
+        <TopNavBar />
+
           {children}
         </ProvidersWrapper>
       </body>
