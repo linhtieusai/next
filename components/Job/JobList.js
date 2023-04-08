@@ -2,9 +2,8 @@ import JobItem from  "./JobItem";
 import { use } from "react"
 
 async function getData(id) {
-  const res = await fetch(`http://localhost:3000/api/job`);
+  const res = await fetch(`http://localhost:3000/api/jobs`);
 
-  console.log(res);
   // The return value is *not* serialized
   // You can return Date, Map, Set, etc.
 
@@ -18,13 +17,13 @@ async function getData(id) {
 }
  
 
-export default function Page() {
-  const data = use(getData());
+export default async function Page() {
+  const data = await getData();
 
   return (
     <main>
       <ul>
-      {data?.data?.map((job) => (
+      {data?.map((job) => (
         <JobItem key={job.id} job={job} />
       ))}
       </ul>

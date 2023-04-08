@@ -1,19 +1,28 @@
-"use client";
-import Link from "next/link";
+'use client'
 
-export default () => {
+import Link from 'next/link';
+import styles from './Navbar.module.css';
+import { useSession } from "next-auth/react";
+
+const Navbar = () => {
+
+  // get session from nextAuth
+  const { data: session } = useSession();
+  
   return (
-    <span className="flex justify-between">
-      <h1 className="text-xl">LOGO</h1>
-      <ul className="flex gap-4">
-        <li>
-          <Link href="/">Home</Link>
-        </li>
-        <li>
-          <Link href="/user/login">Login</Link>
-        </li>
-        
-      </ul>
-    </span>
+    <nav className={styles.navbar}>
+      <div className={styles.logo}>
+        <Link href="/">
+          Home
+        </Link>
+      </div>
+      <div className={styles.mypage}>
+        <Link href="/my-page">
+          {session ? "My Page" : "Login"}
+        </Link>
+      </div>
+    </nav>
   );
 };
+
+export default Navbar;
