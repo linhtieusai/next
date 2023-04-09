@@ -1,4 +1,4 @@
-async function getData(id) {
+async function getData(id: number) {
   const res = await fetch(`http://localhost:3000/api/job/${id}`);
 
 
@@ -14,8 +14,8 @@ async function getData(id) {
   return await res.json();
 }
 
-export default async function Page({ params: { id } }) {
-  const data = await getData(id);
+export default async function Page({ params }) {
+  const data = await getData(params.id);
   console.log(data);
   return (
     <main>
