@@ -9,8 +9,7 @@ function Paginationx (data)  {
     router.push(`?page=${value}`);
   }
 
-  console.log(data);
-  const page = 1;
+  const page = parseInt(data.page);
 
   return (
     <>
