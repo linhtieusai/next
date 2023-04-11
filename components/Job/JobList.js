@@ -1,12 +1,10 @@
-
-import { Pagination } from './Pagination';
+import  Paginationx  from './Pagination';
 import { useRouter } from 'next/navigation';
 import { Suspense } from "react";
 // import JobPaginated from './JobPaginated';
 import JobItem from './JobItem';
 
-async function getJobList() {
-  var page = 1;
+async function getJobList(page) {
   const res = await fetch(`http://localhost:3000/api/jobs?page=${page}`);
   // The return value is *not* serialized
   // You can return Date, Map, Set, etc.
@@ -21,11 +19,16 @@ async function getJobList() {
 }
 
 async function JobsList() {
-  const data = await getJobList();
+  // const searchParams = useSearchParams();
+  // var page = searchParams.get('page');
+  var page = 1;
+
+  const data = await getJobList(page);
 
   const jobs = data?.jobs;
   const totalPages = data?.totalPages;
-  const page = 1;
+
+  console.log(totalPages);
 
   return (
     <>
@@ -46,7 +49,10 @@ async function JobsList() {
           // </Grid>
         ))}
     </Suspense>
-    <Pagination />
+    <Suspense fallback={<p>Loading Navigation...</p>}>
+      {totalPages && <Paginationx totalPages={totalPages} />}
+    </Suspense>
+   
     </>
   );
 }
