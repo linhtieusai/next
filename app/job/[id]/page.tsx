@@ -17,9 +17,9 @@ async function getData(id: string) {
 }
 
 export async function generateStaticParams() {
-  const posts = await fetch('http://localhost:3000/api/jobs').then((res) => res.json());
+  const posts = await fetch('http://localhost:3000/api/jobAll').then((res) => res.json());
 
-  return posts.map((post) => ({
+  return posts?.map((post) => ({
     id: post.id.toString(),
   }));
 }

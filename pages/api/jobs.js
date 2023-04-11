@@ -1,34 +1,51 @@
 import mysql from 'mysql2/promise';
+import { useRouter } from 'next/router';
+import { setTimeout } from 'timers';
 
 export default async function handler(req, res) {
-  // Create a new MySQL connection pool
-  const pool = mysql.createPool({
+  const query = req.query;
+    const { page } = query;
+
+  const limit = 10
+  const offset = (page - 1) * limit;
+
+  const connection = await mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'caunoitot',
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0
+    database: 'caunoitot_job',
   });
 
-  try {
-    // Get a connection from the pool
-    const connection = await pool.getConnection();
+  const [rows] = await connection.query(`
+    SELECT * FROM job
+    ORDER BY id DESC
+    LIMIT ? OFFSET ?
+  `, [limit, offset]);
+  // `, [`%${query}%`, limit, offset]);
 
-    // Execute a query to retrieve all jobs from the job table
-    const [rows, fields] = await connection.execute('SELECT * FROM job');
+  const jobs = rows.map((row) => ({
+    id: row.id,
+    title: row.title,
+    location: row.location,
+    description: row.description,
+    salary: row.salary,
+  }));
 
-    // Release the connection back to the pool
-    connection.release();
+  const [countRows] = await connection.query(`
+    SELECT COUNT(*) as count FROM job
+  `);
 
-    // Send the list of jobs as the response
-    res.status(200).json(rows);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Failed to load jobs from database' });
-  } finally {
-    // End the connection pool when the request is finished
-    pool.end();
-  }
+  const totalJobs = countRows[0].count;
+  const totalPages = Math.ceil(totalJobs / limit);
+
+  await connection.end();
+  const timeoutId = setTimeout(() => {
+  
+  }, 3000);
+
+  res.status(200).json({
+    jobs,
+    page: parseInt(page),
+    totalPages,
+  });
 }

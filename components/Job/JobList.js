@@ -1,32 +1,73 @@
-import JobItem from  "./JobItem";
-import { use } from "react"
+'use client';
 
-async function getData(id) {
-  const res = await fetch(`http://localhost:3000/api/jobs`);
+import { useState, useEffect } from 'react';
+import { Grid } from '@mui/material/Grid';
+import { Pagination } from '@mui/material';
+import JobItem from './JobItem';
+import { useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
+import { Suspense } from "react";
 
-  // The return value is *not* serialized
-  // You can return Date, Map, Set, etc.
+function JobsList() {
+  const [jobs, setJobs] = useState([]);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);
+  // const [currentPage, setCurrentPage] = useState(page);
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  // Recommendation: handle errors
-  if (!res.ok) {
-    // This will activate the closest `error.js` Error Boundary
-    throw new Error('Failed to fetch data');
+  var page = parseInt(searchParams.get("page"));
+  if(!page) {
+    page = 1;
   }
 
-  return await res.json();
-}
- 
+  console.log(page);
+  const itemsPerPage = 10;
 
-export default async function Page() {
-  const data = await getData();
+  useEffect(() => {
+    setLoading(true);
+    fetch(`/api/jobs?page=${page}`)
+    // fetch(`/api/jobs?page=${page}&itemsPerPage=${itemsPerPage}`)
+
+      .then(response => response.json())
+      .then(response => {
+        setJobs(response.jobs);
+        setTotalPages(response.totalPages);
+        setLoading(false);
+      });
+  }, [page]);
+
+  function handleChangePage(event, value) {
+    router.push(`?page=${value}`);
+  }
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
 
   return (
-    <main>
-      <ul>
-      {data?.map((job) => (
-        <JobItem key={job.id} job={job} />
-      ))}
-      </ul>
-    </main>
+    <>
+    <Suspense fallback={<p>Loading feed...</p>}>
+      {jobs?.map((job) => (
+          <JobItem key={job.id} job={job} />  
+          // <Grid item key={job.id} xs={12} md={6} lg={4}>
+          //   <Card>
+          //     <CardHeader title={job.title} subheader={job.location} />
+          //     <CardContent>
+          //       <p>{job.description}</p>
+          //       <p>Salary: {job.salary}</p>
+          //     </CardContent>
+          //     <CardActions>
+          //       <Button variant="contained" color="primary">Apply</Button>
+          //     </CardActions>
+          //   </Card>
+          // </Grid>
+        ))}
+    </Suspense>
+       
+      <Pagination count={totalPages} page={page} onChange={handleChangePage} shape="rounded" />
+    </>
   );
 }
+
+export default JobsList;
