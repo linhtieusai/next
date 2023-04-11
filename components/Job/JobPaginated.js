@@ -1,9 +1,9 @@
 
-import { Pagination } from './Pagination';
+import JobItem from './JobItem';
+
 import { useRouter } from 'next/navigation';
 import { Suspense } from "react";
-// import JobPaginated from './JobPaginated';
-import JobItem from './JobItem';
+
 
 async function getJobList() {
   var page = 1;
@@ -22,14 +22,13 @@ async function getJobList() {
 
 async function JobsList() {
   const data = await getJobList();
-
   const jobs = data?.jobs;
   const totalPages = data?.totalPages;
   const page = 1;
 
   return (
     <>
-   <Suspense fallback={<p>Loading feed...</p>}>
+    <Suspense fallback={<p>Loading feed...</p>}>
       {jobs?.map((job) => (
           <JobItem key={job.id} job={job} />  
           // <Grid item key={job.id} xs={12} md={6} lg={4}>
@@ -46,7 +45,6 @@ async function JobsList() {
           // </Grid>
         ))}
     </Suspense>
-    <Pagination />
     </>
   );
 }
