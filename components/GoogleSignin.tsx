@@ -19,11 +19,17 @@ const GIdOnLoad = ({ clientId, callback, autoSelect = true }: GIdOnLoadProps) =>
     script.src = 'https://accounts.google.com/gsi/client';
     script.async = true;
     script.onload = () => {
-      window.gapi.load('auth2', () => {
-        window.gapi.auth2.init({
-          client_id: clientId,
-        });
-        window.handleCredentialResponse = callback;
+    //   window.gapi.load('auth2', () => {
+    //     window.gapi.auth2.init({
+    //       client_id: clientId,
+    //     });
+    //     window.handleCredentialResponse = callback;
+    //   });
+
+      window.google.accounts.id.initialize({
+        client_id: clientId,
+        callback: handleCredentialResponse,
+        auto_select: false,
       });
     };
     document.body.appendChild(script);
