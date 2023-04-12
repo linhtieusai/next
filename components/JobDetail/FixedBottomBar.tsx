@@ -61,7 +61,7 @@ const ApplyButton = ({ onSubmit }) => {
     </div>
   
       {isModalOpen && (
-        <Modal onClose={handleBackClick}>
+        <Modal onClose={handleBackClick} showCloseButton>
           {!isSecondStep && !session ? (
             <>
               <h2 className="mb-4 text-lg font-medium">Apply for this job</h2>
@@ -84,7 +84,7 @@ const ApplyButton = ({ onSubmit }) => {
   <div className="flex flex-col items-center justify-center">
     <span className="mb-4 font-bold text-gray-500">OR SIGN IN WITH SOCIAL</span>
 
-    <button
+<button
   onClick={() => signIn('google')}
   type="button"
   className="flex items-center justify-center gap-2 px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-md shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
