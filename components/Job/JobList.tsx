@@ -1,7 +1,5 @@
 import  Paginationx  from './Pagination';
-import { useRouter } from 'next/navigation';
 import { Suspense } from "react";
-// import JobPaginated from './JobPaginated';
 import JobItem from './JobItem';
 
 async function getJobList(page) {
@@ -20,10 +18,7 @@ async function getJobList(page) {
 }
 
 async function JobsList(params) {
-  // const searchParams = useSearchParams();
-  // var page = searchParams.get('page');
   const page = params.page;
-
   const data = await getJobList(page);
 
   const jobs = data?.jobs;
@@ -51,7 +46,6 @@ async function JobsList(params) {
     <Suspense fallback={<p>Loading Navigation...</p>}>
       {totalPages && <Paginationx totalPages={totalPages} page={page}/>}
     </Suspense>
-   
     </>
   );
 }

@@ -1,4 +1,6 @@
 import "bootstrap/dist/css/bootstrap.css"
+//import tailwind
+import './globals.css';
 import ProvidersWrapper from './ProvidersWrapper'
 import TopNavBar from '../components/TopNavBar'
 
@@ -17,7 +19,6 @@ export default function RootLayout({
       <body>
         <ProvidersWrapper>
         <TopNavBar />
-
           {children}
         </ProvidersWrapper>
       </body>

@@ -9,6 +9,11 @@ export default function Home({ searchParams }) {
   return (
     <div style={{width: "500px", margin: "0 auto", paddingTop: "30px"}}>
       <h3>Login Website</h3>
+
+      <h1 className="text-3xl font-bold underline">
+      Hello, Next.js!
+    </h1>
+      {/* @ts-expect-error Server Component */}
       <JobList page={searchParams.page} />
     </div>
   )
