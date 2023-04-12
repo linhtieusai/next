@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useSession, signIn } from "next-auth/react";
 // import { FaArrowLeft } from "react-icons/fa";
 import Modal from "./Modal";
+import { useRouter } from "next/navigation";
 
 const ApplyButton = ({ onSubmit }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -11,9 +12,20 @@ const ApplyButton = ({ onSubmit }) => {
   const [name, setName] = useState("");
   const [pdfFile, setPdfFile] = useState(null);
   const { data: session } = useSession();
+  const router = useRouter();
+  
+  console.log("is Modal Open");
+  console.log(isModalOpen);
 
   const handleApplyClick = () => {
     setIsModalOpen(true);
+  };
+
+  const handleGoogleSignIn = async () => {
+    await signIn("google")
+      .then(() => {
+        console.log("đ111");
+      })
   };
 
   const handleBackClick = () => {
@@ -51,15 +63,12 @@ const ApplyButton = ({ onSubmit }) => {
 
   return (
     <>
-
     <div className="sticky bottom-0 w-full p-4 bg-gray-100 border-t border-gray-200 ">
       <div className="flex items-center justify-between">
         <button className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-600" onClick={handleApplyClick}>Apply</button>
         <button className="px-4 py-2 font-bold text-white bg-gray-500 rounded hover:bg-gray-600" onClick={() => window.history.back()}>Back</button>
       </div>
-     
     </div>
-  
       {isModalOpen && (
         <Modal onClose={handleBackClick} showCloseButton>
           {!isSecondStep && !session ? (
@@ -70,39 +79,33 @@ const ApplyButton = ({ onSubmit }) => {
                 account to apply.
               </p>
 
-              
               <div className="flex flex-col items-center">
-  <div className="flex flex-col items-center justify-center">
-    <button
-      className="w-64 py-2 mr-2 text-white bg-blue-500 rounded-full shadow-lg hover:bg-blue-600"
-      onClick={handleFirstStepSubmit}
-    >
-      Submit Resume without Register
-    </button>
-  </div>
-  <hr className="w-full my-4"/>
-  <div className="flex flex-col items-center justify-center">
-    <span className="mb-4 font-bold text-gray-500">OR SIGN IN WITH SOCIAL</span>
+                <div className="flex flex-col items-center justify-center">
+                  <button
+                    className="w-64 py-2 mr-2 text-white bg-blue-500 rounded-full shadow-lg hover:bg-blue-600"
+                    onClick={handleFirstStepSubmit}
+                  >
+                    Submit Resume without Register
+                  </button>
+                </div>
+                <hr className="w-full my-4"/>
+                <div className="flex flex-col items-center justify-center">
+                  <span className="mb-4 font-bold text-gray-500">OR SIGN IN WITH SOCIAL</span>
 
-<button
-  onClick={() => signIn('google')}
-  type="button"
-  className="flex items-center justify-center gap-2 px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-md shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
->
-  <img
-    src="https://developers.google.com/identity/images/g-logo.png"
-    alt="Google Logo"
-    className="w-5 h-5"
-  />
-  <span>Sign in with Google</span>
-</button>
-
-
-
-  </div>
-</div>
-
-
+                  <button
+                    onClick={handleGoogleSignIn}
+                    type="button"
+                    className="flex items-center justify-center gap-2 px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-md shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  >
+                    <img
+                      src="https://developers.google.com/identity/images/g-logo.png"
+                      alt="Google Logo"
+                      className="w-5 h-5"
+                    />
+                    <span>Sign in with Google</span>
+                  </button>
+                </div>
+              </div>
             </>
           ) : (
             <form onSubmit={handleFormSubmit}>
@@ -157,8 +160,7 @@ const ApplyButton = ({ onSubmit }) => {
           </Modal>
         )}
       </>
-      
       );
     };
-    
+
     export default ApplyButton;

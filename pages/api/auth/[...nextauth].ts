@@ -16,5 +16,12 @@ export default NextAuth({
                 }
               }
         })
-    ]
+    ],
+    // callbacks: {
+    //   async session(session) {
+    //     const data = await getSelectedUser(session.user!.email!);
+    //     session.user = data.userData;
+    //     return Promise.resolve(session);
+    //   },
+    // }
 })
