@@ -1,9 +1,9 @@
 import { google } from 'googleapis';
 import { serialize } from 'cookie';
 
-const CLIENT_ID = '6984088107-b74m2a42votop2kk4hrhfosri34r10d3.apps.googleusercontent.com';
-const CLIENT_SECRET = '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';
-const REDIRECT_URI = 'http://localhost:3000/api/auth/callback/google';
+const CLIENT_ID = '868808932730-mce503fm76m3j4t11nvfjd5p0mll94dd.apps.googleusercontent.com';
+const CLIENT_SECRET = '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';
+const REDIRECT_URI = 'http://localhost:3000/api/auth/callbacks/google';
 const SCOPES = ['https://www.googleapis.com/auth/userinfo.email'];
 
 export default async (req, res) => {

@@ -12,11 +12,11 @@ const GoogleLoginButton = () => {
     }
   };
 
-  (window as any).handleCredentialResponse = handleCredentialResponse;
+  window.handleCredentialResponse = handleCredentialResponse;
 
   return (
     <>
-      <GIdOnLoad clientId="6984088107-b74m2a42votop2kk4hrhfosri34r10d3.apps.googleusercontent.com" callback={handleCredentialResponse} />
+      <GIdOnLoad clientId="868808932730-mce503fm76m3j4t11nvfjd5p0mll94dd.apps.googleusercontent.com" callback={handleCredentialResponse} />
       <GIdSignIn />
       {userEmail && <p>User Email: {userEmail}</p>}
     </>

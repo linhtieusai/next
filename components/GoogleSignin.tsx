@@ -1,64 +1,45 @@
 import { useEffect } from 'react';
 
-declare global {
-  interface Window {
-    gapi: any;
-    handleCredentialResponse: (response: any) => void;
-  }
-}
-
-type GIdOnLoadProps = {
-  clientId: string;
-  callback: (response: any) => void;
-  autoSelect?: boolean;
-};
-
-const GIdOnLoad = ({ clientId, callback, autoSelect = true }: GIdOnLoadProps) => {
+const GoogleSignInButton: React.FC = () => {
   useEffect(() => {
+    // Load the Google Sign-In API script
     const script = document.createElement('script');
     script.src = 'https://accounts.google.com/gsi/client';
     script.async = true;
-    script.onload = () => {
-    //   window.gapi.load('auth2', () => {
-    //     window.gapi.auth2.init({
-    //       client_id: clientId,
-    //     });
-    //     window.handleCredentialResponse = callback;
-    //   });
-
-      window.google.accounts.id.initialize({
-        client_id: clientId,
-        callback: handleCredentialResponse,
-        auto_select: false,
-      });
-    };
+    script.defer = true;
     document.body.appendChild(script);
-  }, [clientId, callback, autoSelect]);
 
-  return <div id="g_id_onload" data-client_id={clientId} data-callback="handleCredentialResponse" data-auto_select={autoSelect} />;
-};
+    return () => {
+      // Remove the Google Sign-In API script when unmounting
+      document.body.removeChild(script);
+    };
+  }, []);
 
-type GIdSignInProps = {
-  type?: string;
-  size?: string;
-  theme?: string;
-  text?: string;
-  shape?: string;
-  logoAlignment?: string;
-};
-
-const GIdSignIn = ({ type = 'standard', size = 'large', theme = 'outline', text = 'signin_with', shape = 'rectangular', logoAlignment = 'left' }: GIdSignInProps) => {
   return (
     <div
-      className="g_id_signin"
-      data-type={type}
-      data-size={size}
-      data-theme={theme}
-      data-text={text}
-      data-shape={shape}
-      data-logo_alignment={logoAlignment}
+      dangerouslySetInnerHTML={{
+        __html: `
+        <div id="g_id_onload"
+        data-client_id="868808932730-mce503fm76m3j4t11nvfjd5p0mll94dd.apps.googleusercontent.com"
+        data-context="signin"
+        data-ux_mode="popup"
+        data-login_uri="http://localhost:3000/login"
+        data-auto_prompt="false">
+   </div>
+   
+   <div class="g_id_signin"
+        data-type="standard"
+        data-shape="rectangular"
+        data-theme="outline"
+        data-text="signin_with"
+        data-size="large"
+        data-logo_alignment="left">
+   </div>
+        `
+      }}
+      suppressHydrationWarning={true}
     />
   );
 };
 
-export { GIdOnLoad, GIdSignIn };
+export default GoogleSignInButton;

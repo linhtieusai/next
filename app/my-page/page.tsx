@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import Login from '../../components/Login';
 import { useSession } from "next-auth/react";
+import  GoogleSignIn  from '../../components/GoogleSignin';
 
 export default function MyPage({ params }) {
   const { data: session, status } = useSession();
@@ -10,9 +11,8 @@ export default function MyPage({ params }) {
     return (
       <>
       <h1>My Page</h1>
-      <h1>{session ? `Welcome ${session.user.email}` : ''}</h1>
 
-        <Login />
+        <GoogleSignIn />
 
       </>
     );

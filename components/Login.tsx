@@ -2,8 +2,33 @@
 import { useSession, signIn, signOut } from "next-auth/react";
 import { UserCard } from "../app/userCard";
 import GoogleLoginButton from './GoogleLoginButton';
+import { GoogleAuth } from 'google-auth-library';
 
 export default function Login() {
+
+    useEffect(() => {
+        const auth = new GoogleAuth({
+          client_id: '868808932730-mce503fm76m3j4t11nvfjd5p0mll94dd.apps.googleusercontent.com',
+        });
+        auth.then(() => {
+          const signInOptions = {
+            context: 'signin',
+            ux_mode: 'popup',
+            callback: testCallBack,
+            prompt: 'select_account',
+            scope: 'email',
+          };
+          auth.attachClickHandler(
+            document.getElementById('google-login-button'),
+            signInOptions,
+            () => {},
+            (error) => {
+              console.error(error);
+            }
+          );
+        });
+      }, []);
+
     // get session from nextAuth
     const { data: session } = useSession();
     console.log(session);
@@ -21,8 +46,10 @@ export default function Login() {
     } else {
         return (
             <>
-                 <GoogleLoginButton />
-                <button onClick={() => signIn('google')} type="button" className="btn btn-primary">Sign In with Google</button>
+                  <div>
+      <div id="google-login-button" className="g-id-signin" />
+    </div>
+                {/* <button onClick={() => signIn('google')} type="button" className="btn btn-primary">Sign In with Google</button> */}
             </>
         )
     }
