@@ -1,12 +1,8 @@
 import { Suspense } from "react";
+import FixedBottomBar from './../../../components/JobDetail/FixedBottomBar';
 
 async function getData(id: string) {
   const res = await fetch(`http://localhost:3000/api/job/${id}`);
-
-
-  // The return value is *not* serialized
-  // You can return Date, Map, Set, etc.
-
   // Recommendation: handle errors
   if (!res.ok) {
     // This will activate the closest `error.js` Error Boundary
@@ -29,8 +25,8 @@ export default async function Page({ params }: { params: { id: string } }) {
   const { id } = params;
   const data = await getData(id);
   return (
-    <main>
-
+    <div className="flex flex-col min-h-screen">
+    <div className="flex-grow">
       <Suspense fallback={<p>Loading feed...</p>}>
         <h1>job title 2</h1>
         <h1>{data.title}</h1>
@@ -39,7 +35,10 @@ export default async function Page({ params }: { params: { id: string } }) {
         <h3>{data.company_address}</h3>
         <p>{data.company_description}</p>
       </Suspense>
-      
-    </main>
+      </div>
+      <FixedBottomBar />
+    </div>
   );
 }
+
+

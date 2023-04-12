@@ -18,8 +18,12 @@ export default function RootLayout({
       <head />
       <body>
         <ProvidersWrapper>
+        <div className="pt-16">
         <TopNavBar />
+        <main className="container px-4 mx-auto">
           {children}
+          </main>
+          </div>
         </ProvidersWrapper>
       </body>
     </html>
