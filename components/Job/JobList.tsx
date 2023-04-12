@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import JobItem from './JobItem';
 
 async function getJobList(page) {
-  if(!page) page = 1;
+  
   const res = await fetch(`http://localhost:3000/api/jobs?page=${page}`);
   // The return value is *not* serialized
   // You can return Date, Map, Set, etc.
@@ -18,7 +18,11 @@ async function getJobList(page) {
 }
 
 async function JobsList(params) {
-  const page = params.page;
+  // const searchParams = useSearchParams();
+  // var page = searchParams.get('page');
+  var page = params.page;
+
+  if(!page) page = 1;
   const data = await getJobList(page);
 
   const jobs = data?.jobs;
