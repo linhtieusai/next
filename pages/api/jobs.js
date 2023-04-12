@@ -4,7 +4,7 @@ import { setTimeout } from 'timers';
 
 export default async function handler(req, res) {
   const query = req.query;
-    const { page } = query;
+  const { page } = query;
 
   const limit = 10
   const offset = (page - 1) * limit;
@@ -39,9 +39,6 @@ export default async function handler(req, res) {
   const totalPages = Math.ceil(totalJobs / limit);
 
   await connection.end();
-  const timeoutId = setTimeout(() => {
-  
-  }, 3000);
 
   res.status(200).json({
     jobs,
