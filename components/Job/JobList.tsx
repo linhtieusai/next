@@ -33,7 +33,6 @@ function JobsList(props) {
         <JobListing moving={moving}  callBackMethod={callBackMethod} />
       </Suspense>
       <Pagination count={totalPages} page={currentPage} onChange={handleChangePage} shape="rounded" />
-
     </>
   );
 }

@@ -11,16 +11,18 @@ export default function Home({ searchParams }) {
     
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 
-    <div style={{width: "500px", margin: "0 auto", paddingTop: "30px"}}>
-      <h3>Login Website</h3>
+    <div className="py-8">
+        <div className="container max-w-5xl px-4 mx-auto">
+          <h3>Login Website</h3>
 
-      <h1 className="text-3xl font-bold underline">
-      Hello, Next.js!
-    </h1>
+            <h1 className="text-3xl font-bold underline">
+            Hello, Next.js!
+          </h1>
 
-      {/* @ts-expect-error Server Component */}
-      <JobList />
-    </div>
+          {/* @ts-expect-error Server Component */}
+          <JobList />
+       </div>
+      </div>
     </>
    
   )
