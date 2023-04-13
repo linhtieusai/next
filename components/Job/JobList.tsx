@@ -2,68 +2,38 @@
 
 import { useState, useEffect } from 'react';
 import { Pagination } from '@mui/material';
-import JobItem from './JobItem';
+import JobListing from './JobListing';
 import { useRouter } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from "react";
 
-function JobsList() {
-  const [jobs, setJobs] = useState([]);
-  const [totalPages, setTotalPages] = useState(1);
-  const [loading, setLoading] = useState(false);
+function JobsList(props) {
+  const [ totalPages, setTotalPages ] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
-  const router = useRouter();
-  const searchParams = useSearchParams();
+  const [moving, setMoving] = useState(false);
 
-  var page = parseInt(searchParams.get("page"));
-  if(!page) {
-    page = 1;
-  }
-
-  console.log(page);
-  const itemsPerPage = 10;
-
-  useEffect(() => {
-    setLoading(true);
-    fetch(`/api/jobs?page=${currentPage}`)
-    // fetch(`/api/jobs?page=${page}&itemsPerPage=${itemsPerPage}`)
-
-      .then(response => response.json())
-      .then(response => {
-        setJobs(response.jobs);
-        setTotalPages(response.totalPages);
-        setLoading(false);
-      });
-  }, [currentPage, totalPages]);
+  const route = useRouter();
 
   function handleChangePage(event, value) {
-    setCurrentPage(value);
+    console.log("okokokokokok");
+    setMoving(true);
+    route.push(`?page=${value}`);
   }
 
-  if (loading) {
-    return <p>Loading...</p>;
+  const callBackMethod = (totalPages, currentPage) => {
+    setTotalPages(totalPages);
+    setCurrentPage(currentPage);
+    setMoving(false);
   }
+
 
   return (
     <>
       <Suspense fallback={<p>Loading feed...</p>}>
-        {jobs?.map((job) => (
-            <JobItem key={job.id} job={job} />  
-            // <Grid item key={job.id} xs={12} md={6} lg={4}>
-            //   <Card>
-            //     <CardHeader title={job.title} subheader={job.location} />
-            //     <CardContent>
-            //       <p>{job.description}</p>
-            //       <p>Salary: {job.salary}</p>
-            //     </CardContent>
-            //     <CardActions>
-            //       <Button variant="contained" color="primary">Apply</Button>
-            //     </CardActions>
-            //   </Card>
-            // </Grid>
-          ))}
+        <JobListing moving={moving}  callBackMethod={callBackMethod} />
       </Suspense>
       <Pagination count={totalPages} page={currentPage} onChange={handleChangePage} shape="rounded" />
+
     </>
   );
 }

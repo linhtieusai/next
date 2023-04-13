@@ -19,7 +19,7 @@ export default function Home({ searchParams }) {
     </h1>
 
       {/* @ts-expect-error Server Component */}
-      <JobList page={searchParams.page} />
+      <JobList />
     </div>
     </>
    
