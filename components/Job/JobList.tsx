@@ -26,11 +26,14 @@ function JobsList(props) {
     setMoving(false);
   }
 
+  const callBackPageComplete = () => {
+    // setMoving(false);
+  }
 
   return (
     <>
       <Suspense fallback={<p>Loading feed...</p>}>
-        <JobListing moving={moving}  callBackMethod={callBackMethod} />
+        <JobListing moving={moving}  callBackMethod={callBackMethod} callBackPageComplete={callBackPageComplete} />
       </Suspense>
       <Pagination count={totalPages} page={currentPage} onChange={handleChangePage} shape="rounded" />
     </>

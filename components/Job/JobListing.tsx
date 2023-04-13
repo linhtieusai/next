@@ -3,17 +3,16 @@
 import { useState, useEffect, useRef } from 'react';
 import JobItem from './JobItem';
 import Loading from './Loading';
-import { useRouter } from 'next/navigation';
-import { useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { Suspense } from "react";
 
-function JobsList({ moving, callBackMethod }) {
+function JobsList({ moving, callBackMethod, callBackPageComplete }) {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
   const searchParams = useSearchParams();
   const [totalPages, setTotalPages] = useState(1);
   const itemsPerPage = 10;
+  const pathname = usePathname();
 
   const [isMoving, setIsMoving] = useState(moving);
 
@@ -24,14 +23,7 @@ function JobsList({ moving, callBackMethod }) {
      page = 1;
   }
 
-  console.log("moving" );
-  console.log(moving);
-
-
   useEffect(() => {
-
-    console.log("setting MOVING00");
-    console.log(moving);
     setIsMoving(moving);
   }, [moving]);
 
@@ -44,13 +36,11 @@ function JobsList({ moving, callBackMethod }) {
       .then(response => {
         setJobs(response.jobs);
         callBackMethod(response.totalPages, page);
-        setIsMoving(false);
+        setLoading(false);
         // router.push(`?page=${page}`, undefined, { shallow: true });
-
       }, [page]);
 
-
-  }, [page, callBackMethod]);
+  }, [page]);
 
   // if (moving) {
   //   return <p>MOVING...</p>;
@@ -58,7 +48,7 @@ function JobsList({ moving, callBackMethod }) {
 
   return (
     <>
-      {isMoving ? "Movingggg" : "Not moving"}
+      {(isMoving || loading) ? "Movingggg" : "Not moving"}
       {/* <Loading /> */}
       <Suspense fallback={<p>Loading feed...</p>}>
       <div className="relative grid grid-cols-1 gap-4 job-container sm:grid-cols-2" style={{ opacity: isMoving ? 0.5 : 1 }}>
