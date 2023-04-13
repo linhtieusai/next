@@ -1,45 +1,37 @@
-import { useEffect } from 'react';
+import { useRef, useEffect } from 'react';
+declare const window: any;
 
-const GoogleSignInButton: React.FC = () => {
-  useEffect(() => {
-    // Load the Google Sign-In API script
-    const script = document.createElement('script');
-    script.src = 'https://accounts.google.com/gsi/client';
-    script.async = true;
-    script.defer = true;
-    document.body.appendChild(script);
+// declare global {
+//     interface Window {
+//       handleCredentialResponse: (response: any) => void;
+//     }
+//   }
 
-    return () => {
-      // Remove the Google Sign-In API script when unmounting
-      document.body.removeChild(script);
-    };
-  }, []);
+  
+const GoogleSSO = ({ onSuccess }) => {
+    const g_sso = useRef(null);
 
-  return (
-    <div
-      dangerouslySetInnerHTML={{
-        __html: `
-        <div id="g_id_onload"
-        data-client_id="868808932730-mce503fm76m3j4t11nvfjd5p0mll94dd.apps.googleusercontent.com"
-        data-context="signin"
-        data-ux_mode="popup"
-        data-login_uri="http://localhost:3000/login"
-        data-auto_prompt="false">
-   </div>
-   
-   <div class="g_id_signin"
-        data-type="standard"
-        data-shape="rectangular"
-        data-theme="outline"
-        data-text="signin_with"
-        data-size="large"
-        data-logo_alignment="left">
-   </div>
-        `
-      }}
-      suppressHydrationWarning={true}
-    />
-  );
-};
+    useEffect(() => {
+        if (g_sso.current) {
+            window.google.accounts.id.initialize({
+                client_id: "868808932730-mce503fm76m3j4t11nvfjd5p0mll94dd.apps.googleusercontent.com",
+                callback: onSuccess
+            });
+            window.google.accounts.id.renderButton(g_sso.current, {
+                theme: 'outline',
+                size: 'large',
+                type: 'standard',
+                text: 'signin_with',
+                shape: 'rectangular',
+                logo_alignment: 'left',
+                width: '220',
+            });
+        }
+    }, [g_sso.current , onSuccess]);
 
-export default GoogleSignInButton;
+
+    return (<div ref={g_sso} />);
+}
+
+
+export default GoogleSSO 

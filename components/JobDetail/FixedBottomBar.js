@@ -5,12 +5,13 @@ import { useSession, signIn } from "next-auth/react";
 // import { FaArrowLeft } from "react-icons/fa";
 import Modal from "./Modal";
 import { useRouter } from "next/navigation";
+import  GoogleSignIn  from '../GoogleSignin';
 
-const ApplyButton = ({ onSubmit }) => {
+const ApplyButton = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSecondStep, setIsSecondStep] = useState(false);
   const [name, setName] = useState("");
-  const [pdfFile, setPdfFile] = useState(null);
+  const [pdfFile, setPdfFile] = useState("");
   const { data: session } = useSession();
   const router = useRouter();
   
@@ -22,10 +23,8 @@ const ApplyButton = ({ onSubmit }) => {
   };
 
   const handleGoogleSignIn = async () => {
-    await signIn("google")
-      .then(() => {
-        console.log("đ111");
-      })
+    console.log("ok ok");
+    setIsSecondStep(true);
   };
 
   const handleBackClick = () => {
@@ -48,7 +47,7 @@ const ApplyButton = ({ onSubmit }) => {
         method: "POST",
         body: formData,
         headers: {
-          Authorization: `Bearer ${session.accessToken}`,
+          Authorization: `Bearer ${session}`,
         },
       });
       if (response.ok) {
@@ -78,20 +77,19 @@ const ApplyButton = ({ onSubmit }) => {
                 You can submit your resume without registering or log in to your
                 account to apply.
               </p>
-
               <div className="flex flex-col items-center">
                 <div className="flex flex-col items-center justify-center">
                   <button
                     className="w-64 py-2 mr-2 text-white bg-blue-500 rounded-full shadow-lg hover:bg-blue-600"
                     onClick={handleFirstStepSubmit}
-                  >
+                    >
                     Submit Resume without Register
                   </button>
                 </div>
                 <hr className="w-full my-4"/>
                 <div className="flex flex-col items-center justify-center">
                   <span className="mb-4 font-bold text-gray-500">OR SIGN IN WITH SOCIAL</span>
-
+                  <GoogleSignIn onSuccess={handleGoogleSignIn} />
                   <button
                     onClick={handleGoogleSignIn}
                     type="button"
@@ -108,6 +106,7 @@ const ApplyButton = ({ onSubmit }) => {
               </div>
             </>
           ) : (
+            <>
             <form onSubmit={handleFormSubmit}>
               <h2 className="mb-4 text-lg font-medium">
                 Submit your resume with your account
@@ -135,7 +134,7 @@ const ApplyButton = ({ onSubmit }) => {
                     id="pdf"
                     name="pdf"
                     accept=".pdf"
-                    onChange={(e) => setPdfFile(e.target.files[0])}
+                    onChange={(e) => setPdfFile(e?.target?.files?.[0])}
                     className="w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     required
                   />
@@ -156,6 +155,7 @@ const ApplyButton = ({ onSubmit }) => {
                   </button>
                 </div>
               </form>
+              </>
             )}
           </Modal>
         )}

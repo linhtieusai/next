@@ -32,7 +32,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-, "components/JobDetail/FixedBottomBar.tsx"  ],
+, "components/JobDetail/FixedBottomBar.js"  ],
   "exclude": [
     "node_modules"
   ]

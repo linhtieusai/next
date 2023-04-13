@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import FixedBottomBar from './../../../components/JobDetail/FixedBottomBar';
 
+
 async function getData(id: string) {
   const res = await fetch(`http://localhost:3000/api/job/${id}`);
   // Recommendation: handle errors

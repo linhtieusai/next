@@ -4,16 +4,18 @@ import Link from 'next/link';
 import Login from '../../components/Login';
 import { useSession } from "next-auth/react";
 import  GoogleSignIn  from '../../components/GoogleSignin';
+import { useEffect } from 'react';
 
-export default function MyPage({ params }) {
+
+const MyPage = ({ params })  => {
   const { data: session, status } = useSession();
 
     return (
       <>
       <h1>My Page</h1>
-
-        <GoogleSignIn />
-
+        <GoogleSignIn onSuccess={() => {}}/>
       </>
     );
 };
+
+export default MyPage;
