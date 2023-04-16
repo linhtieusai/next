@@ -9,7 +9,7 @@ export default async function handler(req, res) {
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'caunoitot_job',
+    database: 'caunoitot',
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0

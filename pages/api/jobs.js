@@ -13,7 +13,7 @@ export default async function handler(req, res) {
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'caunoitot_job',
+    database: 'caunoitot',
   });
 
   const [rows] = await connection.query(`

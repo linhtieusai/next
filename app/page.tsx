@@ -9,7 +9,6 @@ export default function Home({ searchParams }) {
   return (
     <>
     
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
 
     <div className="py-8">
         <div className="container max-w-5xl px-4 mx-auto">
@@ -20,7 +19,9 @@ export default function Home({ searchParams }) {
           </h1>
 
           {/* @ts-expect-error Server Component */}
+          
           <JobList />
+
        </div>
       </div>
     </>

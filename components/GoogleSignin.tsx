@@ -15,16 +15,19 @@ const GoogleSSO = ({ onSuccess }) => {
         if (g_sso.current) {
             window.google.accounts.id.initialize({
                 client_id: "868808932730-mce503fm76m3j4t11nvfjd5p0mll94dd.apps.googleusercontent.com",
-                callback: onSuccess
+                callback: (response) => {
+                    const credential = response.credential;
+                    onSuccess(credential);
+
+                    console.log(response);
+                }
             });
             window.google.accounts.id.renderButton(g_sso.current, {
-                theme: 'outline',
+                theme: 'filled_blue',
                 size: 'large',
                 type: 'standard',
-                text: 'signin_with',
                 shape: 'rectangular',
                 logo_alignment: 'left',
-                width: '220',
             });
         }
     }, [g_sso.current , onSuccess]);

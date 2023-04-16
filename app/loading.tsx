@@ -1,4 +1,7 @@
+import RenderingPageSkeleton from '../ui/rendering-home-page-skeleton';
 
 export default function Loading() {
-  return "locading";
+  return (
+    <RenderingPageSkeleton />
+  );
 }

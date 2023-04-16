@@ -1,5 +1,11 @@
-import { RenderingPageSkeleton } from '../../../ui/rendering-page-skeleton';
+import RenderingPageSkeleton from '../../../ui/rendering-job-detail-skeleton';
 
 export default function Loading() {
-  return "locading";
+  return (
+    <>
+    <h1>asdasdasdasdasdasdasdasdsadasdasdasdasdasd</h1>
+    <RenderingPageSkeleton />
+    </>
+    
+  )
 }

@@ -22,8 +22,27 @@ const ApplyButton = () => {
     setIsModalOpen(true);
   };
 
-  const handleGoogleSignIn = async () => {
-    console.log("ok ok");
+  const handleGoogleSignIn = async (credential) => {
+
+    try {
+      const res = await fetch('/api/auth/google', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ credential })
+      });
+
+      if (res.ok) {
+          const user = await res.json();
+          // do something with the user object, such as storing it in session storage
+      } else {
+          throw new Error('Failed to authenticate with Google');
+      }
+  } catch (error) {
+      console.error(error);
+  }
+   
     setIsSecondStep(true);
   };
 
