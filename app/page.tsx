@@ -17,11 +17,7 @@ export default function Home({ searchParams }) {
             <h1 className="text-3xl font-bold underline">
             Hello, Next.js!
           </h1>
-
-          {/* @ts-expect-error Server Component */}
-          
           <JobList />
-
        </div>
       </div>
     </>

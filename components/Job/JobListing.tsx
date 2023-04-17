@@ -2,12 +2,13 @@
 
 import { useState, useEffect, useRef } from 'react';
 import JobItem from './JobItem';
-import Loading from './Loading';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { Suspense } from "react";
+import { useRouter } from 'next/navigation';
+import Loading from '../../ui/rendering-home-page-skeleton'
 
 function JobsList({ moving, callBackMethod, callBackPageComplete }) {
-  const [jobs, setJobs] = useState([]);
+  const [jobs, setJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
   const [totalPages, setTotalPages] = useState(1);
@@ -16,11 +17,11 @@ function JobsList({ moving, callBackMethod, callBackPageComplete }) {
 
   const [isMoving, setIsMoving] = useState(moving);
 
-  var page = searchParams?.get("page");
-  page = parseInt(page);
+  
+  let page = Number(searchParams?.get("page"));
 
   if(!page) {
-     page = 1;
+    page = 1;
   }
 
   useEffect(() => {
@@ -31,16 +32,14 @@ function JobsList({ moving, callBackMethod, callBackPageComplete }) {
     setLoading(true);
     fetch(`/api/jobs?page=${page}`)
     // fetch(`/api/jobs?page=${page}&itemsPerPage=${itemsPerPage}`)
-
       .then(response => response.json())
       .then(response => {
         setJobs(response.jobs);
         callBackMethod(response.totalPages, page);
         setLoading(false);
         // router.push(`?page=${page}`, undefined, { shallow: true });
-      }, [page]);
-
-  }, [page]);
+      });
+}, [page]);
 
   // if (moving) {
   //   return <p>MOVING...</p>;
@@ -50,11 +49,12 @@ function JobsList({ moving, callBackMethod, callBackPageComplete }) {
     <>
       {(isMoving || loading) ? "Movingggg" : "Not moving"}
       {/* <Loading /> */}
-      <Suspense fallback={<p>Loading feed...</p>}>
       <div className="relative grid grid-cols-1 gap-4 job-container sm:grid-cols-2" style={{ opacity: isMoving ? 0.5 : 1 }}>
+        <Suspense fallback={<Loading />}>
         {jobs?.map((job) => (
             <JobItem key={job.id} job={job} />
           ))}
+          </Suspense>
          {isMoving && (
           <div className="absolute top-0 left-0 flex items-center justify-center w-full h-full">
             <div className="absolute top-0 left-0 z-10 w-full h-full bg-black opacity-50"></div>
@@ -83,7 +83,6 @@ function JobsList({ moving, callBackMethod, callBackPageComplete }) {
           </div>
         )}
       </div>
-      </Suspense>
     </>
   );
 }

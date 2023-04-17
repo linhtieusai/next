@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
 import { OAuth2Client } from 'google-auth-library';
 import axios from 'axios';
+import mysql from 'mysql2/promise';
 
 const googleConfig = {
   clientId: "868808932730-mce503fm76m3j4t11nvfjd5p0mll94dd.apps.googleusercontent.com",
@@ -9,26 +10,18 @@ const googleConfig = {
   redirectUri: "/",
 };
 
+const dbConfig = {
+  host: 'localhost',
+  user: 'root',
+  password: '',
+  database: 'caunoitot',
+};
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   try {
-
-    const session = await getSession({ req });
-
-    // Check if the user is already logged in
-    if (session) {
-      res.redirect("/");
-      return;
-    }
-
-    console.log(req.body.credential);
-
-    const client = new OAuth2Client( googleConfig.clientId);
-
-
-
     const ticket  = await new OAuth2Client(
         googleConfig.clientId,
         // googleConfig.clientSecret,
@@ -43,19 +36,29 @@ export default async function handler(
       const userInfo = {
         email: payload?.email,
         name: payload?.name,
-        picture: payload?.picture,
       };
 
-    const session = await getSession({ req });
+      const connection = await mysql.createConnection(dbConfig);
+      // Check if the user exists in the database
+      const [rows] = await connection.execute(
+        'SELECT * FROM user WHERE email = ?',
+        [userInfo.email]
+      );
 
+      if (rows.length === 0) {
+        // If the user doesn't exist, insert a new row into the users table
+        await connection.execute(
+          'INSERT INTO user (email, name) VALUES (?, ?)',
+          [userInfo.email, userInfo.name]
+        );
+      } else {
+        // If the user exists, retrieve their information from the users table
+        userInfo.name = rows[0].name;
+      }
 
-    console.log("nextauth session");
+       // Close the database connection
+       await connection.end();
 
-    console.log(session);
-    if(session) {
-        session.user = userInfo ? userInfo: {};
-    }
-    res.json(userInfo);
   } catch (error) {
     console.error(error);
     res.status(500).end('Failed to authenticate with Google');
