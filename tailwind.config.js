@@ -7,7 +7,11 @@ module.exports = {
     "./ui/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      maxHeight: {
+        '200': '200px',
+      },
+    },
   },
   plugins: [],
 }

@@ -63,3 +63,7 @@ a {
     transform: rotate(360deg);
   }
 }
+
+button:disabled {
+  background-color: gray;
+}

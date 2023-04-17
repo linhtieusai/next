@@ -11,26 +11,24 @@ model User {
   id          Int           @id @default(autoincrement())
   email       String        @unique
   name        String?
-  createdAt   DateTime      @default(now())
-  UserApplies UserApplies[]
+  created_at   DateTime      @default(now())
+  applies     UserApplies[]
 }
 
 model UserApplies {
   id        Int      @id @default(autoincrement())
-  user_id   Int
+  user      User?     @relation(fields: [user_id], references: [id])
+  job      Job       @relation(fields: [job_id], references: [id])
+  created_at DateTime @default(now())
+  
+  user_id   Int?
   job_id    Int
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [user_id], references: [id])
-  job       Job      @relation(fields: [job_id], references: [id]) @ignore
 
+  @@map("user_applies")
   @@index([user_id], name: "applies_by_user")
 }
 
 model Job {
   id          Int           @id @default(autoincrement())
-  UserApplies UserApplies[]
-
-  // Define dynamic fields for this model
-  @@map(name: "job")
-  @@ignore
+  applies     UserApplies[]
 }
