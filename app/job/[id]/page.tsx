@@ -17,6 +17,8 @@ async function getData(id: string) {
     throw new Error('Failed to fetch data');
   }
 
+  await prisma.$disconnect()
+
   return job;
 }
 
@@ -25,7 +27,8 @@ export async function generateStaticParams() {
 
   const prisma = new PrismaClient();
   const posts = await prisma.job.findMany();
-
+  await prisma.$disconnect()
+  
   return posts?.map((post) => ({
     id: post.id.toString(),
   }));

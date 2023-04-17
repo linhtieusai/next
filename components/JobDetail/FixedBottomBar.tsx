@@ -12,7 +12,7 @@ const ApplyButton = ({jobId}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSecondStep, setIsSecondStep] = useState(false);
   const [name, setName] = useState("");
-  const [pdfFile, setPdfFile] = useState("");
+  const [pdfFile, setPdfFile] = useState<File | "">("")
   const { data: session } = useSession();
   const [resumeSubmitting, setResumeSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
@@ -45,7 +45,7 @@ const ApplyButton = ({jobId}) => {
     e.preventDefault();
     const formData = new FormData();
     formData.append("name", name);
-    formData.append("resume", pdfFile);
+    formData.append("resume", pdfFile ?? "");
     formData.append('jobId', jobId );
 
     try {
@@ -142,7 +142,7 @@ const ApplyButton = ({jobId}) => {
                     id="resume"
                     name="resume"
                     accept=".pdf"
-                    onChange={(e) => setPdfFile(e?.target?.files?.[0])}
+                    onChange={(e) => setPdfFile(e?.target?.files?.[0] ?? "")}
                     className="w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     required
                   />
