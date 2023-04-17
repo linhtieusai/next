@@ -24,6 +24,8 @@ export async function generateStaticParams() {
 
 export default async function Page({ params }: { params: { id: string } }) {
   const { id } = params;
+
+
   const data = await getData(id);
   return (
     <>
@@ -38,7 +40,7 @@ export default async function Page({ params }: { params: { id: string } }) {
         <h3>{data.company_address}</h3>
         <p>{data.company_description}</p>
       </div>
-      <FixedBottomBar />
+      <FixedBottomBar jobId={id} />
     </div>
     </>
     

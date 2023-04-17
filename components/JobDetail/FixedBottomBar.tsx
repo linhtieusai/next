@@ -1,5 +1,6 @@
 'use client'
 
+import {  useEffect } from 'react';
 import { useState } from "react";
 import { useSession, signIn } from "next-auth/react";
 // import { FaArrowLeft } from "react-icons/fa";
@@ -7,21 +8,15 @@ import Modal from "./Modal";
 import { useRouter, useSearchParams } from "next/navigation";
 import  GoogleSignIn  from '../GoogleSignin';
 
-const ApplyButton = () => {
+const ApplyButton = ({jobId}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSecondStep, setIsSecondStep] = useState(false);
   const [name, setName] = useState("");
   const [pdfFile, setPdfFile] = useState("");
   const { data: session } = useSession();
-  const router = useRouter();
-
-  const searchParams = useSearchParams();
   
-  const jobId = searchParams.get('id');
-  console.log(searchParams.get('id'));
+  console.log(jobId);
   
-  console.log("is Modal Open");
-  console.log(isModalOpen);
 
   const handleApplyClick = () => {
     setIsModalOpen(true);
