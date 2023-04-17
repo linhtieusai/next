@@ -1,0 +1,36 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id          Int           @id @default(autoincrement())
+  email       String        @unique
+  name        String?
+  createdAt   DateTime      @default(now())
+  UserApplies UserApplies[]
+}
+
+model UserApplies {
+  id        Int      @id @default(autoincrement())
+  user_id   Int
+  job_id    Int
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [user_id], references: [id])
+  job       Job      @relation(fields: [job_id], references: [id]) @ignore
+
+  @@index([user_id], name: "applies_by_user")
+}
+
+model Job {
+  id          Int           @id @default(autoincrement())
+  UserApplies UserApplies[]
+
+  // Define dynamic fields for this model
+  @@map(name: "job")
+  @@ignore
+}

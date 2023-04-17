@@ -14,6 +14,8 @@ const MyPage = ({ params })  => {
       <>
       <h1>My Page</h1>
         <GoogleSignIn onSuccess={() => {}}/>
+
+        <Login />
       </>
     );
 };

@@ -8,8 +8,6 @@ import JobList from '../components/Job/JobList'
 export default function Home({ searchParams }) {
   return (
     <>
-    
-
     <div className="py-8">
         <div className="container max-w-5xl px-4 mx-auto">
           <h3>Login Website</h3>

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useSession, signIn } from "next-auth/react";
 // import { FaArrowLeft } from "react-icons/fa";
 import Modal from "./Modal";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import  GoogleSignIn  from '../GoogleSignin';
 
 const ApplyButton = () => {
@@ -14,6 +14,11 @@ const ApplyButton = () => {
   const [pdfFile, setPdfFile] = useState("");
   const { data: session } = useSession();
   const router = useRouter();
+
+  const searchParams = useSearchParams();
+  
+  const jobId = searchParams.get('id');
+  console.log(searchParams.get('id'));
   
   console.log("is Modal Open");
   console.log(isModalOpen);
@@ -23,26 +28,6 @@ const ApplyButton = () => {
   };
 
   const handleGoogleSignIn = async (credential) => {
-
-    try {
-      const res = await fetch('/api/auth/google', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ credential })
-      });
-
-      if (res.ok) {
-          const user = await res.json();
-          // do something with the user object, such as storing it in session storage
-      } else {
-          throw new Error('Failed to authenticate with Google');
-      }
-  } catch (error) {
-      console.error(error);
-  }
-   
     setIsSecondStep(true);
   };
 
@@ -60,6 +45,7 @@ const ApplyButton = () => {
     const formData = new FormData();
     formData.append("name", name);
     formData.append("pdf", pdfFile);
+    formData.append('jobId', jobId );
 
     try {
       const response = await fetch("/api/submit-resume", {
@@ -109,18 +95,6 @@ const ApplyButton = () => {
                 <div className="flex flex-col items-center justify-center">
                   <span className="mb-4 font-bold text-gray-500">OR SIGN IN WITH SOCIAL</span>
                   <GoogleSignIn onSuccess={handleGoogleSignIn} />
-                  <button
-                    onClick={handleGoogleSignIn}
-                    type="button"
-                    className="flex items-center justify-center gap-2 px-6 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-md shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                  >
-                    <img
-                      src="https://developers.google.com/identity/images/g-logo.png"
-                      alt="Google Logo"
-                      className="w-5 h-5"
-                    />
-                    <span>Sign in with Google</span>
-                  </button>
                 </div>
               </div>
             </>
