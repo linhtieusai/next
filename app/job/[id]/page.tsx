@@ -44,16 +44,26 @@ export default async function Page({ params }: { params: { id: string } }) {
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 
     <div className="flex flex-col min-h-screen">
-    <Suspense fallback={<RenderingPageSkeleton />}>
-    <div className="flex-grow">
-        <h1>job title 2</h1>
-        <h1>{data?.title}</h1>
-        <p>{data?.why_should_apply}</p>
-        <p>{data?.job_required_skill}</p>
-        <h3>{data?.company_address}</h3>
-        <p>{data?.company_description}</p>
+      <div className="sticky top-0 z-50 bg-white">
+      <h1 className="min-w-0 px-4 py-4 text-2xl font-bold sm:text-sm lg:text-xl xl:text-2xl 2xl:text-3xl">Job Title: {data?.title}</h1>
       </div>
-    </Suspense>
+      <div className="flex-grow pt-16">
+        <h3>Job overview</h3>
+        <p className="whitespace-pre-wrap">{data?.job_overview}</p>
+        <h3>Job Responsibilites</h3>
+        <p className="whitespace-pre-wrap">{data?.job_responsibility}</p>
+        
+        <h3>Required Skill</h3>
+        <p className="whitespace-pre-wrap">{data?.job_required_skill}</p>
+        <h3>Preferred</h3>
+        <p className="whitespace-pre-wrap">{data?.preferred_skill}</p>
+        <h3>Why you should Apply?</h3>
+        <p className="whitespace-pre-wrap">{data?.why_should_apply}</p>
+        
+        <h3>About {data?.company_name}</h3>
+        <p className="mb-2 text-xl font-bold">Company Address: {data?.company_address}</p>
+        <p className="whitespace-pre-wrap">{data?.company_description}</p>
+      </div>
       <FixedBottomBar jobId={id} />
     </div>
 

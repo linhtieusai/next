@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.css"
 import './globals.css';
 import ProvidersWrapper from './ProvidersWrapper'
 import TopNavBar from '../components/TopNavBar'
+import BottomNavBar from "../components/BottomNavBar";
 
 export default function RootLayout({
   children,
@@ -19,11 +20,12 @@ export default function RootLayout({
       <head />
       <body>
         <ProvidersWrapper>
-        <div className="pt-16">
-        <TopNavBar />
-        <main className="container px-4 mx-auto">
-          {children}
-          </main>
+        <div>
+          <TopNavBar />
+            <main className="container px-4 mx-auto">
+              {children}
+              </main>
+            <BottomNavBar />
           </div>
         </ProvidersWrapper>
       </body>
