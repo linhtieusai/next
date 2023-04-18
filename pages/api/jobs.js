@@ -28,7 +28,9 @@ export default async function handler(req, res) {
     title: row.title,
     location: row.location,
     description: row.description,
-    salary: row.salary,
+    gross_month_salary: row.gross_month_salary,
+    source_site: row.source_site,
+    source_id: row.source_id,
   }));
 
   const [countRows] = await connection.query(`

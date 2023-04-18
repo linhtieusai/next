@@ -37,6 +37,7 @@ function JobsList({ moving, callBackMethod, callBackPageComplete }) {
         setJobs(response.jobs);
         callBackMethod(response.totalPages, page);
         setLoading(false);
+
         // router.push(`?page=${page}`, undefined, { shallow: true });
       });
 }, [page]);
