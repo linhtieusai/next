@@ -5,7 +5,6 @@ export default function Login() {
    
     // get session from nextAuth
     const { data: session } = useSession();
-    console.log(session);
     // useSession uses React Context
     // if the user exists -> show a Sign Out button and their information
     if(session) {
