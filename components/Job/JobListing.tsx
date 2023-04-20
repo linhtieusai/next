@@ -5,10 +5,12 @@ import JobItem from './JobItem';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { Suspense } from "react";
 import { useRouter } from 'next/navigation';
-import Loading from '../../ui/rendering-home-page-skeleton'
+import Loading from '../../ui/rendering-home-page-skeleton';
+import { PrismaClient } from "@prisma/client";
 
-function JobsList({ moving, callBackMethod, callBackPageComplete }) {
-  const [jobs, setJobs] = useState<any[]>([]);
+
+function JobsList({ firstPage, moving, callBackMethod, callBackPageComplete }) {
+  let [jobs, setJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
   const [totalPages, setTotalPages] = useState(1);
@@ -17,6 +19,11 @@ function JobsList({ moving, callBackMethod, callBackPageComplete }) {
 
   const [isMoving, setIsMoving] = useState(moving);
 
+  if(firstPage) {
+    jobs = firstPage.jobs;
+
+    callBackMethod(firstPage.totalPages, 1);
+  }
   
   let page = Number(searchParams?.get("page"));
 
@@ -29,7 +36,8 @@ function JobsList({ moving, callBackMethod, callBackPageComplete }) {
   }, [moving]);
 
   useEffect(() => {
-    setLoading(true);
+    if(page > 1) {
+      setLoading(true);
     fetch(`/api/jobs?page=${page}`)
     // fetch(`/api/jobs?page=${page}&itemsPerPage=${itemsPerPage}`)
       .then(response => response.json())
@@ -40,6 +48,8 @@ function JobsList({ moving, callBackMethod, callBackPageComplete }) {
 
         // router.push(`?page=${page}`, undefined, { shallow: true });
       });
+    }
+    
 }, [page]);
 
   // if (moving) {
@@ -52,13 +62,13 @@ function JobsList({ moving, callBackMethod, callBackPageComplete }) {
       {/* <Loading /> */}
       <div className="relative grid grid-cols-1 gap-4 job-container sm:grid-cols-2" style={{ opacity: isMoving ? 0.5 : 1 }}>
         <Suspense fallback={<Loading />}>
-        {jobs?.map((job) => (
+        {jobs && jobs?.map((job) => (
             <JobItem key={job.id} job={job} />
           ))}
           </Suspense>
          {isMoving && (
           <div className="absolute top-0 left-0 flex items-center justify-center w-full h-full">
-            <div className="absolute top-0 left-0 z-10 w-full h-full bg-black opacity-50"></div>
+            <div className="absolute top-0 left-0 z-10 w-full h-full bg-black opacity-20"></div>
             <div className="z-20">
               <svg
                 className="w-8 h-8 mx-auto text-white animate-spin"

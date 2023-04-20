@@ -11,7 +11,7 @@ export default function Login() {
         return (
             <>
                
-                <button onClick={() => signOut()} type="button" className="btn btn-primary">Sign Out of Google</button>
+                <button onClick={() => signOut()} type="button" className="btn btn-primary">Sign Out</button>
                 {/* Pass session info to server component */}
                 {/* <UserCard user={session?.user}/> */}
             </>

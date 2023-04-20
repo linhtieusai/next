@@ -1,26 +1,28 @@
 import Image from 'next/image'
 import styles from './page.module.css'
-import Login from '../components/Login'
-import JobList from '../components/Job/JobList'
+import Login from '../../components/Login'
+import JobList from '../../components/Job/JobList'
 import Script from 'next/script'
 // localhost:3000
 
 import { PrismaClient } from "@prisma/client";
 
-async function getFirstPage() {
-  // const res = await fetch(`http://localhost:3000/api/job/${id}`);
-  const prisma = new PrismaClient();
-  const jobs = await prisma.job.findMany({take: 10});
+async function getFirstPage(page) {
+  const jobs = await fetch(`http://localhost:8000/api/jobs?page=${page}&itemsPerPage=10`, { cache: 'no-store' });
+  // const prisma = new PrismaClient();
+  // const jobs = await prisma.job.findMany({take: Math.floor(Math.random() * 9)});
 
-  await prisma.$disconnect()
+  // await prisma.$disconnect()
   
-  return jobs;
+  return await jobs.json();
 
 }
 
 export default async function Home({ searchParams }) {
-  const jobs = await getFirstPage();
-  const firstPage = {jobs: jobs, totalPages: 10}
+
+  const jobs = await getFirstPage(searchParams.page);
+  console.log(jobs);
+  const firstPage = {jobs: jobs.jobs, totalPages: 10}
   return (
     <>
     <div className="py-8">

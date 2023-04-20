@@ -7,10 +7,13 @@ import { useRouter } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from "react";
 
-function JobsList(props) {
+function JobsList({ firstPage }) {
   const [ totalPages, setTotalPages ] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [moving, setMoving] = useState(false);
+
+  console.log("firstPage");
+  console.log(firstPage);
 
   const route = useRouter();
 
@@ -33,7 +36,7 @@ function JobsList(props) {
   return (
     <>
       <Suspense fallback={<p>Loading feed...</p>}>
-        <JobListing moving={moving}  callBackMethod={callBackMethod} callBackPageComplete={callBackPageComplete} />
+        <JobListing firstPage={firstPage} moving={moving}  callBackMethod={callBackMethod} callBackPageComplete={callBackPageComplete} />
       </Suspense>
       <Pagination count={totalPages} page={currentPage} onChange={handleChangePage} shape="rounded" />
     </>
