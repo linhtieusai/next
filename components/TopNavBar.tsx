@@ -21,12 +21,12 @@ const Navbar = () => {
         <ul className="flex items-center">
           <li className="ml-4">
             <Link href="/about">
-              About
+            Job đã xem
             </Link>
           </li>
           <li className="ml-4">
             <Link href="/contact">
-              Contact
+            Job đã lưu
             </Link>
           </li>
         </ul>

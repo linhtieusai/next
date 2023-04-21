@@ -33,7 +33,9 @@ export default async function handler(req, res) {
     gross_month_salary: row.gross_month_salary,
     source_site: row.source_site,
     source_id: row.source_id,
+    job_location: row.job_location,
   }));
+
 
   const [countRows] = await connection.query(`
     SELECT COUNT(*) as count FROM job
