@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import FixedBottomBar from './../../../components/JobDetail/FixedBottomBar';
+import FixedBottomBar from '../../../components/JobDetail/FixedBottomBar';
 import RenderingPageSkeleton from '../../../ui/rendering-job-detail-skeleton';
 import { PrismaClient } from "@prisma/client";
 
@@ -47,13 +47,14 @@ export default async function Page({ params }: { params: { id: string } }) {
               <h1 className="min-w-0 px-4 py-4 text-2xl font-bold sm:text-sm lg:text-xl xl:text-2xl 2xl:text-3xl">Job Title: {data.title}</h1>
             </div>
             <div className="flex-grow pt-16">
+              <h3>Required Skill</h3>
+              <p className="whitespace-pre-wrap">{data?.job_required_skill}</p>
               <h3>Job overview</h3>
               <p className="whitespace-pre-wrap">{data?.overview}</p>
               <h3>Job Responsibilites</h3>
               <p className="whitespace-pre-wrap">{data?.job_responsibility}</p>
                 
-              <h3>Required Skill</h3>
-              <p className="whitespace-pre-wrap">{data?.job_required_skill}</p>
+             
               <h3>Preferred</h3>
               <p className="whitespace-pre-wrap">{data?.preferred_skill}</p>
               <h3>Why you should Apply?</h3>
