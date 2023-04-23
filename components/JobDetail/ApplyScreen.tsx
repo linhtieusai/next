@@ -8,8 +8,8 @@ import Modal from "./Modal";
 import { useRouter, useSearchParams } from "next/navigation";
 import  GoogleSignIn  from '../GoogleSignin';
 
-const ApplyButton = ({jobId}) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
+  const [isModalOpen, setIsModalOpen] = useState(isModalOpening);
   const [isSecondStep, setIsSecondStep] = useState(false);
   const [name, setName] = useState("");
   const [pdfFile, setPdfFile] = useState<File | "">("")
@@ -18,9 +18,12 @@ const ApplyButton = ({jobId}) => {
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [isApplied, setIsApplied] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  
-  console.log(jobId);
-  
+    
+  useEffect(() => {
+    console.log("BAY VAO");
+    console.log(isModalOpening);
+    setIsModalOpen(isModalOpening);
+  }, [isModalOpening]);
 
   const handleApplyClick = () => {
     setIsModalOpen(true);
@@ -31,7 +34,7 @@ const ApplyButton = ({jobId}) => {
   };
 
   const handleBackClick = () => {
-    setIsModalOpen(false);
+    closeModalCallBack();
     setIsSecondStep(false);
   };
 
@@ -82,12 +85,7 @@ const ApplyButton = ({jobId}) => {
 
   return (
     <>
-    {/* <div className="sticky bottom-0 w-full p-4 bg-gray-100 border-t border-gray-200 ">
-      <div className="flex items-center justify-between">
-        <button className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-600" onClick={handleApplyClick} disabled={isApplied}>{isApplied ? "Applied" : "Apply"}</button>
-        <button className="px-4 py-2 font-bold text-white bg-gray-500 rounded hover:bg-gray-600" onClick={() => window.history.back()}>Back</button>
-      </div>
-    </div> */}
+    
       {isModalOpen && (
         <Modal onClose={handleBackClick} showCloseButton>
           {!isSecondStep && !session ? (

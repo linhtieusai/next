@@ -8,6 +8,8 @@ import JobSearchList from '../../components/Job/JobSearchList'
 import Script from 'next/script'
 import JobDetail  from '../../components/Job/JobDetail'
 import { useState, useEffect, useRef } from 'react';
+import { Suspense } from 'react'
+import JobDetailSkeleton from '../../ui/rendering-job-detail-skeleton'
 
 import JobItem from '../../components/Job/JobItem';
 
@@ -36,6 +38,8 @@ const ApplyScreen = dynamic(() => import('../../components/JobDetail/ApplyScreen
 
 export default function SearchPage({ searchParams }) {
   const [selectedJob, setSelectedJob] = useState(null);
+  const [isModalOpening, setIsModalOpening] = useState(false);
+
   const [jobs, setJobs] = useState([]);
   const [showJobList, setShowJobList] = useState(true); 
 
@@ -46,10 +50,22 @@ export default function SearchPage({ searchParams }) {
     setShowJobList(false);
   }
 
+  
   function handleBackButton() {
     setSelectedJob(null);
     setShowJobList(true);
   }
+
+  function handleApplyButtonClick() {
+    console.log("Apply button clicked");
+    setIsModalOpening(true);
+  }
+
+  const closeModalCallBack = () => {
+    setIsModalOpening(false);
+
+  }
+
 
   useEffect(() => {
     fetch('http://localhost:3000/api/jobs?page=1&itemsPerPage=10')
@@ -64,21 +80,29 @@ export default function SearchPage({ searchParams }) {
 
   return (
 <>
-  <div className="flex-1 flex lg:flex-row flex-col px-5 py-10">
-    <h1 className="text-lg">Search results for "PHP"</h1>
+  <div className="flex-1 flex lg:flex-row flex-col px-5 py-10 hidden md:block">
+    <h1 className="text-lg">Search results for <span className='font-bold'>"PHP"</span></h1>
   </div>
-  <div className="flex-1 flex lg:flex-row flex-col">
+  <div className="flex-1 flex lg:flex-row flex-col pb-20">
       <div className={selectedJob ? "hidden lg:block lg:w-1/3" : "w-full lg:w-1/3"}>
         <ul>
+          <Suspense fallback={<JobDetailSkeleton />}>
           {jobs && jobs.map((job) => (
             <JobItem key={job.id} job={job} handleOnClick={handleClick} isSelected={selectedJob && selectedJob.id === job.id}/>
           ))}
+          </Suspense>
         </ul>
       </div>  
       {!showJobList &&  (
           <>
-          <JobDetail selectedJob={selectedJob} handleBackButton={handleBackButton} />
-          <ApplyScreen jobId={selectedJob?.id} />
+          <JobDetail selectedJob={selectedJob} handleBackButton={handleBackButton} handleApplyButtonClick={handleApplyButtonClick} />
+          <ApplyScreen jobId={selectedJob?.id} isModalOpening={isModalOpening} closeModalCallBack={closeModalCallBack}/>
+          <div className="sticky sm:hidden bottom-20 w-full p-4 bg-gray-100 border-t border-gray-200 ">
+            <div className="flex items-center justify-between">
+              <button className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-600" onClick={handleApplyButtonClick}>Apply</button>
+              <button className="px-4 py-2 font-bold text-white bg-gray-500 rounded hover:bg-gray-600" onClick={handleBackButton}>Back</button>
+            </div>
+          </div>
           </>
           
       )}

@@ -14,13 +14,9 @@ function JobsList({ firstPage }) {
 
   const pathname = usePathname();
 
-  console.log("firstPage");
-  console.log(firstPage);
-
   const route = useRouter();
 
   function handleChangePage(event, value) {
-    console.log("okokokokokok");
     setMoving(true);
     route.push(`${pathname}?page=${value}`);
   }
