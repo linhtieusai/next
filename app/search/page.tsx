@@ -6,7 +6,10 @@ import styles from './page.module.css'
 import Login from '../../components/Login'
 import JobSearchList from '../../components/Job/JobSearchList'
 import Script from 'next/script'
+import JobDetail  from '../../components/Job/JobDetail'
 import { useState, useEffect, useRef } from 'react';
+
+import JobItem from '../../components/Job/JobItem';
 
 // localhost:3000
 
@@ -25,17 +28,25 @@ async function getFirstPage(page) {
 
 }
 
+import dynamic from 'next/dynamic'
+
+const ApplyScreen = dynamic(() => import('../../components/JobDetail/ApplyScreen'), {
+  loading: () => <p>Loading...</p>,
+})
+
 export default function SearchPage({ searchParams }) {
   const [selectedJob, setSelectedJob] = useState(null);
   const [jobs, setJobs] = useState([]);
   const [showJobList, setShowJobList] = useState(true); 
 
-  function handleClick(job) {
+  const handleClick = (job) => {
+    console.log("handle click");
+
     setSelectedJob(job);
     setShowJobList(false);
   }
 
-  function handleBackClick() {
+  function handleBackButton() {
     setSelectedJob(null);
     setShowJobList(true);
   }
@@ -53,79 +64,24 @@ export default function SearchPage({ searchParams }) {
 
   return (
 <>
-<div className="flex-1 flex lg:flex-row flex-col">
-
+  <div className="flex-1 flex lg:flex-row flex-col px-5 py-10">
+    <h1 className="text-lg">Search results for "PHP"</h1>
+  </div>
+  <div className="flex-1 flex lg:flex-row flex-col">
       <div className={selectedJob ? "hidden lg:block lg:w-1/3" : "w-full lg:w-1/3"}>
         <ul>
-          { jobs && jobs.map(job => (
-            <li key={job.id} className="cursor-pointer hover:bg-gray-300" onClick={() => handleClick(job)}>
-              {job.title}
-            </li>
+          {jobs && jobs.map((job) => (
+            <JobItem key={job.id} job={job} handleOnClick={handleClick} isSelected={selectedJob && selectedJob.id === job.id}/>
           ))}
         </ul>
-      </div>
-
-
-    {!showJobList &&  (
-       <div className="lg:w-2/3 p-4">
-        {selectedJob ? (
-          <div>
-            <button onClick={handleBackClick}>Back</button>
-            <h2 className="sticky top-0 bg-white px-4 py-2 border-b">{selectedJob.title}</h2>
-            <div className="px-4 py-2">cxcxcxc</div>
-            <div className="px-4 py-2">cxcxcxc</div>
-
-            <div className="px-4 py-2">cxcxcxc</div>
-            <div className="px-4 py-2">cxcxcxc</div>
-            <div className="px-4 py-2">cxcxcxc</div>
-            <div className="px-4 py-2">cxcxcxc</div>
-            <div className="px-4 py-2">cxcxcxc</div>
-
-            <div className="px-4 py-2">cxcxcxc</div>
-
-            <div className="px-4 py-2">cxcxcxc</div>
-            <div className="px-4 py-2">cxcxcxc</div>
-            <div className="px-4 py-2">cxcxcxc</div>
-
-            <div className="px-4 py-2">cxcxcxc</div>
-            <div className="px-4 py-2">cxcxcxc</div>
-            <div className="px-4 py-2">cxcxcxc</div>
-            <div className="px-4 py-2">cxcxcxc</div>
-            <div className="px-4 py-2">cxcxcxc</div>
-
-            <div className="px-4 py-2">cxcxcxc</div>
-
-            <div className="px-4 py-2">cxcxcxc</div>
-            <div className="px-4 py-2">cxcxcxc</div>
-            <div className="px-4 py-2">cxcxcxc</div>
-
-            <div className="px-4 py-2">cxcxcxc</div>
-            <div className="px-4 py-2">cxcxcxc</div>
-            <div className="px-4 py-2">cxcxcxc</div>
-            <div className="px-4 py-2">cxcxcxc</div>
-            <div className="px-4 py-2">cxcxcxc</div>
-
-            <div className="px-4 py-2">cxcxcxc</div>
-
-            <div className="px-4 py-2">cxcxcxc</div>
-            <div className="px-4 py-2">cxcxcxc</div>
-            <div className="px-4 py-2">cxcxcxc</div>
-
-            <div className="px-4 py-2">cxcxcxc</div>
-            <div className="px-4 py-2">cxcxcxc</div>
-            <div className="px-4 py-2">cxcxcxc</div>
-            <div className="px-4 py-2">cxcxcxc</div>
-            <div className="px-4 py-2">cxcxcxc</div>
-
-            <div className="px-4 py-2">cxcxcxc</div>
-
-            <div className="px-4 py-2">cxcxcxc</div>
-          </div>
-        ) : (
-          <p>Please select a job</p>
-        )}
-      </div>
-        )}
+      </div>  
+      {!showJobList &&  (
+          <>
+          <JobDetail selectedJob={selectedJob} handleBackButton={handleBackButton} />
+          <ApplyScreen jobId={selectedJob?.id} />
+          </>
+          
+      )}
   </div>
 
   </>
