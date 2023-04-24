@@ -1,3 +1,5 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": "next/core-web-vitals",
+  //allow use "aaa" in tsx component
+  "rules": { "react/no-unescaped-entities": 0 }
 }

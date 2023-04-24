@@ -4,7 +4,6 @@
 import Image from 'next/image'
 import styles from './page.module.css'
 import Login from '../../components/Login'
-import JobSearchList from '../../components/Job/JobSearchList'
 import Script from 'next/script'
 import JobDetail  from '../../components/Job/JobDetail'
 import { useState, useEffect, useRef } from 'react';
@@ -37,10 +36,10 @@ const ApplyScreen = dynamic(() => import('../../components/JobDetail/ApplyScreen
 })
 
 export default function SearchPage({ searchParams }) {
-  const [selectedJob, setSelectedJob] = useState(null);
+  const [selectedJob, setSelectedJob] = useState<any>(null);
   const [isModalOpening, setIsModalOpening] = useState(false);
 
-  const [jobs, setJobs] = useState([]);
+  const [jobs, setJobs] = useState<any[]>([]);
   const [showJobList, setShowJobList] = useState(true); 
 
   const handleClick = (job) => {
@@ -68,7 +67,7 @@ export default function SearchPage({ searchParams }) {
 
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/jobs?page=1&itemsPerPage=10')
+    fetch('http://localhost:8000/api/jobs?page=1&itemsPerPage=10')
       .then(response => response.json())
       .then(data => setJobs(data.jobs))
       .catch(error => console.error(error));
@@ -80,10 +79,10 @@ export default function SearchPage({ searchParams }) {
 
   return (
 <>
-  <div className="flex-1 flex lg:flex-row flex-col px-5 py-10 hidden md:block">
+  <div className="flex flex-col flex-1 hidden px-5 py-10 lg:flex-row md:block">
     <h1 className="text-lg">Search results for <span className='font-bold'>"PHP"</span></h1>
   </div>
-  <div className="flex-1 flex lg:flex-row flex-col pb-20">
+  <div className="flex flex-col flex-1 pb-20 lg:flex-row">
       <div className={selectedJob ? "hidden lg:block lg:w-1/3" : "w-full lg:w-1/3"}>
         <ul>
           <Suspense fallback={<JobDetailSkeleton />}>
@@ -97,7 +96,7 @@ export default function SearchPage({ searchParams }) {
           <>
           <JobDetail selectedJob={selectedJob} handleBackButton={handleBackButton} handleApplyButtonClick={handleApplyButtonClick} />
           <ApplyScreen jobId={selectedJob?.id} isModalOpening={isModalOpening} closeModalCallBack={closeModalCallBack}/>
-          <div className="sticky sm:hidden bottom-20 w-full p-4 bg-gray-100 border-t border-gray-200 ">
+          <div className="sticky w-full p-4 bg-gray-100 border-t border-gray-200 sm:hidden bottom-20 ">
             <div className="flex items-center justify-between">
               <button className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-600" onClick={handleApplyButtonClick}>Apply</button>
               <button className="px-4 py-2 font-bold text-white bg-gray-500 rounded hover:bg-gray-600" onClick={handleBackButton}>Back</button>

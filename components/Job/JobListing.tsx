@@ -63,7 +63,8 @@ function JobsList({ firstPage, moving, callBackMethod, callBackPageComplete }) {
       <div className="relative grid grid-cols-1 gap-4 job-container sm:grid-cols-2" style={{ opacity: isMoving ? 0.5 : 1 }}>
         <Suspense fallback={<Loading />}>
         {jobs && jobs?.map((job) => (
-            <JobItem key={job.id} job={job} />
+            <></>
+            // <JobItem key={job.id} job={job} />
           ))}
           </Suspense>
          {isMoving && (
