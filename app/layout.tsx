@@ -22,7 +22,7 @@ export default function RootLayout({
         <ProvidersWrapper>
         <div>
           <TopNavBar />
-            <main className="container px-4 mx-auto">
+            <main className="container px-4 mx-auto ml-4">
               {children}
               </main>
             <BottomNavBar />

@@ -10,12 +10,10 @@ const Navbar = () => {
   
   return (
 
-    <nav className="z-10 bg-white shadow-md">
-    <div className="container flex items-center justify-between h-16 px-4 mx-auto">
+  <nav className="sticky top-0 left-0 z-10 bg-white shadow-md">
+    <div className=" flex items-center justify-between h-16 px-4 mx-auto">
       <div className="flex items-center">
-        <Link href="/">
-         Home
-        </Link>
+        KhôngThieuViec
       </div>
       <div className="flex items-center">
         <ul className="flex items-center">

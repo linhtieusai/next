@@ -4,6 +4,8 @@ import Login from '../components/Login'
 import JobList from '../components/Job/JobList'
 import Script from 'next/script'
 // localhost:3000
+import CollapsibleSiderBar from '../components/CollapsibleSideBar'
+import SearchPage  from './search/page'
 
 import { PrismaClient } from "@prisma/client";
 
@@ -23,16 +25,7 @@ export default async function Home({ searchParams }) {
   const firstPage = {jobs: jobs, totalPages: 10}
   return (
     <>
-    <div className="py-8">
-        <div className="container max-w-5xl px-4 mx-auto">
-          <h3>Login Website</h3>
-
-            <h1 className="text-3xl font-bold underline">
-            Hello, Next.js!
-          </h1>
-          <JobList firstPage={firstPage}/>
-       </div>
-      </div>
+      <CollapsibleSiderBar children={<SearchPage />} />
     </>
    
   )

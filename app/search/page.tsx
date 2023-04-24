@@ -67,7 +67,7 @@ export default function SearchPage({ searchParams }) {
 
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/jobs?page=1&itemsPerPage=10')
+    fetch('http://localhost:3000/api/jobs?page=1&itemsPerPage=10')
       .then(response => response.json())
       .then(data => setJobs(data.jobs))
       .catch(error => console.error(error));
