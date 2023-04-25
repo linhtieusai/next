@@ -11,12 +11,12 @@ const Navbar = () => {
   return (
 
   <nav className="sticky top-0 left-0 z-10 bg-white shadow-md">
-    <div className=" flex items-center justify-between h-16 px-4 mx-auto">
+    <div className="flex items-center justify-between h-16 px-4 mx-auto ">
       <div className="flex items-center">
         KhôngThieuViec
       </div>
       <div className="flex items-center">
-        <ul className="flex items-center">
+        {/* <ul className="flex items-center">
           <li className="ml-4">
             <Link href="/about">
             Job đã xem
@@ -27,10 +27,10 @@ const Navbar = () => {
             Job đã lưu
             </Link>
           </li>
-        </ul>
+        </ul> */}
         <div className="ml-4">
           <Link href="/my-page">
-            <button className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-600">
+            <button className="px-4 py-2 border rounded-full text-emerald-500 border-slate-300 hover:bg-cyan-100 hover:border-indigo-300">
                 {session ? "My Page" : "Login"}
             </button>
           </Link>

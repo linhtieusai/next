@@ -16,17 +16,14 @@ export default function RootLayout({
         <head /> will contain the components returned by the nearest parent
         head.tsx. Find out more at https://beta.nextjs.org/docs/api-reference/file-conventions/head
       */}
-
       <head />
       <body>
         <ProvidersWrapper>
-        <div>
           <TopNavBar />
-            <main className="container px-4 mx-auto ml-4">
+            <main className="pt-4 mx-auto ml-4">
               {children}
               </main>
-            <BottomNavBar />
-          </div>
+          <BottomNavBar />
         </ProvidersWrapper>
       </body>
     </html>

@@ -5,15 +5,14 @@ import Link from "next/link";
 export default function Sidebar({ children}) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="flex-row lg:flex">
-      <div
+    <div>
+      <aside
         className={` ${
-          open ? "lg:w-40" : "lg:w-60 "
-        } flex flex-col h-screen hidden md:block fixed top-0 left-0 z-4 p-3 w-full duration-300`}
+          open ? "md:w-20" : "md:w-40"
+        } flex h-100 fixed  overflow-y-scroll hidden z-4 p-3 md:block duration-300`}
       >
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-black">KhongThieuViec</h2>
+        <div className="flex flex-col h-screen ">
+          <div className="flex items-center">
             <button onClick={() => setOpen(!open)}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -32,7 +31,7 @@ export default function Sidebar({ children}) {
             </button>
           </div>
    
-          <div className="flex-1">
+          <div className="flex flex-col flex-1">
             <ul className="pt-2 pb-4 space-y-1 text-sm">
               <li className="rounded-sm">
                 <Link
@@ -151,13 +150,20 @@ export default function Sidebar({ children}) {
               </li>
             </ul>
           </div>
+
+          <div className="flex flex-col">
+            Footer 
+            </div>
+        </div>
+      </aside>
+      <div className="flex max-w-full pl-40">
+        <div className="container mx-auto mt-4 lg:mt-12">
+          <div className="p-4 mx-2 ml-4">
+            {children}
+          </div>
         </div>
       </div>
-      <div className="container mx-auto mt-4 lg:mt-12">
-        <div className="p-4 mx-2 ml-4">
-          {children}
-        </div>
-      </div>
+      
     </div>
   );
 }

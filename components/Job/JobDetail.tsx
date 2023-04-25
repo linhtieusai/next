@@ -35,7 +35,7 @@ function JobDetail({ selectedJob, handleBackButton, handleApplyButtonClick }) {
                 </div>
                 
             </div>
-            <div className="flex-grow pt-16 pl-5">
+            <div className="flex-grow pt-16 pl-5 overflow-scroll ">
               <h3 className="mt-3 text-lg font-bold">Required Skill</h3>
               <p className="pl-4 whitespace-pre-wrap">{selectedJob?.job_required_skill}</p>
               {/* <h3 className="text-lg font-bold">Job overview</h3>

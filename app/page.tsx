@@ -25,7 +25,9 @@ export default async function Home({ searchParams }) {
   const firstPage = {jobs: jobs, totalPages: 10}
   return (
     <>
-      <CollapsibleSiderBar children={<SearchPage />} />
+      <CollapsibleSiderBar>
+        <SearchPage />
+      </CollapsibleSiderBar>
     </>
    
   )

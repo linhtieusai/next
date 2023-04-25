@@ -35,7 +35,7 @@ const ApplyScreen = dynamic(() => import('../../components/JobDetail/ApplyScreen
   loading: () => <p>Loading...</p>,
 })
 
-export default function SearchPage({ searchParams }) {
+export default function SearchPage() {
   const [selectedJob, setSelectedJob] = useState<any>(null);
   const [isModalOpening, setIsModalOpening] = useState(false);
 
@@ -83,7 +83,7 @@ export default function SearchPage({ searchParams }) {
     <h1 className="text-lg">Search results for <span className='font-bold'>"PHP"</span></h1>
   </div>
   <div className="flex flex-col flex-1 pb-20 lg:flex-row">
-      <div className={selectedJob ? "hidden lg:block lg:w-1/3" : "w-full lg:w-1/3"}>
+      <div className={selectedJob ? "hidden overflow-scroll lg:block lg:w-1/3" : "w-full lg:w-1/3"}>
         <ul>
           <Suspense fallback={<JobDetailSkeleton />}>
           {jobs && jobs.map((job) => (
@@ -91,19 +91,18 @@ export default function SearchPage({ searchParams }) {
           ))}
           </Suspense>
         </ul>
-      </div>  
+      </div>
       {!showJobList &&  (
           <>
           <JobDetail selectedJob={selectedJob} handleBackButton={handleBackButton} handleApplyButtonClick={handleApplyButtonClick} />
           <ApplyScreen jobId={selectedJob?.id} isModalOpening={isModalOpening} closeModalCallBack={closeModalCallBack}/>
-          <div className="sticky w-full p-4 bg-gray-100 border-t border-gray-200 sm:hidden bottom-20 ">
+          <div className="sticky bottom-0 left-0 z-10 w-full p-4 bg-gray-100 border-t border-gray-200 sm:hidden">
             <div className="flex items-center justify-between">
               <button className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-600" onClick={handleApplyButtonClick}>Apply</button>
               <button className="px-4 py-2 font-bold text-white bg-gray-500 rounded hover:bg-gray-600" onClick={handleBackButton}>Back</button>
             </div>
           </div>
           </>
-          
       )}
   </div>
 

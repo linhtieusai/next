@@ -12,7 +12,7 @@ export default function JobItem({ job, handleOnClick, isSelected }) {
             >
               <div className="flex items-center justify-between">
                   <div className="flex items-center">
-                    <Image src={`/company_logo/${job.source_site}/${job.source_id}.jpg`} alt="me" width="100" height="100" className="object-cover mr-3 rounded-full"/>
+                    <Image src={`/company_logo/${job.source_site}/${job.source_id}.jpg`} alt="me" width="70" height="70" className="object-cover mr-3 rounded-full"/>
                     <div>
                           <p className="text-gray-600">{job.company_name}</p>
                           <h3 className="text-lg font-semibold">{job.title}</h3>
