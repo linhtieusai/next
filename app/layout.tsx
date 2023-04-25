@@ -23,7 +23,7 @@ export default function RootLayout({
         <main className="flex flex-col h-screen">
           <div className="flex flex-1 overflow-hidden">
 
-            <div className="flex flex-col justify-between w-40 p-4 overflow-scroll bg-gray-100">
+            <div className="flex flex-col justify-between w-40 p-2 overflow-scroll bg-gray-100">
                  
                     <div className="flex flex-col ">
                     <button >
@@ -169,9 +169,7 @@ export default function RootLayout({
 
 
             <div className="flex flex-col flex-1">
-              <div className="flex h-16 p-4 shadow ">
-                <TopNavBar />
-              </div>
+              <TopNavBar />
               <div className="flex flex-col px-4 overflow-y-auto">
                   {children}              
               </div>
