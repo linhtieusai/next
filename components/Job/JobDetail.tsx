@@ -11,7 +11,7 @@ function JobDetail({ selectedJob, handleBackButton, handleApplyButtonClick }) {
 
   return (
     <>
-     
+     {/* <div className="p-4 lg:w-2/3"> */}
         {selectedJob ? (
           <>
             {/* <button className="sticky top-0 px-4 py-2 bg-white border-b" onClick={() => handleBackButton()}>Back</button> */}
@@ -59,6 +59,7 @@ function JobDetail({ selectedJob, handleBackButton, handleApplyButtonClick }) {
         ) : (
           <p>Please select a job</p>
         )}
+        {/* </div> */}
     </>
   );
 }
