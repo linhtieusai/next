@@ -79,31 +79,34 @@ export default function SearchPage() {
 
   return (
 <>
-  <div className="flex flex-col flex-1 hidden px-5 py-10 lg:flex-row md:block">
+  <div className="flex flex-col flex-1 hidden px-5 py-10 lg:flex-row md:flex">
     <h1 className="text-lg">Search results for <span className='font-bold'>"PHP"</span></h1>
   </div>
-  <div className="flex flex-col flex-1 pb-20 lg:flex-row">
-      <div className={selectedJob ? "hidden flex overflow-auto h-100 min-h-[calc(100vh_-_200px)] lg:block lg:w-1/3" : "w-full lg:w-1/3"}>
-        <ul>
+  <div className="flex flex-col pb-20 lg:flex-row">
+      <div className='flex-col h-[calc(100vh_-_200px)]  {selectedJob ? "md:flex-col hidden overflow-auto md:flex-grow md:flex lg:w-1/3" : "w-full lg:w-1/3 "}'>
           <Suspense fallback={<JobDetailSkeleton />}>
           {jobs && jobs.map((job) => (
             <JobItem key={job.id} job={job} handleOnClick={handleClick} isSelected={selectedJob && selectedJob.id === job.id}/>
           ))}
           </Suspense>
-        </ul>
+          <div>
+            Pagination
+          </div>
       </div>
+      <div className="p-4 lg:w-2/3">
       {!showJobList &&  (
           <>
-          <JobDetail selectedJob={selectedJob} handleBackButton={handleBackButton} handleApplyButtonClick={handleApplyButtonClick} />
-          <ApplyScreen jobId={selectedJob?.id} isModalOpening={isModalOpening} closeModalCallBack={closeModalCallBack}/>
-          <div className="sticky bottom-0 left-0 z-10 w-full p-4 bg-gray-100 border-t border-gray-200 sm:hidden">
-            <div className="flex items-center justify-between">
-              <button className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-600" onClick={handleApplyButtonClick}>Apply</button>
-              <button className="px-4 py-2 font-bold text-white bg-gray-500 rounded hover:bg-gray-600" onClick={handleBackButton}>Back</button>
+            <JobDetail selectedJob={selectedJob} handleBackButton={handleBackButton} handleApplyButtonClick={handleApplyButtonClick} />
+            <ApplyScreen jobId={selectedJob?.id} isModalOpening={isModalOpening} closeModalCallBack={closeModalCallBack}/>
+            <div className="sticky bottom-0 left-0 z-10 w-full p-4 bg-gray-100 border-t border-gray-200 sm:hidden">
+              <div className="flex items-center justify-between">
+                <button className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-600" onClick={handleApplyButtonClick}>Apply</button>
+                <button className="px-4 py-2 font-bold text-white bg-gray-500 rounded hover:bg-gray-600" onClick={handleBackButton}>Back</button>
+              </div>
             </div>
-          </div>
           </>
       )}
+      </div>
   </div>
 
   </>

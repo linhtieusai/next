@@ -13,8 +13,10 @@ const Navbar = () => {
       <div className="flex items-center flex-none">
         KhongThieuViec
       </div>
-      <div className="relative flex items-center justify-end flex-1 ml-10">
-          <div className="flex items-center w-2/3">
+      <div className="relative flex items-center justify-end flex-1 w-full ml-10 md:w-2/3">
+          <div className="flex-grow hidden md:flex">
+          </div>
+          <div className="flex items-center justify-end w-full md:w-2/3">
               <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24"
                   stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
