@@ -23,7 +23,7 @@ export default function RootLayout({
         <main className="flex flex-col h-screen">
           <div className="flex flex-1 overflow-hidden">
 
-            <div className="flex flex-col justify-between w-40 p-2 overflow-scroll bg-gray-100">
+            <div className="flex flex-col justify-between w-40 p-2 overflow-auto bg-gray-100">
                  
                     <div className="flex flex-col ">
                     <button >
@@ -175,7 +175,7 @@ export default function RootLayout({
               </div>
             </div>
           </div>
-          <div className="flex">Footer</div>
+          <div className="flex">contact@khongthieuviec.com</div>
         </main>
         </ProvidersWrapper>
       </body>
