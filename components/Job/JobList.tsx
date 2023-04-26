@@ -35,6 +35,7 @@ function JobsList({ firstPage }) {
     <>
       <Suspense fallback={<p>Loading feed...</p>}>
         <JobListing firstPage={firstPage} moving={moving}  callBackMethod={callBackMethod} callBackPageComplete={callBackPageComplete} />
+        <Pagination />
       </Suspense>
     </>
   );

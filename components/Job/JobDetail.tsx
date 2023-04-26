@@ -20,7 +20,7 @@ function JobDetail({ selectedJob, handleBackButton, handleApplyButtonClick }) {
             >
                 Back to Search Results for "PHP"
             </a>
-            <div className="sticky top-0 flex-col items-center justify-between px-5 pb-10 h-[calc(100vh_-_100px)] overflow-auto bg-white border-b">
+            <div className="sticky top-0 flex-col items-center justify-between px-5 pb-10 h-[calc(100vh_-_200px)] overflow-auto bg-white border-b">
                 <div className="sticky top-0 flex justify-between py-3 bg-white">
                   <h1 className="flex ml-2 text-2xl font-bold overflow-ellipsis clamp-2">{selectedJob.title}</h1>
                   <div className="flex items-center gap-2">

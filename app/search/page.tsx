@@ -83,7 +83,7 @@ export default function SearchPage() {
     <h1 className="text-lg">Search results for <span className='font-bold'>"PHP"</span></h1>
   </div>
   <div className="flex flex-col flex-1 pb-20 lg:flex-row">
-      <div className={selectedJob ? "hidden min-h-[calc(100vh_-_145px)] h-[fit-content] lg:block lg:w-1/3" : "w-full lg:w-1/3"}>
+      <div className={selectedJob ? "hidden flex overflow-auto h-100 min-h-[calc(100vh_-_200px)] lg:block lg:w-1/3" : "w-full lg:w-1/3"}>
         <ul>
           <Suspense fallback={<JobDetailSkeleton />}>
           {jobs && jobs.map((job) => (

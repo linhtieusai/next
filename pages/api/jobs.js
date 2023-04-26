@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   const query = req.query;
   const { page } = query;
 
-  const limit = 20
+  const limit = 10
   const offset = (page - 1) * limit;
 
   const connection = await mysql.createConnection({

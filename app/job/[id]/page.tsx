@@ -40,7 +40,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   const data = await getData(id);
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col">
         {data ? (
           <>
             <div className="sticky top-0 z-50 bg-white">
@@ -49,14 +49,13 @@ export default async function Page({ params }: { params: { id: string } }) {
             <div className="flex-grow pt-16">
               <h3>Required Skill</h3>
               <p className="whitespace-pre-wrap">{data?.job_required_skill}</p>
+              <h3>Preferred</h3>
+              <p className="whitespace-pre-wrap">{data?.preferred_skill}</p>
               <h3>Job overview</h3>
               <p className="whitespace-pre-wrap">{data?.overview}</p>
               <h3>Job Responsibilites</h3>
               <p className="whitespace-pre-wrap">{data?.job_responsibility}</p>
                 
-             
-              <h3>Preferred</h3>
-              <p className="whitespace-pre-wrap">{data?.preferred_skill}</p>
               <h3>Why you should Apply?</h3>
               <p className="whitespace-pre-wrap">{data?.why_should_apply}</p>
                 
