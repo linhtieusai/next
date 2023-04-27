@@ -20,8 +20,6 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
   const [errorMessage, setErrorMessage] = useState("");
     
   useEffect(() => {
-    console.log("BAY VAO");
-    console.log(isModalOpening);
     setIsModalOpen(isModalOpening);
   }, [isModalOpening]);
 
@@ -85,7 +83,6 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
 
   return (
     <>
-    
       {isModalOpen && (
         <Modal onClose={handleBackClick} showCloseButton>
           {!isSecondStep && !session ? (
@@ -158,14 +155,14 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
                       <>
                         <button
                           type="button"
-                          className="w-24 py-2 mr-2 text-gray-700 border border-gray-400 rounded-full hover:bg-gray-200"
+                          className="px-4 py-2 mr-2 text-gray-700 border border-gray-400 rounded-full hover:bg-gray-200"
                           onClick={handleBackClick}
                         >
                           Cancel
                         </button>
                         <button
                             type="submit"
-                            className={`w-24 py-2 text-white rounded-full shadow-lg 
+                            className={`px-4 py-2 text-white rounded-full shadow-lg 
                             ${resumeSubmitting ? '' : 'hover:bg-blue-600'}
                             ${resumeSubmitting ? "bg-gray-200 cursor-not-allowed" : "bg-blue-500"}`}
                             disabled={resumeSubmitting}

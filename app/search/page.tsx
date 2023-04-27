@@ -83,8 +83,8 @@ export default function SearchPage() {
   <div className="flex flex-col flex-1 hidden px-5 py-10 lg:flex-row md:block">
     <h1 className="text-lg">Search results for <span className='font-bold'>"PHP"</span></h1>
   </div>
-  <div className="flex flex-col flex-1 pb-20 md:flex-row">
-      <div className={`h-[calc(100vh_-_200px)]  md:w-1/3 flex-col  overflow-auto ${selectedJob ? "hidden md:flex" : "w-full"}`}>
+  <div className="flex flex-col flex-1 sm:pb-20 md:flex-row">
+      <div className={`h-[calc(100vh_-_170px)] sm:h-[calc(100vh_-_200px)] px-4 sm:px-4 md:w-1/3 flex-col  overflow-auto ${selectedJob ? "hidden md:flex" : "w-full"}`}>
         <ul>
           <Suspense fallback={<JobDetailSkeleton />}>
           {jobs && jobs.map((job) => (
@@ -94,7 +94,7 @@ export default function SearchPage() {
         </ul>
         <p>Pagination</p>
       </div>
-      <div className="p-4 md:w-2/3">
+      <div className="sm:p-4 md:w-2/3">
       {!showJobList &&  (
           <>
           <JobDetail selectedJob={selectedJob} handleBackButton={handleBackButton} handleApplyButtonClick={handleApplyButtonClick} />
