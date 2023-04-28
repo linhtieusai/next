@@ -1,7 +1,6 @@
 
 "use client"
 
-
 import Image from 'next/image'
 import styles from './page.module.css'
 import Login from '../../components/Login'
@@ -37,9 +36,7 @@ const ApplyScreen = dynamic(() => import('../../components/JobDetail/ApplyScreen
   loading: () => <p>Loading...</p>,
 })
 
-
-
-export default function SearchPage() {
+export default function SearchPage({ firstPage, page }) {
 
   // console.log("search page job");
   // console.log(firstPage.jobs);
@@ -47,7 +44,7 @@ export default function SearchPage() {
   const [selectedJob, setSelectedJob] = useState<any>(false);
   const [isModalOpening, setIsModalOpening] = useState(false);
 
-  const [jobs, setJobs] = useState<any[]>([]);
+  const [jobs, setJobs] = useState<any[]>(firstPage.jobs);
   const [showJobList, setShowJobList] = useState(true); 
 
   const handleClick = (job) => {
@@ -60,8 +57,6 @@ export default function SearchPage() {
   // if(firstPage) {
   //   setJobs(firstPage.jobs);
   // }
-
-  const page = 1;
   
   function handleBackButton() {
 

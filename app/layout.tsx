@@ -169,7 +169,7 @@ export default function RootLayout({
             <div className="flex flex-col flex-1">
               <TopNavBar />
               <div className="flex flex-col sm:px-4">
-                  {children}              
+                  {children}
               </div>
             </div>
           </div>

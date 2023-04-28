@@ -95,7 +95,7 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
               <div className="flex flex-col items-center">
                 <div className="flex flex-col items-center justify-center">
                   <button
-                    className="w-64 py-2 mr-2 text-white bg-blue-500 rounded-full shadow-lg hover:bg-blue-600"
+                    className="w-64 py-2 mr-2 text-white bg-green-700 rounded-full shadow-lg hover:bg-blue-600"
                     onClick={handleFirstStepSubmit}
                     >
                     Submit Resume without Register
@@ -162,8 +162,8 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
                         </button>
                         <button
                             type="submit"
-                            className={`px-4 py-2 text-white rounded-full shadow-lg 
-                            ${resumeSubmitting ? '' : 'hover:bg-blue-600'}
+                            className={`px-4 py-2 text-white bg-green-600 rounded-full shadow-lg 
+                            ${resumeSubmitting ? '' : 'hover:bg-green-500'}
                             ${resumeSubmitting ? "bg-gray-200 cursor-not-allowed" : "bg-blue-500"}`}
                             disabled={resumeSubmitting}
                           >
@@ -175,7 +175,7 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
                   
                   {submitSuccess && (
                       <div className={`z-50 top-0 left-0 w-full flex items-center justify-center`}>
-                      <div className="p-8 text-white bg-green-500 rounded-lg shadow-lg">
+                      <div className="p-8 text-white bg-green-200 rounded-lg shadow-lg">
                         <div className="text-xl font-bold">Your resume has been successfully submitted!</div>
                       </div>
                       </div>

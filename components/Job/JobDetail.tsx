@@ -30,7 +30,7 @@ function JobDetail({ selectedJob, handleBackButton, handleApplyButtonClick }) {
                       </svg>
                       <span  className="hidden ml-2 md:inline-block">Save</span>
                     </button>
-                    <button onClick={handleApplyButtonClick} className="hidden px-4 py-2 font-bold text-white bg-blue-500 rounded-full lg:block hover:bg-blue-600">
+                    <button onClick={handleApplyButtonClick} className="hidden px-4 py-2 font-bold text-white bg-green-700 rounded-full lg:block hover:bg-green-600">
                       Apply
                     </button>
                   </div>
