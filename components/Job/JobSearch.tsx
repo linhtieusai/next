@@ -12,6 +12,7 @@ import JobDetailSkeleton from '../../ui/rendering-job-detail-skeleton'
 import JobListSkeleton from '../../ui/rendering-job-list-skeleton'
 
 import JobItem from '../../components/Job/JobItem';
+import Pagination from '../../components/Job/Pagination'
 
 // localhost:3000
 
@@ -92,6 +93,7 @@ export default function SearchPage({ firstPage, page }) {
 
 
   return (
+   
 <>
   <div className="flex flex-col flex-1 hidden px-5 py-10 lg:flex-row md:block">
     <h1 className="text-lg">Search results for <span className='font-bold'>"PHP"</span></h1>
@@ -107,7 +109,12 @@ export default function SearchPage({ firstPage, page }) {
             </>
           )}
         </ul>
-        <p>Pagination</p>
+        <div className="sticky bottom-0 bg-white flex items-center justify-center w-full mt-4">
+          <Pagination data={ {totalPages: 10, page: page??1 }}  />
+        </div>
+        <div className="flex">
+          Footer
+        </div>
       </div>
       <div className="sm:p-4 md:w-2/3">
       {!showJobList &&  (
