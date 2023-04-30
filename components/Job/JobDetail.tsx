@@ -30,7 +30,7 @@ function JobDetail({ selectedJob, handleBackButton, handleApplyButtonClick }) {
                       </svg>
                       <span  className="hidden ml-2 md:inline-block">Save</span>
                     </button>
-                    <button onClick={handleApplyButtonClick} className="hidden px-4 py-2 font-bold text-white bg-green-700 rounded-full lg:block hover:bg-green-600">
+                    <button onClick={handleApplyButtonClick} className="hidden px-4 lg:px-12 py-2 font-bold text-white bg-green-700 rounded-full lg:block hover:bg-green-600">
                       Apply
                     </button>
                   </div>
@@ -39,17 +39,18 @@ function JobDetail({ selectedJob, handleBackButton, handleApplyButtonClick }) {
                 <div className="pl-5 pt-13">
                     <h3 className="mt-3 text-lg font-bold">Required Skill</h3>
                     <p className="pl-4 whitespace-pre-wrap">{selectedJob?.job_required_skill}</p>
+                    <h3 className="mt-3 text-lg font-bold">Preferred</h3>
+                    <p className="pl-4 whitespace-pre-wrap">{selectedJob?.preferred_skill}</p>
                     {/* <h3 className="text-lg font-bold">Job overview</h3>
                     <p className="whitespace-pre-wrap">{selectedJob?.overview}</p> */}
                     <h3 className="mt-3 text-lg font-bold">Job Responsibilites</h3>
                     <p className="pl-4 whitespace-pre-wrap">{selectedJob?.job_responsibility}</p>
                       
                   
-                    <h3 className="mt-3 text-lg font-bold">Preferred</h3>
-                    <p className="pl-4 whitespace-pre-wrap">{selectedJob?.preferred_skill}</p>
+                    
                     <h3 className="mt-3 text-lg font-bold">Why you should Apply?</h3>
                     <p className="pl-4 whitespace-pre-wrap">{selectedJob?.why_should_apply}</p>
-                      
+                    <hr className="my-4"></hr>
                     <h3 className="mt-3 text-lg font-bold">About {selectedJob?.company_name}</h3>
                     <p className="pl-4 whitespace-pre-wrap">{selectedJob?.company_description}</p>
                     <p className="mb-2">Company Address: {selectedJob?.company_address}</p>

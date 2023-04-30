@@ -13,11 +13,43 @@ import { PrismaClient } from "@prisma/client";
 async function getFirstPage(page) {
   // const res = await fetch(`http://localhost:3000/api/job/${id}`);
   const prisma = new PrismaClient();
-  const jobs = await prisma.job.findMany({take: 10, skip: (page - 1) * 10 });
+  const jobs = await prisma.job.findMany({
+    take: 10, 
+    skip: (page - 1) * 10,
+    orderBy: [
+      {
+        id: 'desc',
+      },
+    ],
+  });
+
+  const data = await prisma.$transaction([
+    prisma.job.count({
+      // where: {
+      //   [column]: {
+      //     mode: 'insensitive',
+      //     contains: searchQuery,
+      //   },
+      // },
+    }),
+    prisma.job.findMany({
+      take: 10, 
+      skip: (page - 1) * 10,
+      orderBy: [
+        {
+          id: 'desc',
+        },
+      ],
+    })
+  ]);
 
   await prisma.$disconnect()
   
-  return jobs;
+  return {
+    jobs: data[1],
+    page: page,
+    totalPages: Math.ceil((data[0] ?? 0) / 10)
+  };
 
 }
 export const dynamic = 'auto'
@@ -28,8 +60,8 @@ export default async function Home({ searchParams }) {
     page = 1;
   }
 
-  const jobs = await getFirstPage(page);
-  const firstPage = {jobs: jobs, totalPages: 10}
+  const jobData = await getFirstPage(page);
+  const firstPageData = {jobs: jobData.jobs, totalPages: jobData.totalPages, page: jobData.page};
 
   
   console.log("page is");
@@ -40,7 +72,7 @@ export default async function Home({ searchParams }) {
   // console.log(firstPage.jobs);
   return (
     <>
-    <JobSearch firstPage={firstPage} page={page} />
+    <JobSearch firstPageData={firstPageData} moving={false} />
       {/* <CollapsibleSiderBar>
         <SearchPage />
       </CollapsibleSiderBar> */}

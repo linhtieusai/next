@@ -27,7 +27,6 @@ export default function JobItem({ job, handleOnClick, isSelected }) {
                             
                             {job.location}
                           </span>
-
                   </div>
                 </div>
             </div>

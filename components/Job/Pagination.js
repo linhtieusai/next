@@ -1,21 +1,21 @@
 'use client';
 
 import { Pagination } from '@mui/material';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
-function Paginationx ({ data })  {
+function Paginationx ({ data, pageChangeCallback })  {
   const router =  useRouter();
+  const currentPath = usePathname();
   function handleChangePage(event, value) {
-    router.push(`?page=${value}`);
+    pageChangeCallback();
+    router.push(currentPath + `?page=${value}`);
   }
 
   const page = parseInt(data.page);
 
-  console.log(data);
-
   return (
     <>
-    <Pagination count={data.totalPages} page={page} onChange={handleChangePage} shape="rounded" />
+      <Pagination count={data.totalPages} page={page} onChange={handleChangePage} shape="rounded" />
     </>
   );
 }

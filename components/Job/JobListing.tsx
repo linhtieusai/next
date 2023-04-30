@@ -38,13 +38,13 @@ function JobsList({ firstPage, moving, callBackMethod, callBackPageComplete }) {
   useEffect(() => {
     if(page > 1) {
       setLoading(true);
-    fetch(`/api/jobs?page=${page}`)
-    // fetch(`/api/jobs?page=${page}&itemsPerPage=${itemsPerPage}`)
-      .then(response => response.json())
-      .then(response => {
-        setJobs(response.jobs);
-        callBackMethod(response.totalPages, page);
-        setLoading(false);
+      fetch(`/api/jobs?page=${page}`)
+      // fetch(`/api/jobs?page=${page}&itemsPerPage=${itemsPerPage}`)
+        .then(response => response.json())
+        .then(response => {
+          setJobs(response.jobs);
+          callBackMethod(response.totalPages, page);
+          setLoading(false);
 
         // router.push(`?page=${page}`, undefined, { shallow: true });
       });

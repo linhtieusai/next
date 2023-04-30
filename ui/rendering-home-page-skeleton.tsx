@@ -1,7 +1,7 @@
 export default function HomePageSkeleton() {
   return (
     <>
-    <div className="flex flex-col justify-center items-center min-h-screen">
+    <div className="flex flex-col justify-center items-center ">
       <div className="w-11/12 md:w-10/12 lg:w-8/12 xl:w-6/12">
         <div className="h-32 bg-gray-400 rounded-lg animate-pulse mb-8"></div>
         <div className="grid grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-8">

@@ -1,6 +1,7 @@
 
 "use client"
 
+
 import Image from 'next/image'
 import styles from './page.module.css'
 import Login from '../../components/Login'
@@ -10,27 +11,34 @@ import { useState, useEffect, useRef } from 'react';
 import { Suspense } from 'react'
 import JobDetailSkeleton from '../../ui/rendering-job-detail-skeleton'
 import JobListSkeleton from '../../ui/rendering-job-list-skeleton'
-import { usePathname, useSearchParams } from 'next/navigation';
 
 import JobItem from '../../components/Job/JobItem';
+import { usePathname, useSearchParams } from 'next/navigation';
 import Pagination from '../../components/Job/Pagination'
+import dynamic from 'next/dynamic'
 
 // localhost:3000
-import dynamic from 'next/dynamic'
 
 import { PrismaClient } from "@prisma/client";
 
-async function getFirstPage(page) {
-  const jobs = await fetch(`http://localhost:3000/api/jobs?page=${page}&itemsPerPage=10`, { cache: 'no-store' });
-  return await jobs.json();
+async function getViewedJobFromLocalStorage(page) {
+  const perPage = 10;
+  let viewedJobs = JSON.parse(localStorage.getItem("viewedJobs") ?? "") || [];
 
-  // const prisma = new PrismaClient();
-  // const jobs = await prisma.job.findMany({take: 10, skip: (page-1) * 10});
+  console.log(viewedJobs);
 
-  // await prisma.$disconnect()
-  // return await jobs;
-  
+  viewedJobs = viewedJobs.reverse();
 
+  console.log(viewedJobs.slice(0, 10));
+
+  if(!page) page = 1;
+
+  console.log(Math.ceil(viewedJobs.length / perPage));
+  return {
+    jobs: viewedJobs.slice((page - 1) * perPage, perPage),
+    totalPages: Math.ceil(viewedJobs.length / perPage),
+    page: page
+  }
 }
 
 
@@ -38,7 +46,9 @@ const ApplyScreen = dynamic(() => import('../../components/JobDetail/ApplyScreen
   loading: () => <p>Loading...</p>,
 })
 
-export default function SearchPage({ firstPageData, moving }) {
+
+
+export default function ViewedJobPage() {
 
   // console.log("search page job");
   // console.log(firstPage.jobs);
@@ -46,54 +56,33 @@ export default function SearchPage({ firstPageData, moving }) {
   const [selectedJob, setSelectedJob] = useState<any>(false);
   const [isModalOpening, setIsModalOpening] = useState(false);
 
-  const [jobs, setJobs] = useState<any[]>(firstPageData.jobs);
+  const [jobs, setJobs] = useState<any[]>([]);
   const [showJobList, setShowJobList] = useState(true); 
 
-  const [isMoving, setIsMoving] = useState(moving);
-
-  const [ totalPages, setTotalPages ] = useState(firstPageData.totalPages);
-  const [currentPage, setCurrentPage] = useState(firstPageData.page);
-  // useEffect(() => {
-  //   setIsMoving(moving);
-  // }, [moving]);
-
-  const searchParams = useSearchParams();
-  let page = Number(searchParams?.get("page"));
-
-  const path = usePathname();
+  const [ totalPages, setTotalPages ] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const handleClick = (job) => {
     setSelectedJob(job);
     setShowJobList(false);
-    addViewedJobToLocalStorage(job);
-  }
-
-  function addViewedJobToLocalStorage(job) {
-    const viewedJobs = JSON.parse(localStorage.getItem("viewedJobs") ?? "[]");
-    viewedJobs.push(job);
-    localStorage.setItem("viewedJobs", JSON.stringify(viewedJobs));
   }
 
   // if(firstPage) {
   //   setJobs(firstPage.jobs);
   // }
 
-
+  const path = usePathname();
+  const page = 0;
   
-  const callBackMethod = (totalPages, currentPage) => {
-    setTotalPages(totalPages);
-    setCurrentPage(currentPage);
-    setIsMoving(false);
-  }
-
-  const pageChangeCallback = () => {
-    setIsMoving(true);
-  }
-
   function handleBackButton() {
 
     setSelectedJob(null);
     setShowJobList(true);
+  }
+
+  const callBackMethod = (totalPages, currentPage) => {
+    setTotalPages(totalPages);
+    setCurrentPage(currentPage);
   }
 
   function handleApplyButtonClick() {
@@ -103,48 +92,44 @@ export default function SearchPage({ firstPageData, moving }) {
 
   const closeModalCallBack = () => {
     setIsModalOpening(false);
+
   }
 
+  // if(path === "/" && !page) {
+  //   //Home page
+  //   page = 1;
+  // }
+
   useEffect(() => {
+    // if(page > 1) {
+    //   fetch(`http://localhost:3000/api/jobs?page=${page}&itemsPerPage=10`)
+    //   .then(response => response.json())
+    //   .then(data => setJobs(data.jobs))
+    //   .catch(error => console.error(error));
 
-    console.log('page');
-    console.log(page);
-
-    console.log('currentPage');
-    console.log(currentPage);
-
-    // console.log(searchParams);
-
-    // if(!searchParams) {
-    //   setCurrentPage(1);
-
+    //   setJobs(getViewedJobFromLocalStorage(page));
     // }
 
-    if(path === "/" && !page) {
-      //Home page
-      page = 1;
-    }
-
+    console.log("go use effect");
     if(page != currentPage) {
-      console.log(`Do fetch ${page}`)
-      fetch(`http://localhost:3000/api/jobs?page=${page}&itemsPerPage=10`)
-      .then(response => response.json())
+      console.log("go here");
+      getViewedJobFromLocalStorage(page)
       .then(data => {
-
+        console.log(data.jobs);
         setJobs(data.jobs);
         callBackMethod(data.totalPages, data.page);
-
-      })
-      .catch(error => console.error(error));
-    }
+      });
+  }
     
+    //setJobs(await getViewedJobFromLocalStorage(page));
+
   }, [page, currentPage]);
 
+
   return (
-   
 <>
-  <div className="flex flex-col flex-1 hidden px-5 py-10 lg:flex-row md:block">
-    <h1 className="text-lg">Search results for <span className='font-bold'>"PHP"</span></h1>
+  <div className="flex flex-col flex-1 px-5 py-5">
+    <h1 className="text-lg font-bold">Viewed Jobs</h1>
   </div>
   <div className="flex flex-col flex-1 sm:pb-20 md:flex-row">
       <div className={`relative h-[calc(100vh_-_140px)] sm:h-[calc(100vh_-_170px)]  px-4 sm:px-4 md:w-1/3 flex-col  overflow-auto ${selectedJob ? "hidden md:flex" : "w-full"}`}>
@@ -152,7 +137,9 @@ export default function SearchPage({ firstPageData, moving }) {
       {/* {(isMoving || loading) ? "Movingggg" : "Not moving"} */}
       {/* {(isMoving) ? "Movingggg" : "Not moving"} */}
 
-        <ul style={{ opacity: isMoving ? 0.5 : 1 }}>
+        {/* <ul style={{ opacity: isMoving ? 0.5 : 1 }}> */}
+        <ul>
+        
               {jobs.length ? jobs.map((job) => (
                 <JobItem key={job.id} job={job} handleOnClick={handleClick} isSelected={selectedJob && selectedJob.id === job.id}/>
               )) : (
@@ -193,12 +180,12 @@ export default function SearchPage({ firstPageData, moving }) {
             </div>
           </div>
         )} */}
-        {totalPages > 1 && currentPage && (
-            <div className="sticky bottom-0 z-3 bg-white flex items-center justify-center w-full py-2 md:py-4">
-                <Pagination pageChangeCallback={pageChangeCallback} data={ {totalPages: totalPages, page: currentPage }}  />
-            </div>
-        )}
-        
+
+        <div className="sticky bottom-0 z-3 bg-white flex items-center justify-center w-full py-2 md:py-4">
+          {totalPages > 1 && currentPage && (
+            <Pagination pageChangeCallback={() => {}} data={ {totalPages: totalPages, page: currentPage }}  />
+          )}
+        </div>
         <div className="flex">
           Footer
         </div>
