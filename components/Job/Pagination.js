@@ -8,7 +8,7 @@ function Paginationx ({ data, pageChangeCallback })  {
   const currentPath = usePathname();
   function handleChangePage(event, value) {
     pageChangeCallback();
-    router.push(currentPath + `?page=${value}`);
+    router.push(currentPath + `?page=${value}`,undefined, { shallow: true });
   }
 
   const page = parseInt(data.page);

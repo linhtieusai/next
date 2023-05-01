@@ -106,39 +106,28 @@ export default function SearchPage({ firstPageData, moving }) {
   }
 
   useEffect(() => {
-
-    console.log('page');
-    console.log(page);
-
-    console.log('currentPage');
-    console.log(currentPage);
-
-    // console.log(searchParams);
-
-    // if(!searchParams) {
-    //   setCurrentPage(1);
-
-    // }
-
     if(path === "/" && !page) {
       //Home page
       page = 1;
     }
 
-    if(page != currentPage) {
-      console.log(`Do fetch ${page}`)
-      fetch(`http://localhost:3000/api/jobs?page=${page}&itemsPerPage=10`)
-      .then(response => response.json())
-      .then(data => {
+    // if(page != currentPage) {
+    //   console.log(`Do fetch ${page}`)
+    //   fetch(`http://localhost:3000/api/jobs?page=${page}&itemsPerPage=10`)
+    //   .then(response => response.json())
+    //   .then(data => {
 
-        setJobs(data.jobs);
-        callBackMethod(data.totalPages, data.page);
+    //     setJobs(data.jobs);
+    //     callBackMethod(data.totalPages, data.page);
 
-      })
-      .catch(error => console.error(error));
-    }
+    //   })
+    //   .catch(error => console.error(error));
+    // }
     
-  }, [page, currentPage]);
+    setJobs(firstPageData.jobs);
+        callBackMethod(firstPageData.totalPages, firstPageData.page);
+
+  }, [page, currentPage, firstPageData]);
 
   return (
    

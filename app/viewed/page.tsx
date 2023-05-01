@@ -35,7 +35,7 @@ async function getViewedJobFromLocalStorage(page) {
 
   console.log(Math.ceil(viewedJobs.length / perPage));
   return {
-    jobs: viewedJobs.slice((page - 1) * perPage, perPage),
+    jobs: viewedJobs.slice((page - 1) * perPage, page * perPage),
     totalPages: Math.ceil(viewedJobs.length / perPage),
     page: page
   }
@@ -48,7 +48,7 @@ const ApplyScreen = dynamic(() => import('../../components/JobDetail/ApplyScreen
 
 
 
-export default function ViewedJobPage() {
+export default function ViewedJobPage({ searchParams }) {
 
   // console.log("search page job");
   // console.log(firstPage.jobs);
@@ -59,8 +59,13 @@ export default function ViewedJobPage() {
   const [jobs, setJobs] = useState<any[]>([]);
   const [showJobList, setShowJobList] = useState(true); 
 
+  let page = searchParams.page;
+  if(!page) page = 1;
+
+  console.log(page);
+
   const [ totalPages, setTotalPages ] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(page);
 
   const handleClick = (job) => {
     setSelectedJob(job);
@@ -72,7 +77,7 @@ export default function ViewedJobPage() {
   // }
 
   const path = usePathname();
-  const page = 0;
+  
   
   function handleBackButton() {
 
@@ -111,7 +116,7 @@ export default function ViewedJobPage() {
     // }
 
     console.log("go use effect");
-    if(page != currentPage) {
+    // if(page != currentPage) {
       console.log("go here");
       getViewedJobFromLocalStorage(page)
       .then(data => {
@@ -119,11 +124,11 @@ export default function ViewedJobPage() {
         setJobs(data.jobs);
         callBackMethod(data.totalPages, data.page);
       });
-  }
+  // }
     
     //setJobs(await getViewedJobFromLocalStorage(page));
 
-  }, [page, currentPage]);
+  }, [page]);
 
 
   return (
@@ -131,8 +136,8 @@ export default function ViewedJobPage() {
   <div className="flex flex-col flex-1 px-5 py-5">
     <h1 className="text-lg font-bold">Viewed Jobs</h1>
   </div>
-  <div className="flex flex-col flex-1 sm:pb-20 md:flex-row">
-      <div className={`relative h-[calc(100vh_-_140px)] sm:h-[calc(100vh_-_170px)]  px-4 sm:px-4 md:w-1/3 flex-col  overflow-auto ${selectedJob ? "hidden md:flex" : "w-full"}`}>
+  <div className="flex flex-col flex-1 pb-[15px] sm:pb-20 md:flex-row">
+      <div className={`relative h-[calc(100vh_-_180px)] sm:h-[calc(100vh_-_180px)]  px-4 sm:px-4 md:w-1/3 flex-col  overflow-auto ${selectedJob ? "hidden md:flex" : "w-full"}`}>
 
       {/* {(isMoving || loading) ? "Movingggg" : "Not moving"} */}
       {/* {(isMoving) ? "Movingggg" : "Not moving"} */}
@@ -140,8 +145,8 @@ export default function ViewedJobPage() {
         {/* <ul style={{ opacity: isMoving ? 0.5 : 1 }}> */}
         <ul>
         
-              {jobs.length ? jobs.map((job) => (
-                <JobItem key={job.id} job={job} handleOnClick={handleClick} isSelected={selectedJob && selectedJob.id === job.id}/>
+              {jobs.length ? jobs.map((job, index) => (
+                <JobItem key={index} job={job} handleOnClick={handleClick} isSelected={selectedJob && selectedJob.id === job.id}/>
               )) : (
                 <>
                   <JobListSkeleton />

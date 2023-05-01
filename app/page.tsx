@@ -67,6 +67,8 @@ export default async function Home({ searchParams }) {
   console.log("page is");
   console.log(page);
 
+  // console.log(firstPageData);
+
   
   // console.log("first page is");
   // console.log(firstPage.jobs);
