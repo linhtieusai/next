@@ -50,6 +50,8 @@ const ApplyScreen = dynamic(() => import('../../components/JobDetail/ApplyScreen
 
 export default function ViewedJobPage({ searchParams }) {
 
+  
+
   // console.log("search page job");
   // console.log(firstPage.jobs);
 

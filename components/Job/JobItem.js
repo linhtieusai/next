@@ -6,7 +6,41 @@ import dynamic from 'next/dynamic'
 
 const humanizeDuration = require('humanize-duration');
 
-export default function JobItem({ job, handleOnClick, isSelected }) {  
+export default function JobItem({ job, handleOnClick, isSelected }) {
+  function timeAgo(timestamp) {
+    const seconds = Math.floor((Date.now() - timestamp) / 1000);
+  
+    const intervals = {
+      year: 31536000,
+      month: 2592000,
+      week: 604800,
+      day: 86400,
+      hour: 3600,
+      minute: 60,
+      second: 1
+    };
+  
+    let intervalCount = 0;
+    let intervalString = "";
+  
+    for (const [unit, secondsPerUnit] of Object.entries(intervals)) {
+      const interval = Math.floor(seconds / secondsPerUnit);
+      if (interval >= 1) {
+        intervalCount = interval;
+        intervalString = unit;
+        break;
+      }
+    }
+  
+    if (intervalCount === 0) {
+      return "just now";
+    } else if (intervalCount === 1) {
+      return `${intervalCount} ${intervalString} ago`;
+    } else {
+      return `${intervalCount} ${intervalString}${intervalCount === 1 ? "" : "s"} ago`;
+    }
+  }
+
     return (
         <div onClick={() => handleOnClick(job)}
             className={`mt-4 rounded-lg p-4 cursor-pointer hover:shadow-lg 
@@ -34,7 +68,7 @@ export default function JobItem({ job, handleOnClick, isSelected }) {
                           {/* show on VIEWED PAGE */}
                           {job.viewedTime && humanizeDuration && (
                             <div className="flex justify-end mt-4 text-gray-400">
-                             {humanizeDuration(Date.now() - job.viewedTime, { language: "vi", units: ["d", "h", "m"], round: true })} trước
+                             {timeAgo(job.viewedTime)}
                            </div>
                           )}
                           

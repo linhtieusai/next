@@ -47,16 +47,16 @@ export default async function handler(req, res) {
 
 
     
-        if(session) {
-            // Check if the user has already submitted the job
-            const existingJob = await prisma.userApplies.findUnique({
-                where: { userId_jobId: { userId: session.user.id, jobId } },
-            });
-            if (existingJob) {
-                res.status(409).json({ message: 'Job Already Submitted' });
-                return;
-            }
-        }
+        // if(session) {
+        //     // Check if the user has already submitted the job
+        //     const existingJob = await prisma.userApplies.findUnique({
+        //         where: { userId_jobId: { userId: session.user.id, jobId } },
+        //     });
+        //     if (existingJob) {
+        //         res.status(409).json({ message: 'Job Already Submitted' });
+        //         return;
+        //     }
+        // }
 
          // Save the job submission to the database
          const userJob = await prisma.UserApplies.create({

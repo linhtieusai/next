@@ -70,8 +70,9 @@ export default function SearchPage({ firstPageData, moving }) {
 
   function addViewedJobToLocalStorage(job) {
     const viewedJobs = JSON.parse(localStorage.getItem("viewedJobs") ?? "[]");
-    job.viewedTime = Date.now();
-    viewedJobs.push(job);
+    let cloneJob:any = {...job};
+    cloneJob.viewedTime = Date.now();
+    viewedJobs.push(cloneJob);
 
     const viewedJobIds = JSON.parse(localStorage.getItem("viewedJobIds") ?? "[]");
     viewedJobIds[job.id] = 0;

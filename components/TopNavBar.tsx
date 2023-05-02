@@ -2,12 +2,51 @@
 
 import Link from 'next/link';
 import { useSession } from "next-auth/react";
+import { useState, useEffect, useRef } from 'react';
+import NotificationSkeleton from '../ui/rendering-notification-skeleton'
+import Image from 'next/image';
 
 const Navbar = () => {
   const { data: session } = useSession();
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [notificationOpen, setNotificationOpen] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
   
+  useEffect(() => {
+    async function fetchNotifications() {
+      const response = await fetch("http://localhost:3000/api/notifications");
+      const data = await response.json();
+      setNotifications(data);
+    }
+
+    if (showPopup && notifications.length === 0) {
+      fetchNotifications();
+    }
+  }, [showPopup, notifications]);
+
+  const popupRef = useRef<HTMLDivElement>(null);
+  const notificationIconRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+    
+      if (
+        popupRef.current &&
+        !popupRef.current.contains(event.target) &&
+        event.target !== notificationIconRef.current
+      ) {
+        setShowPopup(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div className="flex h-16 p-4">
+    <>
+    <div className="relative flex h-16 p-4">
       <div className="flex items-center flex-none">
         KhongThieuViec
       </div>
@@ -33,9 +72,9 @@ const Navbar = () => {
               </g>            
           </svg>
         </div>
-        <div className='flex ml-4 text-gray'>
-          <svg strokeWidth="1.5" stroke="currentColor" className="w-6 h-6 text-gray-400 hover:text-gray-800 hover:cursor-pointer" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  fill="none">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"></path>
+        <div ref={notificationIconRef} className='flex ml-4' onClick={() => setShowPopup((prevShowPopup) => !prevShowPopup)}>
+          <svg strokeWidth="1.5" stroke="currentColor" className={`w-6 h-6 ${showPopup ? "text-green-600 hover:text-green-800" : "text-gray-600 hover:text-gray-800"} hover:cursor-pointer xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"`}>
+            <path stroke-linecap="round" fill={showPopup ? 'green' : 'none'} stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"></path>
           </svg>
         </div>
         <div className="ml-4">
@@ -45,8 +84,46 @@ const Navbar = () => {
             </button>
           </Link>
         </div>
+        
       </div>
+      {showPopup && (
+       <div className='z-10 max-h-[calc(100vh_-_300px)] overflow-auto p-4 notification-popup flex flex-col border rounded-lg shadow-lg bg-slate-50 flex absolute top-16 right-5 ml:10 min-h-[150px] w-[90%] md:w-auto md:min-w-[360px]' ref={popupRef}>
+          <div className='flex p-4 bg-slate-200 font-bold'>Thông báo </div>
+          <div className='flex-1 bg-white'>
+            <ul className='p-4'>
+            {notifications.data ? (
+                notifications.data.length > 0 ? (
+                  notifications.data.map((notification, index) => (
+                    <li key={notification.id} className='flex px-4 py-4 hover:bg-gray-100 hover:cursor-pointer'>
+                      <div className='logo'>
+                        <Image src={`/company_logo/${notification.job.source_site}/${notification.job.source_id}.jpg`} alt="me" width="40" height="40" className="object-cover mr-3 rounded-full"/>
+                      </div>
+                      <div className='flex-col'>
+                        <div className='font-bold text-slate-800'>
+                          {notification.job.title}
+                        </div>
+                        <div className='text-gray-700'>
+                          {notification.content}
+                        </div>
+                      </div>
+                    </li>
+                  ))
+                ) : (
+                  <div className='flex items-center justify-center px-4 py-8'>
+                    Không có thông báo nào.
+                  </div>
+                )
+              ) : (
+                <NotificationSkeleton />
+              )}
+
+            </ul>
+          </div>
+      </div>
+      )}
+     
     </div>
+    </>
   );
 };
 
