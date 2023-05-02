@@ -70,8 +70,15 @@ export default function SearchPage({ firstPageData, moving }) {
 
   function addViewedJobToLocalStorage(job) {
     const viewedJobs = JSON.parse(localStorage.getItem("viewedJobs") ?? "[]");
+    job.viewedTime = Date.now();
     viewedJobs.push(job);
+
+    const viewedJobIds = JSON.parse(localStorage.getItem("viewedJobIds") ?? "[]");
+    viewedJobIds[job.id] = 0;
+
     localStorage.setItem("viewedJobs", JSON.stringify(viewedJobs));
+    localStorage.setItem("viewedJobIds", JSON.stringify(viewedJobIds));
+
   }
 
   // if(firstPage) {

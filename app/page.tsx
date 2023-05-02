@@ -4,7 +4,6 @@ import Login from '../components/Login'
 import JobList from '../components/Job/JobList'
 import JobSearch from '../components/Job/JobSearch'
 import Script from 'next/script'
-// localhost:3000
 import CollapsibleSiderBar from '../components/CollapsibleSideBar'
 import SearchPage  from './search/page'
 
@@ -63,21 +62,9 @@ export default async function Home({ searchParams }) {
   const jobData = await getFirstPage(page);
   const firstPageData = {jobs: jobData.jobs, totalPages: jobData.totalPages, page: jobData.page};
 
-  
-  console.log("page is");
-  console.log(page);
-
-  // console.log(firstPageData);
-
-  
-  // console.log("first page is");
-  // console.log(firstPage.jobs);
   return (
     <>
-    <JobSearch firstPageData={firstPageData} moving={false} />
-      {/* <CollapsibleSiderBar>
-        <SearchPage />
-      </CollapsibleSiderBar> */}
+      <JobSearch firstPageData={firstPageData} moving={false} />
     </>
    
   )

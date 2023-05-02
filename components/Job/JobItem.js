@@ -2,9 +2,13 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Suspense } from 'react';
 
+import dynamic from 'next/dynamic'
+
+const humanizeDuration = require('humanize-duration');
+
 export default function JobItem({ job, handleOnClick, isSelected }) {  
     return (
-        <div  key={job.id} onClick={() => handleOnClick(job)}
+        <div onClick={() => handleOnClick(job)}
             className={`mt-4 rounded-lg p-4 cursor-pointer hover:shadow-lg 
                 hover:border-green-300  hover:border-opacity-50 hover:rounded-lg 
                 focus:border-green-500 focus:outline-none focus:shadow-lg focus:border-opacity-50 focus:rounded-lg 
@@ -27,6 +31,13 @@ export default function JobItem({ job, handleOnClick, isSelected }) {
                             
                             {job.location}
                           </span>
+                          {/* show on VIEWED PAGE */}
+                          {job.viewedTime && humanizeDuration && (
+                            <div className="flex justify-end mt-4 text-gray-400">
+                             {humanizeDuration(Date.now() - job.viewedTime, { language: "vi", units: ["d", "h", "m"], round: true })} trước
+                           </div>
+                          )}
+                          
                   </div>
                 </div>
             </div>
