@@ -69,6 +69,9 @@ export default function ViewedJobPage({ searchParams }) {
   const [ totalPages, setTotalPages ] = useState(0);
   const [currentPage, setCurrentPage] = useState(page);
 
+  const [followedJobs, setFollowedJobs] = useState<any[]>([]);
+
+
   const handleClick = (job) => {
     setSelectedJob(job);
     setShowJobList(false);
@@ -125,6 +128,8 @@ export default function ViewedJobPage({ searchParams }) {
         console.log(data.jobs);
         setJobs(data.jobs);
         callBackMethod(data.totalPages, data.page);
+        const followedJobs = JSON.parse(localStorage.getItem("followedJobs") ?? "[]");
+        setFollowedJobs(followedJobs);
       });
   // }
     
@@ -148,7 +153,7 @@ export default function ViewedJobPage({ searchParams }) {
         <ul>
         
               {jobs.length ? jobs.map((job, index) => (
-                <JobItem key={index} job={job} handleOnClick={handleClick} isSelected={selectedJob && selectedJob.id === job.id}/>
+                <JobItem isViewed={0} isFollowed={followedJobs.includes(job.id)} key={index} job={job} handleOnClick={handleClick} isSelected={selectedJob && selectedJob.id === job.id}/>
               )) : (
                 <>
                   <JobListSkeleton />

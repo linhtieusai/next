@@ -87,7 +87,7 @@ const Navbar = () => {
         
       </div>
       {showPopup && (
-       <div className='z-10 max-h-[calc(100vh_-_300px)] overflow-auto p-4 notification-popup flex flex-col border rounded-lg shadow-lg bg-slate-50 flex absolute top-16 right-5 ml:10 min-h-[150px] w-[90%] md:w-auto md:min-w-[360px]' ref={popupRef}>
+       <div className='z-10 max-h-[calc(100vh_-_300px)] max-w-[460px] overflow-auto p-4 notification-popup flex flex-col border rounded-lg shadow-lg bg-slate-50 flex absolute top-16 right-5 ml:10 min-h-[150px] w-[90%] md:w-auto md:min-w-[360px]' ref={popupRef}>
           <div className='flex p-4 bg-slate-200 font-bold'>Thông báo </div>
           <div className='flex-1 bg-white'>
             <ul className='p-4'>
@@ -99,11 +99,14 @@ const Navbar = () => {
                         <Image src={`/company_logo/${notification.job.source_site}/${notification.job.source_id}.jpg`} alt="me" width="40" height="40" className="object-cover mr-3 rounded-full"/>
                       </div>
                       <div className='flex-col'>
-                        <div className='font-bold text-slate-800'>
+                        <div className='font-bold text-sm text-slate-800'>
                           {notification.job.title}
                         </div>
-                        <div className='text-gray-700'>
+                        <div className='text-gray-700 text-xs'>
                           {notification.content}
+                        </div>
+                        <div className='text-green-700 text-xs'>
+                          4 giờ trước
                         </div>
                       </div>
                     </li>

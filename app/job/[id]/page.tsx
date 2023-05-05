@@ -44,7 +44,9 @@ export default async function Page({ params }: { params: { id: string } }) {
         {data ? (
           <>
             <div className="sticky top-0 z-50 bg-white">
-              <h1 className="min-w-0 px-4 py-4 text-2xl font-bold sm:text-sm lg:text-xl xl:text-2xl 2xl:text-3xl">Job Title: {data.title}</h1>
+              <h1 className="min-w-0 px-4 py-4 text-2xl font-bold sm:text-sm lg:text-xl xl:text-2xl 2xl:text-3xl">
+                Job Title: {data.title}
+              </h1>
             </div>
             <div className="flex-grow pt-2 h-[calc(100vh_-_200px)] overflow-auto p-4 ">
               <h3>Required Skill</h3>
@@ -65,7 +67,9 @@ export default async function Page({ params }: { params: { id: string } }) {
             </div>
           </>
         ) : null}
-      <FixedBottomBar jobId={id} />
+      {data && data.is_active === 1 && (
+        <FixedBottomBar jobId={id} />
+      )}
     </div>
   );
 }

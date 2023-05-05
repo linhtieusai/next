@@ -59,12 +59,12 @@ export default async function handler(req, res) {
         // }
 
          // Save the job submission to the database
-         const userJob = await prisma.UserApplies.create({
+         const userJob = await prisma.applications.create({
           data: {
             user_id: session && session.user ? { connect: { id: session.user.id } } : undefined,
-            job: {
-              connect: { id: jobId }
-            }
+            job_id: jobId,
+            name: formFields.name,
+            status: 1,
           },
       });
     

@@ -14,7 +14,7 @@ import { usePathname, useSearchParams } from 'next/navigation';
 
 import JobItem from '../../components/Job/JobItem';
 import Pagination from '../../components/Job/Pagination'
-
+import Link from 'next/link';
 // localhost:3000
 import dynamic from 'next/dynamic'
 
@@ -53,6 +53,11 @@ export default function SearchPage({ firstPageData, moving }) {
 
   const [ totalPages, setTotalPages ] = useState(firstPageData.totalPages);
   const [currentPage, setCurrentPage] = useState(firstPageData.page);
+
+  const [viewedJobId, setViewedJobId] = useState<any[]>([]);
+  const [followedJobs, setFollowedJobs] = useState<any[]>([]);
+
+  
   // useEffect(() => {
   //   setIsMoving(moving);
   // }, [moving]);
@@ -66,7 +71,21 @@ export default function SearchPage({ firstPageData, moving }) {
     setSelectedJob(job);
     setShowJobList(false);
     addViewedJobToLocalStorage(job);
+
   }
+
+  const handleFollowButtonClick = (job) => {
+    addFollowedJobToLocalStorage(job);
+  }
+
+  function addFollowedJobToLocalStorage(job) {
+    const followedJobs = JSON.parse(localStorage.getItem("followedJobs") ?? "[]");
+    followedJobs.push(job.id);
+
+    localStorage.setItem("followedJobs", JSON.stringify(followedJobs));
+    setFollowedJobs(followedJobs);
+  }
+
 
   function addViewedJobToLocalStorage(job) {
     const viewedJobs = JSON.parse(localStorage.getItem("viewedJobs") ?? "[]");
@@ -74,12 +93,12 @@ export default function SearchPage({ firstPageData, moving }) {
     cloneJob.viewedTime = Date.now();
     viewedJobs.push(cloneJob);
 
-    const viewedJobIds = JSON.parse(localStorage.getItem("viewedJobIds") ?? "[]");
-    viewedJobIds[job.id] = 0;
+    const viewedJobIds  = JSON.parse(localStorage.getItem("viewedJobIds") ?? "[]");
+    viewedJobIds.push(job.id);
 
     localStorage.setItem("viewedJobs", JSON.stringify(viewedJobs));
     localStorage.setItem("viewedJobIds", JSON.stringify(viewedJobIds));
-
+    setViewedJobId(viewedJobIds);
   }
 
   // if(firstPage) {
@@ -133,7 +152,14 @@ export default function SearchPage({ firstPageData, moving }) {
     // }
     
     setJobs(firstPageData.jobs);
-        callBackMethod(firstPageData.totalPages, firstPageData.page);
+    callBackMethod(firstPageData.totalPages, firstPageData.page);
+
+    const viewedJobIds = JSON.parse(localStorage.getItem("viewedJobIds") ?? "[]");
+    setViewedJobId(viewedJobIds);
+
+    const followedJobs = JSON.parse(localStorage.getItem("followedJobs") ?? "[]");
+    setFollowedJobs(followedJobs);
+    console.log(viewedJobId);
 
   }, [page, currentPage, firstPageData]);
 
@@ -144,14 +170,19 @@ export default function SearchPage({ firstPageData, moving }) {
     <h1 className="text-lg">Search results for <span className='font-bold'>"PHP"</span></h1>
   </div>
   <div className="flex flex-col flex-1 sm:pb-20 md:flex-row">
-      <div className={`relative h-[calc(100vh_-_140px)] sm:h-[calc(100vh_-_170px)]  px-4 sm:px-4 md:w-1/3 flex-col  overflow-auto ${selectedJob ? "hidden md:flex" : "w-full"}`}>
+      <div className={`relative h-[calc(100vh_-_140px)] sm:h-[calc(100vh_-_170px)] md:w-1/3 flex-col  overflow-auto 
+        ${selectedJob ? "hidden md:flex" : "w-full"}`}
+      >
 
       {/* {(isMoving || loading) ? "Movingggg" : "Not moving"} */}
       {/* {(isMoving) ? "Movingggg" : "Not moving"} */}
 
-        <ul style={{ opacity: isMoving ? 0.5 : 1 }}>
+        <div className={`px-4 sm:px-4 ${isMoving ? 'opacity-50' : 'opacity-100'}`}>
               {jobs.length ? jobs.map((job) => (
-                <JobItem key={job.id} job={job} handleOnClick={handleClick} isSelected={selectedJob && selectedJob.id === job.id}/>
+                <JobItem key={job.id} job={job} isViewed={viewedJobId.includes(job.id)} 
+                  handleOnClick={handleClick}
+                  isFollowed={followedJobs.includes(job.id)} 
+                  isSelected={selectedJob && selectedJob.id === job.id}/>
               )) : (
                 <>
                   <JobListSkeleton />
@@ -161,7 +192,7 @@ export default function SearchPage({ firstPageData, moving }) {
             {/* {isMoving && (
                 <JobListSkeleton />
             )} */}
-        </ul>
+        </div>
 
         {/* {isMoving && (
           <div className="absolute top-0 left-0 z-1 items-center flex justify-center w-full h-full">
@@ -196,21 +227,26 @@ export default function SearchPage({ firstPageData, moving }) {
             </div>
         )}
         
-        <div className="flex">
-          Footer
+        <div className="flex-col text-sm mb-4 px-4">
+          <Link className='text-gray-400' href="dieu-khoan">Điều khoản </Link>
+          <div className='text-slate-600 flex justify-center items-center'>ViecThom © 2023</div>
         </div>
       </div>
       <div className="sm:p-4 md:w-2/3">
       {!showJobList &&  (
           <>
-          <JobDetail selectedJob={selectedJob} handleBackButton={handleBackButton} handleApplyButtonClick={handleApplyButtonClick} />
+          <JobDetail selectedJob={selectedJob} 
+            handleBackButton={handleBackButton} handleApplyButtonClick={handleApplyButtonClick}
+            isFollowed={followedJobs.includes(selectedJob.id)}
+            handleFollowButtonClick={handleFollowButtonClick}
+          />
           <ApplyScreen jobId={selectedJob?.id} isModalOpening={isModalOpening} closeModalCallBack={closeModalCallBack}/>
-          <div className="sticky bottom-0 left-0 z-10 w-full p-4 bg-gray-100 border-t border-gray-200 sm:hidden">
-            <div className="flex items-center justify-between">
-              <button className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-600" onClick={handleApplyButtonClick}>Apply</button>
-              <button className="px-4 py-2 font-bold text-white bg-gray-500 rounded hover:bg-gray-600" onClick={handleBackButton}>Back</button>
+            <div className="sticky bottom-0 left-0 z-10 w-full p-4 bg-gray-100 border-t border-gray-200 sm:hidden">
+              <div className="flex items-center justify-between">
+                <button className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-600" onClick={handleApplyButtonClick}>Apply</button>
+                <button className="px-4 py-2 font-bold text-white bg-gray-500 rounded hover:bg-gray-600" onClick={handleBackButton}>Back</button>
+              </div>
             </div>
-          </div>
           </>
       )}
       </div>

@@ -9,7 +9,7 @@ export default async function handler(req, res) {
     const session = await getSession();
 
     const notifications = await prisma.notifications.findMany({
-      where: { user_id: 1 },
+      where: { user_id: 3 },
       include: {
         job: {
           select: {
