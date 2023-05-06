@@ -42,7 +42,9 @@ const GoogleSSO = ({ onSuccess }) => {
         }
     }, [g_sso.current , onSuccess]);
 
-    return (<div ref={g_sso} />);
+    return (
+        <div ref={g_sso} />
+    );
 }
 
 export default GoogleSSO 

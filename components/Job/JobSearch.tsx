@@ -17,6 +17,7 @@ import Pagination from '../../components/Job/Pagination'
 import Link from 'next/link';
 // localhost:3000
 import dynamic from 'next/dynamic'
+import Router  from 'next/router';
 
 import { PrismaClient } from "@prisma/client";
 
@@ -65,6 +66,8 @@ export default function SearchPage({ firstPageData, moving }) {
   const searchParams = useSearchParams();
   let page = Number(searchParams?.get("page"));
 
+  // const router = useRouter();
+
   const path = usePathname();
 
   const handleClick = (job) => {
@@ -72,6 +75,13 @@ export default function SearchPage({ firstPageData, moving }) {
     setShowJobList(false);
     addViewedJobToLocalStorage(job);
 
+  }
+
+  if (process.browser) {
+    window.onbeforeunload = () => {
+      // your callback
+      console.log(222);
+    }
   }
 
   const handleFollowButtonClick = (job, isFollowed) => {

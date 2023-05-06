@@ -48,7 +48,7 @@ const Navbar = () => {
     <>
     <div className="relative flex h-16 p-4">
       <div className="flex items-center flex-none">
-        KhongThieuViec
+        ViecThom
       </div>
       <div className="flex items-center justify-center flex-1 ">
           <div className="hidden sm:flex items-center w-2/3 min-w-[50%]">
@@ -69,7 +69,7 @@ const Navbar = () => {
                 <path style={{ fill: "#FFFFFF"}} d="M39.767,25.913c-0.354,0-0.696-0.188-0.878-0.519c-2.795-5.097-8.115-8.679-13.883-9.349   c-0.549-0.063-0.941-0.56-0.878-1.108c0.063-0.548,0.558-0.942,1.108-0.878c6.401,0.743,12.304,4.718,15.406,10.373   c0.266,0.484,0.088,1.092-0.396,1.358C40.094,25.873,39.929,25.913,39.767,25.913z"/>
                 <path style={{ fill: "#FFFFFF"}} d="M0,58l4.042-12.125c-2.05-3.45-3.231-7.476-3.231-11.78C0.81,21.34,11.15,11,23.905,11   S47,21.34,47,34.095S36.66,57.19,23.905,57.19c-3.881,0-7.535-0.961-10.745-2.653L0,58z"/>
                 <path style={{ fill: "gray"}} d="M23.905,11C36.66,11,47,21.34,47,34.095c0,3.378-0.731,6.583-2.034,9.475L58,47l-4.042-12.125   c2.05-3.45,3.231-7.476,3.231-11.78C57.19,10.34,46.85,0,34.095,0c-9.426,0-17.528,5.65-21.118,13.746   C16.231,11.995,19.951,11,23.905,11z"/>
-              </g>            
+              </g>
           </svg>
         </div>
         <div ref={notificationIconRef} className='flex ml-4' onClick={() => setShowPopup((prevShowPopup) => !prevShowPopup)}>
@@ -79,7 +79,7 @@ const Navbar = () => {
         </div>
         <div className="ml-4">
           <Link href="/my-page">
-            <button className="px-4 py-2 border rounded-full text-emerald-500 border-slate-300 hover:bg-gray-100 hover:border-gray-300">
+            <button className="px-4 py-2 border rounded-full text-green-600 border-slate-300 hover:border-emerald-100 hover:bg-emerald-100 hover:bg-gray-100">
                 {session ? "My Page" : "Login"}
             </button>
           </Link>
