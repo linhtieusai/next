@@ -23,20 +23,16 @@ import { PrismaClient } from "@prisma/client";
 
 async function getViewedJobFromLocalStorage(page) {
   const perPage = 10;
-  let viewedJobs = JSON.parse(localStorage.getItem("viewedJobs") ?? "") || [];
+  let jobViewHistory = JSON.parse(localStorage.getItem("jobViewHistory") ?? "[]");
 
-  console.log(viewedJobs);
-
-  viewedJobs = viewedJobs.reverse();
-
-  console.log(viewedJobs.slice(0, 10));
+  jobViewHistory = jobViewHistory.reverse();
 
   if(!page) page = 1;
 
-  console.log(Math.ceil(viewedJobs.length / perPage));
+  console.log(Math.ceil(jobViewHistory.length / perPage));
   return {
-    jobs: viewedJobs.slice((page - 1) * perPage, page * perPage),
-    totalPages: Math.ceil(viewedJobs.length / perPage),
+    jobs: jobViewHistory.slice((page - 1) * perPage, page * perPage) ?? [],
+    totalPages: Math.ceil(jobViewHistory.length / perPage),
     page: page
   }
 }
@@ -58,7 +54,9 @@ export default function ViewedJobPage({ searchParams }) {
   const [selectedJob, setSelectedJob] = useState<any>(false);
   const [isModalOpening, setIsModalOpening] = useState(false);
 
-  const [jobs, setJobs] = useState<any[]>([]);
+  const [jobData, setJobData] = useState<any[]>([]);
+  const [jobViewHistory, setJobViewHistory] = useState<any[]>();
+
   const [showJobList, setShowJobList] = useState(true); 
 
   let page = searchParams.page;
@@ -125,8 +123,11 @@ export default function ViewedJobPage({ searchParams }) {
       console.log("go here");
       getViewedJobFromLocalStorage(page)
       .then(data => {
-        console.log(data.jobs);
-        setJobs(data.jobs);
+        setJobViewHistory(data.jobs);
+
+        const jobData = JSON.parse(localStorage.getItem("viewedJobs") ?? "[]");
+        setJobData(jobData);
+
         callBackMethod(data.totalPages, data.page);
         const followedJobs = JSON.parse(localStorage.getItem("followedJobs") ?? "[]");
         setFollowedJobs(followedJobs);
@@ -151,14 +152,24 @@ export default function ViewedJobPage({ searchParams }) {
 
         {/* <ul style={{ opacity: isMoving ? 0.5 : 1 }}> */}
         <ul>
-        
-              {jobs.length ? jobs.map((job, index) => (
-                <JobItem isViewed={0} isFollowed={followedJobs.includes(job.id)} key={index} job={job} handleOnClick={handleClick} isSelected={selectedJob && selectedJob.id === job.id}/>
-              )) : (
-                <>
-                  <JobListSkeleton />
-                </>
-              )}
+            {jobViewHistory
+              ?
+              <>
+                {jobViewHistory.length ? jobViewHistory.map((jobHistory, index) => (
+                  <JobItem isViewed={0} isFollowed={followedJobs.includes(jobHistory.id)} key={index} 
+                  job={jobData[jobHistory.id]} handleOnClick={handleClick}
+                  viewedTime={jobHistory.viewedTime}
+                  isSelected={selectedJob && selectedJob.id === jobHistory.id}/>
+                )) : (
+                  <>
+                    <p>Không có lịch sử xem</p>
+                  </>
+                )}
+              </>
+              
+             : <JobListSkeleton />
+            }
+              
 
             {/* {isMoving && (
                 <JobListSkeleton />

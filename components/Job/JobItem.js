@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic'
 
 const humanizeDuration = require('humanize-duration');
 
-export default function JobItem({ job, isViewed, handleOnClick, isFollowed, isSelected }) {
+export default function JobItem({ job, isViewed, handleOnClick, isFollowed, isSelected, viewedTime }) {
   function timeAgo(timestamp) {
     const seconds = Math.floor((Date.now() - timestamp) / 1000);
   
@@ -75,9 +75,9 @@ export default function JobItem({ job, isViewed, handleOnClick, isFollowed, isSe
                         {job.location}
                       </span>
                       {/* show on VIEWED PAGE */}
-                      {job.viewedTime && humanizeDuration && (
+                      {viewedTime && humanizeDuration && (
                         <div className="flex justify-end mt-4 text-gray-400">
-                          {timeAgo(job.viewedTime)}
+                          {timeAgo(viewedTime)}
                         </div>
                       )}
 

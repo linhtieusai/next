@@ -54,7 +54,7 @@ export default function SearchPage({ firstPageData, moving }) {
   const [ totalPages, setTotalPages ] = useState(firstPageData.totalPages);
   const [currentPage, setCurrentPage] = useState(firstPageData.page);
 
-  const [viewedJobId, setViewedJobId] = useState<any[]>([]);
+  const [viewedJobs, setViewedJobs] = useState<any[]>([]);
   const [followedJobs, setFollowedJobs] = useState<any[]>([]);
 
   
@@ -74,13 +74,25 @@ export default function SearchPage({ firstPageData, moving }) {
 
   }
 
-  const handleFollowButtonClick = (job) => {
-    addFollowedJobToLocalStorage(job);
+  const handleFollowButtonClick = (job, isFollowed) => {
+    if(isFollowed) {
+      doUnfollowJob(job);
+    } else {
+      addFollowedJobToLocalStorage(job);
+    }
+  }
+
+  function doUnfollowJob(job) {
+    const followedJobs = JSON.parse(localStorage.getItem("followedJobs") ?? "{}");
+    delete followedJobs[job.id];
+
+    localStorage.setItem("followedJobs", JSON.stringify(followedJobs));
+    setFollowedJobs(followedJobs);
   }
 
   function addFollowedJobToLocalStorage(job) {
-    const followedJobs = JSON.parse(localStorage.getItem("followedJobs") ?? "[]");
-    followedJobs.push(job.id);
+    const followedJobs = JSON.parse(localStorage.getItem("followedJobs") ?? "{}");
+    followedJobs[job.id] = true;
 
     localStorage.setItem("followedJobs", JSON.stringify(followedJobs));
     setFollowedJobs(followedJobs);
@@ -88,17 +100,16 @@ export default function SearchPage({ firstPageData, moving }) {
 
 
   function addViewedJobToLocalStorage(job) {
-    const viewedJobs = JSON.parse(localStorage.getItem("viewedJobs") ?? "[]");
+    const viewedJobs = JSON.parse(localStorage.getItem("viewedJobs") ?? "{}");
     let cloneJob:any = {...job};
     cloneJob.viewedTime = Date.now();
-    viewedJobs.push(cloneJob);
-
-    const viewedJobIds  = JSON.parse(localStorage.getItem("viewedJobIds") ?? "[]");
-    viewedJobIds.push(job.id);
-
+    viewedJobs[job.id] = cloneJob;
     localStorage.setItem("viewedJobs", JSON.stringify(viewedJobs));
-    localStorage.setItem("viewedJobIds", JSON.stringify(viewedJobIds));
-    setViewedJobId(viewedJobIds);
+    setViewedJobs(viewedJobs);
+
+    const jobViewHistory  = JSON.parse(localStorage.getItem("jobViewHistory") ?? "[]");
+    jobViewHistory.push( { id: job.id, viewedTime: Date.now() });
+    localStorage.setItem("jobViewHistory", JSON.stringify(jobViewHistory));
   }
 
   // if(firstPage) {
@@ -154,12 +165,11 @@ export default function SearchPage({ firstPageData, moving }) {
     setJobs(firstPageData.jobs);
     callBackMethod(firstPageData.totalPages, firstPageData.page);
 
-    const viewedJobIds = JSON.parse(localStorage.getItem("viewedJobIds") ?? "[]");
-    setViewedJobId(viewedJobIds);
+    const viewedJobs = JSON.parse(localStorage.getItem("viewedJobs") ?? "[]");
+    setViewedJobs(viewedJobs);
 
     const followedJobs = JSON.parse(localStorage.getItem("followedJobs") ?? "[]");
     setFollowedJobs(followedJobs);
-    console.log(viewedJobId);
 
   }, [page, currentPage, firstPageData]);
 
@@ -179,9 +189,9 @@ export default function SearchPage({ firstPageData, moving }) {
 
         <div className={`px-4 sm:px-4 ${isMoving ? 'opacity-50' : 'opacity-100'}`}>
               {jobs.length ? jobs.map((job) => (
-                <JobItem key={job.id} job={job} isViewed={viewedJobId.includes(job.id)} 
+                <JobItem key={job.id} job={job} isViewed={viewedJobs[job.id]} 
                   handleOnClick={handleClick}
-                  isFollowed={followedJobs.includes(job.id)} 
+                  isFollowed={followedJobs[job.id]} 
                   isSelected={selectedJob && selectedJob.id === job.id}/>
               )) : (
                 <>
@@ -237,7 +247,7 @@ export default function SearchPage({ firstPageData, moving }) {
           <>
           <JobDetail selectedJob={selectedJob} 
             handleBackButton={handleBackButton} handleApplyButtonClick={handleApplyButtonClick}
-            isFollowed={followedJobs.includes(selectedJob.id)}
+            isFollowed={followedJobs[selectedJob.id]}
             handleFollowButtonClick={handleFollowButtonClick}
           />
           <ApplyScreen jobId={selectedJob?.id} isModalOpening={isModalOpening} closeModalCallBack={closeModalCallBack}/>
