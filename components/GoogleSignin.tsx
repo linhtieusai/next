@@ -43,7 +43,11 @@ const GoogleSSO = ({ onSuccess }) => {
     }, [g_sso.current , onSuccess]);
 
     return (
+        <>
+        <script src="https://accounts.google.com/gsi/client" async defer></script>
         <div ref={g_sso} />
+        </>
+        
     );
 }
 

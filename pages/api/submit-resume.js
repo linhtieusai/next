@@ -64,6 +64,9 @@ export default async function handler(req, res) {
             user_id: session && session.user ? { connect: { id: session.user.id } } : undefined,
             job_id: jobId,
             name: formFields.name,
+            email: formFields.email,
+            tel: formFields.tel,
+
             status: 1,
           },
       });

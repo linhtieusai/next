@@ -12,6 +12,9 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
   const [isModalOpen, setIsModalOpen] = useState(isModalOpening);
   const [isSecondStep, setIsSecondStep] = useState(false);
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [tel, setTel] = useState("");
+
   const [pdfFile, setPdfFile] = useState<File | "">("")
   const { data: session } = useSession();
   const [resumeSubmitting, setResumeSubmitting] = useState(false);
@@ -40,12 +43,21 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
     setIsSecondStep(true);
   };
 
+  function resetForm() {
+    setName("");
+    setEmail("");
+    setTel("");
+  }
+
   const handleFormSubmit = async (e) => {
     setResumeSubmitting(true);
 
     e.preventDefault();
     const formData = new FormData();
     formData.append("name", name);
+    formData.append("email", email);
+    formData.append("tel", tel);
+
     formData.append("resume", pdfFile ?? "");
     formData.append('jobId', jobId );
 
@@ -65,6 +77,10 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
         setTimeout(() => {
           setIsModalOpen(false);
           setIsSecondStep(false);
+          closeModalCallBack();
+          setSubmitSuccess(false);
+          resetForm();
+
         }, 3000);
         
         
@@ -77,6 +93,8 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
       setErrorMessage("Error: " + error ?? "An error occurred. Please try again later.");
       setTimeout(() => {
         setErrorMessage("");
+        closeModalCallBack();
+
       }, 2000);
     }
   };
@@ -95,7 +113,7 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
               <div className="flex flex-col items-center">
                 <div className="flex flex-col items-center justify-center">
                   <button
-                    className="w-64 py-2 mr-2 text-white bg-green-700 rounded-full shadow-lg hover:bg-blue-600"
+                    className="w-64 py-2 mr-2 text-white bg-green-700 rounded-full shadow-lg hover:bg-green-600"
                     onClick={handleFirstStepSubmit}
                     >
                     Submit Resume without Register
@@ -114,19 +132,33 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
               <h2 className="mb-4 text-lg font-medium">
                 Submit your resume with your account
               </h2>
-              <div className="mb-4">
-                <label htmlFor="name" className="block text-gray-700">
-                  Name
-                </label>
-                <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    required
-                  />
+                <div className="mb-4">
+                  <label htmlFor="email" className="block text-gray-700">
+                    Email
+                  </label>
+                  <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      required
+                    />
+                </div>
+                <div className="mb-4">
+                  <label htmlFor="name" className="block text-gray-700">
+                    Name
+                  </label>
+                  <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className="w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      required
+                    />
                 </div>
                 <div className="mb-4">
                   <label htmlFor="pdf" className="block text-gray-700">
@@ -167,15 +199,15 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
                             ${resumeSubmitting ? "bg-gray-200 cursor-not-allowed" : "bg-blue-500"}`}
                             disabled={resumeSubmitting}
                           >
-                          {resumeSubmitting ? "Submitting" : "Submit Resume"}
-                          {resumeSubmitting && <span className="ml-2 spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>}
+                          {!resumeSubmitting ? "Submitting" : "Submit Resume"}
+                          {!resumeSubmitting && <span className="ml-2 spinner-border spinner-border-sm" role="status"></span>}
                         </button>
                         </>
                     )}
                   
                   {submitSuccess && (
                       <div className={`z-50 top-0 left-0 w-full flex items-center justify-center`}>
-                      <div className="p-8 text-white bg-green-200 rounded-lg shadow-lg">
+                      <div className="p-8 text-white bg-green-600 rounded-lg shadow-lg">
                         <div className="text-xl font-bold">Your resume has been successfully submitted!</div>
                       </div>
                       </div>

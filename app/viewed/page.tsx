@@ -156,7 +156,7 @@ export default function ViewedJobPage({ searchParams }) {
               ?
               <>
                 {jobViewHistory.length ? jobViewHistory.map((jobHistory, index) => (
-                  <JobItem isViewed={0} isFollowed={followedJobs.includes(jobHistory.id)} key={index} 
+                  <JobItem isViewed={0} isFollowed={followedJobs[jobHistory.id]} key={index} 
                   job={jobData[jobHistory.id]} handleOnClick={handleClick}
                   viewedTime={jobHistory.viewedTime}
                   isSelected={selectedJob && selectedJob.id === jobHistory.id}/>
