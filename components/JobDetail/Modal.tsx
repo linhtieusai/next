@@ -25,7 +25,7 @@ const Modal = ({ children, onClose, showCloseButton  }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="relative w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
+      <div className="relative w-full max-w-5xl p-6 bg-white rounded-lg shadow-lg">
       {showCloseButton && (
           <button
             onClick={onClose}
