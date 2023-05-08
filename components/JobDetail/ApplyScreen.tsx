@@ -131,7 +131,7 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
         setErrorMessage("");
         closeModalCallBack();
 
-      }, 3000);
+      }, 30000);
     }
   };
 

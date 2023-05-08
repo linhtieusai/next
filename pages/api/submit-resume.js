@@ -26,19 +26,35 @@ export default async function handler(req, res) {
       });
 
       // form.parse(req, function(err, fields, files){
-      //   const pdfFile = files.resume;
-      //   var rawData = fs.readFileSync(pdfFile.filepath);
-      //   fs.writeFileSync(`media/resume/${pdfFile.originalFilename}`, rawData, function(err){
-      //       if(err) console.log(err)
-      //   });
+   
       // });
 
       const formFields = await new Promise(function (resolve, reject) {
         form.parse(req, function (err, fields, files) {
-            if (err) {
-                reject(err);
-                return;
-            }
+        if (err) {
+            reject(err);
+            return;
+        }
+
+        if(files ) {
+          console.log('write files');
+          const pdfFile = files.resume;
+
+          console.log(pdfFile.filepath);
+
+
+          var rawData = fs.readFileSync(pdfFile.filepath);
+
+          console.log('read oks');
+
+
+          fs.writeFileSync(`media/resume/${pdfFile.originalFilename}`, rawData, function(err){
+              if(err) console.log(err)
+          });
+        }
+      
+ 
+
             resolve(fields);
         }); // form.parse
     });
@@ -85,11 +101,26 @@ export default async function handler(req, res) {
 
         // Save the applications
         const application = await prisma.applications.create({
+            data: {
+              name: formFields.name,
+              email: formFields.email,
+              tel: formFields.tel,
+              user_id: session && session.user ? { connect: { id: session.user.id } } : undefined,
+              job_id: jobId,
+              candidate_id: candidate.id,
+              status: 1,
+            },
+        });
+
+        const applicationLog = await prisma.application_logs.create({
           data: {
+            name: formFields.name,
+            email: formFields.email,
+            tel: formFields.tel,
             user_id: session && session.user ? { connect: { id: session.user.id } } : undefined,
             job_id: jobId,
-            candidate_id: candidate.id,
             status: 1,
+            application_id: application.id
           },
       });
     

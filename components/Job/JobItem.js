@@ -73,7 +73,7 @@ export default function JobItem({ job, isViewed, handleOnClick, isFollowed, isSe
                         {job.location}
                       </span>
                       {/* show on VIEWED PAGE */}
-                      {viewedTime && humanizeDuration && (
+                      {viewedTime && (
                         <div className="flex justify-end mt-4 text-gray-400">
                           {timeAgo(viewedTime)}
                         </div>
