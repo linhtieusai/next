@@ -25,44 +25,17 @@ export default async function handler(req, res) {
         keepExtensions: true
       });
 
-      // form.parse(req, function(err, fields, files){
-   
-      // });
-
       const formFields = await new Promise(function (resolve, reject) {
         form.parse(req, function (err, fields, files) {
         if (err) {
             reject(err);
             return;
         }
-
-        if(files ) {
-          console.log('write files');
-          const pdfFile = files.resume;
-
-          console.log(pdfFile.filepath);
-
-
-          var rawData = fs.readFileSync(pdfFile.filepath);
-
-          console.log('read oks');
-
-
-          fs.writeFileSync(`media/resume/${pdfFile.originalFilename}`, rawData, function(err){
-              if(err) console.log(err)
-          });
-        }
-      
- 
-
-            resolve(fields);
+          resolve(fields);
         }); // form.parse
     });
   
         let jobId = parseInt(formFields.jobId);
-
-
-    
         // if(session) {
         //     // Check if the user has already submitted the job
         //     const existingJob = await prisma.userApplies.findUnique({
@@ -89,10 +62,20 @@ export default async function handler(req, res) {
           throw new Error ('Candidate submitted');
         }
 
-         // Save the candidates
-         const candidate = await prisma.candidates.create({
-            data: {
+
+        // Save the candidates
+        const candidate = await prisma.candidates.findFirstOrThrow({
+            where: {
               user_id: session && session.user ? { connect: { id: session.user.id } } : undefined,
+              hashed_resume_name: formFields.hashedResumeName,
+            },
+        });
+         // Save the candidates
+         const candidateUpdate = await prisma.candidates.update({
+            where: {
+              id: candidate.id
+            },
+            data: {
               name: formFields.name,
               email: formFields.email,
               tel: formFields.tel,

@@ -21,7 +21,10 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [isApplied, setIsApplied] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [resume, setResume] = useState(null);
+  const [resumeUrl, setResumeUrl] = useState(null);
+  const [resumeUploading, setResumeUploading] = useState(false);
+  const [hashedResumeName, setHashedResumeName] = useState("");
+
 
   useEffect(() => {
     setIsModalOpen(isModalOpening);
@@ -40,8 +43,58 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
     setIsSecondStep(false);
   };
 
-  const handleFirstStepSubmit = () => {
-    setIsSecondStep(true);
+  const  handleFirstStepSubmit = async (event) => {
+
+    // setResumeSubmitting(true);
+    if(!isSecondStep) {
+      setIsSecondStep(true);
+    }
+    setResumeUploading(true);
+
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = () => {
+      setResumeUrl(reader.result);
+      //setPdfFile(event?.target?.files?.[0] ?? "");
+    };
+    reader.readAsDataURL(file);
+
+    const formData = new FormData();
+    formData.append("resume", event.target.files[0] ?? "");
+    if(isSecondStep) {
+      formData.append("hashedResumeName", hashedResumeName);
+    }
+
+    try {
+      const response = await fetch("/api/upload-csv", {
+        method: "POST",
+        body: formData,
+        headers: {
+          Authorization: `Bearer ${session}`,
+        },
+      });
+      if (response.status === 201) {
+        //setResumeUrl(response.hashedResumeName);
+        setResumeUploading(false);
+        const data = await response.json();
+        console.log(data);
+        setHashedResumeName(data.hashedResumeName);
+        setErrorMessage("");
+      } else {
+        const data = await response.json();
+        throw(data.message);
+      }
+    } catch (error) {
+      setResumeUploading(false);
+      setErrorMessage("Error: " + error ?? "An error occurred. Please try again later.");
+      // setresumeUploading(false);
+      // setCsvErrorMessage("Error: " + error ?? "An error occurred. Please try again later.");
+      // setTimeout(() => {
+      //   setErrorMessage("");
+      //   closeModalCallBack();
+
+      // }, 3000);
+    }
   };
 
   function resetForm() {
@@ -51,39 +104,43 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
   }
 
 
-  function handleFileUpload(event) {
-    const file = event.target.files[0];
-    if (file instanceof File) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const resumeData = reader.result;
-        const emailRegex = /([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/gi;
-        const matchedEmail = resumeData.match(emailRegex);
-        console.log(resumeData);
-        if (matchedEmail && matchedEmail.length > 0) {
-
-          setEmail(matchedEmail[0]);
-        }
-
-        setResume(resumeData);
-      };
-
-      reader.onerror = (error) => {
-        console.error('Error reading file:', error);
-      };
-      reader.readAsDataURL(file);
-    }
-  }
-  // const handleFileUpload = (event) =>{
-
+  // function handleFileUpload(event) {
   //   const file = event.target.files[0];
-  //   const reader = new FileReader();
-  //   reader.onload = () => {
-  //     setResume(reader.result);
-  //     setPdfFile(event?.target?.files?.[0] ?? "");
-  //   };
-  //   reader.readAsDataURL(file);
+  //   if (file instanceof File) {
+  //     const reader = new FileReader();
+  //     reader.onload = () => {
+  //       const resumeData = reader.result;
+  //       const emailRegex = /([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/gi;
+  //       const matchedEmail = resumeData.match(emailRegex);
+  //       console.log(resumeData);
+  //       if (matchedEmail && matchedEmail.length > 0) {
+
+  //         setEmail(matchedEmail[0]);
+  //       }
+
+  //       setResume(file);
+  //     };
+
+  //     reader.onerror = (error) => {
+  //       console.error('Error reading file:', error);
+  //     };
+  //     reader.readAsDataURL(file);
+  //   }
   // }
+
+
+  const handleFileUpload = (event) =>{
+
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = () => {
+      setResume(reader.result);
+      setPdfFile(event?.target?.files?.[0] ?? "");
+    };
+    reader.readAsDataURL(file);
+  }
+
+  
 
   const handleFormSubmit = async (e) => {
     setResumeSubmitting(true);
@@ -94,7 +151,7 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
     formData.append("email", email);
     formData.append("tel", tel);
 
-    formData.append("resume", pdfFile ?? "");
+    formData.append("hashedResumeName", hashedResumeName);
     formData.append('jobId', jobId );
 
     try {
@@ -109,15 +166,15 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
         setResumeSubmitting(false);
         setSubmitSuccess(true);
         setIsApplied(true);
-        
+        resetForm();
         setTimeout(() => {
           setIsModalOpen(false);
           setIsSecondStep(false);
           closeModalCallBack();
           setSubmitSuccess(false);
-          resetForm();
+          
 
-        }, 3000);
+        }, 10000);
         
         
       } else {
@@ -126,12 +183,13 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
       }
     } catch (error) {
       setResumeSubmitting(false);
+      
       setErrorMessage("Error: " + error ?? "An error occurred. Please try again later.");
       setTimeout(() => {
         setErrorMessage("");
         closeModalCallBack();
 
-      }, 30000);
+      }, 10000);
     }
   };
 
@@ -147,12 +205,35 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
               </p>
               <div className="flex min-w-1/3 flex-col items-center">
                 <div className="flex flex-col items-center justify-center">
-                  <button
+                  {/* <button
                     className="w-64 py-2 mr-2 text-white bg-green-700 rounded-full shadow-lg hover:bg-green-600"
                     onClick={handleFirstStepSubmit}
                     >
                     Choose Resume
-                  </button>
+                  </button> */}
+
+                  <div className="flex items-center justify-center w-full">
+                      <label for="dropzone-file" className="flex flex-col items-center justify-center w-full px-5 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                          <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                              <svg aria-hidden="true" className="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                              <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">Click to <span className="font-semibold">upload</span> Resume</p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">PDF Only (Max 10MB)</p>
+                          </div>
+                          <input id="dropzone-file" type="file" className="hidden" accept=".pdf"
+                                        onChange={handleFirstStepSubmit}/>
+                      </label>
+                  </div> 
+
+                  {/* <input
+                      type="file"
+                      id="resume"
+                      name="resume"
+                      accept=".pdf"
+                      onChange={handleFirstStepSubmit}
+                      className="w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      required
+                    /> */}
                 </div>
                 <hr className="w-full my-4"/>
                 <div className="flex flex-col items-center justify-center">
@@ -170,25 +251,25 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
             <h2 className="mb-4 text-lg font-medium">
                 Submit your resume with your account
               </h2>
-              <div className='flex-row sm:flex'>
+              <div className='flex-row sm:flex overflow-auto max-h-[90vh]'>
                 <div className='flex-row'>
                   <div className="mb-4">
                     <label htmlFor="pdf" className="block text-gray-700 text-sm">
-                      Choose Resume (PDF only)
+                      Choose Other Candidates (PDF only)
                     </label>
                     <input
                       type="file"
                       id="resume"
                       name="resume"
                       accept=".pdf"
-                      onChange={handleFileUpload}
+                      onChange={handleFirstStepSubmit}
                       className="w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      required
+                      
                     />
                   </div>
-                  {resume && <embed src={resume} className='w-full min-w-[400px] h-[50vh]' />}
+                  {resumeUrl && <embed src={resumeUrl} className='w-full min-w-[400px] h-[50vh]' />}
                 </div>
-                <div className='flex-row w-full sm:w-2/3 p-4'>
+                <div className=' flex-row w-full sm:w-2/3 p-4'>
                     <div className="mb-4">
                       <label htmlFor="email" className="block text-gray-700">
                         Email
@@ -217,20 +298,61 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
                           required
                         />
                     </div>
-
+                    <div className="mb-4">
+                      <label htmlFor="name" className="block text-gray-700">
+                        Time available
+                      </label>
+                      <input
+                          type="text"
+                          id="name"
+                          name="name"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          className="w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          required
+                        />
+                    </div>
+                    <div className="mb-4">
+                      <label htmlFor="name" className="block text-gray-700">
+                        Expected Salary
+                      </label>
+                      <input
+                          type="text"
+                          id="name"
+                          name="name"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          className="w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          required
+                        />
+                    </div>
+                    <div className="mb-4">
+                      <label htmlFor="name" className="block text-gray-700">
+                        Note
+                      </label>
+                      <input
+                          type="text"
+                          id="name"
+                          name="name"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          className="w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          required
+                        />
+                    </div>
                     <div className="flex justify-end">
                       {errorMessage && (
                           <div className="w-full p-2 mb-4 overflow-y-auto text-white bg-red-500 rounded-lg max-h-200">
                             {errorMessage}
                           </div>
-                        )}
+                      )}
                     </div>
-                    <div className="flex justify-end">
+                    <div className="flex justify-end sticky bottom-0 left-0">
                         {!submitSuccess  && (
                           <>
                             <button
                               type="button"
-                              className="px-4 py-2 mr-2 text-gray-700 border border-gray-400 rounded-full hover:bg-gray-200"
+                              className="px-4 py-2 mr-2 text-gray-700 border bg-white border-gray-400 rounded-full hover:text-red-500 hover:border-red-500"
                               onClick={handleBackClick}
                             >
                               Cancel
@@ -268,6 +390,34 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
                           </div>
                         )}
                     </div>
+
+                    {resumeUploading && (
+                        <div className="absolute top-0 left-0 flex items-center justify-center w-full h-full">
+                          <div className="absolute top-0 left-0 z-10 w-full h-full bg-black opacity-20"></div>
+                          <div className="z-20">
+                            <svg
+                              className="w-8 h-8 mx-auto text-white animate-spin"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                            >
+                              <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                              ></circle>
+                              <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                              ></path>
+                            </svg>
+                          </div>
+                        </div>
+                      )}
                 </div>
 
               </div>
