@@ -131,7 +131,7 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
         setErrorMessage("");
         closeModalCallBack();
 
-      }, 2000);
+      }, 3000);
     }
   };
 
@@ -145,7 +145,7 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
               <p className="mb-4 text-sm text-gray-600">
                 You can submit your resume without registering
               </p>
-              <div className="flex flex-col items-center">
+              <div className="flex min-w-1/3 flex-col items-center">
                 <div className="flex flex-col items-center justify-center">
                   <button
                     className="w-64 py-2 mr-2 text-white bg-green-700 rounded-full shadow-lg hover:bg-green-600"
@@ -153,8 +153,6 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
                     >
                     Choose Resume
                   </button>
-
-
                 </div>
                 <hr className="w-full my-4"/>
                 <div className="flex flex-col items-center justify-center">
@@ -173,10 +171,10 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
                 Submit your resume with your account
               </h2>
               <div className='flex-row sm:flex'>
-                <div className='flex-row w-1/3'>
+                <div className='flex-row'>
                   <div className="mb-4">
-                    <label htmlFor="pdf" className="block text-gray-700">
-                      Resume (PDF only)
+                    <label htmlFor="pdf" className="block text-gray-700 text-sm">
+                      Choose Resume (PDF only)
                     </label>
                     <input
                       type="file"
@@ -188,10 +186,9 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
                       required
                     />
                   </div>
-                  {resume && <embed src={resume} width="100%" height="600" />}
+                  {resume && <embed src={resume} className='w-full min-w-[400px] h-[50vh]' />}
                 </div>
-                <div className='flex-row w-2/3'>
-                  
+                <div className='flex-row w-full sm:w-2/3 p-4'>
                     <div className="mb-4">
                       <label htmlFor="email" className="block text-gray-700">
                         Email

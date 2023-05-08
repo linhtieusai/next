@@ -46,6 +46,12 @@ export default async function Page({ params }: { params: { id: string } }) {
             <div className="sticky top-0 z-50 bg-white">
               <h1 className="min-w-0 px-4 py-4 text-2xl font-bold sm:text-sm lg:text-xl xl:text-2xl 2xl:text-3xl">
                 Job Title: {data.title}
+                {data && !data.is_active && (
+                  <span className="text-danger"> Closed</span>
+                )}
+                {data && data.is_active === 2 && (
+                  <span className="text-danger"> Paused</span>
+                )}
               </h1>
             </div>
             <div className="flex-grow pt-2 h-[calc(100vh_-_200px)] overflow-auto p-4 ">

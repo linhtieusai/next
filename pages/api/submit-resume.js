@@ -58,15 +58,37 @@ export default async function handler(req, res) {
         //     }
         // }
 
-         // Save the job submission to the database
-         const userJob = await prisma.applications.create({
+        // Save the candidates
+
+        const isCandidateSubmitted = await prisma.applications.findFirst({
+          where: {
+            job_id: jobId,
+            candidate: {
+              email: formFields.email
+            }
+          }
+        })
+
+        if(isCandidateSubmitted) {
+          throw new Error ('Candidate submitted');
+        }
+
+         // Save the candidates
+         const candidate = await prisma.candidates.create({
+            data: {
+              user_id: session && session.user ? { connect: { id: session.user.id } } : undefined,
+              name: formFields.name,
+              email: formFields.email,
+              tel: formFields.tel,
+            },
+        });
+
+        // Save the applications
+        const application = await prisma.applications.create({
           data: {
             user_id: session && session.user ? { connect: { id: session.user.id } } : undefined,
             job_id: jobId,
-            name: formFields.name,
-            email: formFields.email,
-            tel: formFields.tel,
-
+            candidate_id: candidate.id,
             status: 1,
           },
       });

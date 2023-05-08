@@ -4,8 +4,6 @@ import { Suspense } from 'react';
 
 import dynamic from 'next/dynamic'
 
-const humanizeDuration = require('humanize-duration');
-
 export default function JobItem({ job, isViewed, handleOnClick, isFollowed, isSelected, viewedTime }) {
   function timeAgo(timestamp) {
     const seconds = Math.floor((Date.now() - timestamp) / 1000);

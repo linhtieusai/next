@@ -37,7 +37,6 @@ function JobDetail({ selectedJob, handleBackButton, handleApplyButtonClick, isFo
                     </button>
                   </div>
                 </div>
-               
                 <div className="pl-5 pt-13">
                     <h3 className="mt-3 text-lg font-bold">Required Skill</h3>
                     <p className="pl-4 whitespace-pre-wrap">{selectedJob?.job_required_skill}</p>
@@ -47,8 +46,6 @@ function JobDetail({ selectedJob, handleBackButton, handleApplyButtonClick, isFo
                     <p className="whitespace-pre-wrap">{selectedJob?.overview}</p> */}
                     <h3 className="mt-3 text-lg font-bold">Job Responsibilites</h3>
                     <p className="pl-4 whitespace-pre-wrap">{selectedJob?.job_responsibility}</p>
-                      
-                  
                     
                     <h3 className="mt-3 text-lg font-bold">Why you should Apply?</h3>
                     <p className="pl-4 whitespace-pre-wrap">{selectedJob?.why_should_apply}</p>
