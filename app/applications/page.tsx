@@ -171,8 +171,11 @@ export default function SearchPage({ searchParams }) {
           <button onClick={() => handleFilterStatus(2)} className="bg-green-500 rounded-full px-4 py-2 text-gray-100 mr-2 text-sm hover:cursor-pointer hover:opacity-80">Đang chờ phong van </button>
       </div>
   </div>
-  <div className="flex flex-col flex-1 sm:pb-20 md:flex-row">
-      <div className={`h-[calc(100vh_-_170px)] sm:h-[calc(100vh_-_200px)] px-4 sm:px-4 md:w-1/3 flex-col  overflow-auto ${selectedApplication ? "hidden md:flex" : "w-full"}`}>
+  {/* <div className="flex flex-col flex-1 sm:pb-20 md:flex-row">
+      <div className={`h-[calc(100vh_-_170px)] sm:h-[calc(100vh_-_200px)] px-4 sm:px-4 md:w-1/3 flex-col  overflow-auto ${selectedApplication ? "hidden md:flex" : "w-full"}`}> */}
+
+<div className="flex flex-col flex-1 pb-[15px] sm:pb-20 md:flex-row">
+      <div className={`relative h-[calc(100vh_-_400px)] sm:h-[calc(100vh_-_400px)]  px-4 sm:px-4 md:w-1/3 flex-col  overflow-auto ${selectedApplication ? "hidden md:flex" : "w-full"}`}>
         <ul>
         {applications ? 
           <>
