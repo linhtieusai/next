@@ -15,11 +15,11 @@ export const config = {
 
 export default async function handler(req, res) {
   try {
-    const session = await getSession({ req });
-    //   if (!session) {
-    //     res.status(401).json({ message: 'Unauthorized' });
-    //     return;
-    //   }
+      const session = await getSession({ req });
+      //   if (!session) {
+      //     res.status(401).json({ message: 'Unauthorized' });
+      //     return;
+      //   }
 
       const form = new formidable.IncomingForm({
         keepExtensions: true

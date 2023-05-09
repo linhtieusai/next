@@ -57,6 +57,8 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
       setIsSecondStep(true);
     }
     setResumeUploading(true);
+    clearTimeout(timer);
+    setSubmitSuccess(false);
 
     const file = event.target.files[0];
     const reader = new FileReader();

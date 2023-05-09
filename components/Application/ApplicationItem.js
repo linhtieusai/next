@@ -45,7 +45,7 @@ export default function ApplicationItem({ application, handleOnClick, isSelected
                 hover:border-green-300  hover:border-opacity-50 hover:rounded-lg 
                 focus:border-green-500 focus:outline-none focus:shadow-lg focus:border-opacity-50 focus:rounded-lg 
                 active:border-gray-400 active:border-opacity-75 
-
+                text-sm 
                 ${
                   isSelected ? 
                     "border-2 border-gray-300 border-opacity-50 !border-green-500  border-b-green-500 shadow-lg"

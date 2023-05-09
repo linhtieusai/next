@@ -18,6 +18,7 @@ import Pagination from '../../components/Job/Pagination'
 
 import ApplicationItem from '../../components/Application/ApplicationItem';
 
+
 // localhost:3000
 
 import { PrismaClient } from "@prisma/client";
@@ -63,6 +64,16 @@ export default function SearchPage({ searchParams }) {
   const [isMoving, setIsMoving] = useState(false);
 
   const [followedApplications, setFollowedApplications] = useState<any[]>([]);
+  const [statusCount, setStatusCount] = useState({});
+
+
+  const pathname = usePathname();
+  const isActive = (status) => {
+    let fileredStatus = searchParams.status;
+    console.log(fileredStatus);
+    console.log(status);
+    return fileredStatus == status ? 'bg-gray-100' : 'bg-white';
+  };
 
   const pageChangeCallback = () => {
     setIsMoving(true);
@@ -85,9 +96,10 @@ export default function SearchPage({ searchParams }) {
     setShowApplicationList(true);
   }
 
-  const callBackMethod = (totalPages, currentPage) => {
+  const callBackMethod = (totalPages, currentPage, statusCount) => {
     setTotalPages(totalPages);
     setCurrentPage(currentPage);
+    setStatusCount(statusCount);
   }
 
   function handleApplyButtonClick() {
@@ -127,12 +139,11 @@ export default function SearchPage({ searchParams }) {
     params.set("page", page)
     let apiUrl = `http://localhost:3000/api/applications?${params.toString()}`;
 
-    console.log("dddddddddd");
     if(page > 0) {
       fetch(apiUrl)
       .then(response => response.json())
       .then(data =>  {
-          callBackMethod(data.totalPages, data.page);
+          callBackMethod(data.totalPages, data.page, data.statusCount);
           setApplications(data.applications);
         }).catch(error => {
           console.error(error)
@@ -150,9 +161,6 @@ export default function SearchPage({ searchParams }) {
 
   return (
 <>
-  <div className="flex flex-col flex-1 hidden px-5 py-10 lg:flex-row md:block">
-    <h1 className="text-lg">Your refer list</h1>
-  </div>
   <div className="flex px-5 py-10">
      <div className="flex items-center justify-start flex-1 ">
           <div className="hidden sm:flex items-center w-1/3 ">
@@ -166,16 +174,29 @@ export default function SearchPage({ searchParams }) {
           </div>
       </div>
       <div className="flex items-center justify-center  ">
-          <span> Filter by Status </span>
-          <button onClick={() => handleFilterStatus(1)} className="bg-red-500 rounded-full px-4 py-2 text-gray-100 mr-2 text-sm hover:cursor-pointer hover:opacity-80">Đang chờ duyệt </button>
-          <button onClick={() => handleFilterStatus(2)} className="bg-green-500 rounded-full px-4 py-2 text-gray-100 mr-2 text-sm hover:cursor-pointer hover:opacity-80">Đang chờ phong van </button>
+          <span className='text-sm text-gray-600 mr-3'> Filter by Status </span>
+          <button onClick={() => handleFilterStatus(1)} className={`${isActive(1)}
+           flex items-center border text-gray-500 border-red-200 rounded-full px-3 py-1 
+           text-gray-800 mr-2 text-xs hover:cursor-pointer hover:opacity-80 `}>
+            Đang chờ duyệt 
+            <span className="ml-2 bg-gray-300 text-gray-700 rounded-full w-5 h-5
+             flex items-center justify-center text-xs font-semibold  flex-shrink-0 min-w-[1.25rem]">
+              {statusCount[1]}
+            </span>
+
+          </button>
+          <button onClick={() => handleFilterStatus(2)} className={`${isActive(2)}
+          border text-gray-500 border-green-200 rounded-full px-3 py-1
+          text-gray-800 mr-2 text-xs hover:cursor-pointer hover:opacity-80`}>
+            Đang chờ phong van
+          </button>
       </div>
   </div>
   {/* <div className="flex flex-col flex-1 sm:pb-20 md:flex-row">
       <div className={`h-[calc(100vh_-_170px)] sm:h-[calc(100vh_-_200px)] px-4 sm:px-4 md:w-1/3 flex-col  overflow-auto ${selectedApplication ? "hidden md:flex" : "w-full"}`}> */}
 
 <div className="flex flex-col flex-1 pb-[15px] sm:pb-20 md:flex-row">
-      <div className={`relative h-[calc(100vh_-_400px)] sm:h-[calc(100vh_-_400px)]  px-4 sm:px-4 md:w-1/3 flex-col  overflow-auto ${selectedApplication ? "hidden md:flex" : "w-full"}`}>
+      <div className={`relative h-[calc(100vh_-_250px)] sm:h-[calc(100vh_-_200px)]  px-4 sm:px-4 md:w-1/3 flex-col  overflow-auto ${selectedApplication ? "hidden md:flex" : "w-full"}`}>
         <ul>
         {applications ? 
           <>

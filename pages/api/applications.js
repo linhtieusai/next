@@ -37,17 +37,19 @@ export default async function handler(req, res) {
     //   },
     // });
 
+    console.log(page);
+
     const data = await prisma.$transaction([
       prisma.applications.count({
         where: {
-          
+          user_id: session.user.id,
         },
       }),
       prisma.applications.findMany({
         take: 10,
         skip: (page - 1) * 10,
         where: { 
-          user_id: session?.user?.id,
+          user_id: session.user.id,
           status: status ? parseInt(status) : undefined,
        },
         include: {
@@ -65,13 +67,30 @@ export default async function handler(req, res) {
             }
           }
         },
+      }),
+      prisma.applications.groupBy({
+        by: ['status'],
+        where: { 
+          user_id: session.user.id,
+        },
+        _count: {
+          status: true,
+        },
       })
     ]);
+
+    console.log(data[2]);
+    const statusCount = {};
+    data[2].forEach((item) => {
+      const { status, _count } = item;
+      statusCount[status] = _count.status;
+    });
 
     res.status(201).json({
       applications: data[1],
       totalPages: data[0] ? Math.ceil(data[0] / 10) : 0,
       page: page,
+      statusCount: statusCount,
     });
 
     // if(session) {
