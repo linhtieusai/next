@@ -17,25 +17,25 @@ export default async function handler(req, res) {
 
     console.log(session);
 
-    const applications = await prisma.applications.findMany({
-      where: { user_id: session?.user?.id },
-      include: {
-        job: {
-          select: {
-            title: true,
-            source_site: true,
-            source_id: true
+    // const applications = await prisma.applications.findMany({
+    //   where: { user_id: session?.user?.id },
+    //   include: {
+    //     job: {
+    //       select: {
+    //         title: true,
+    //         source_site: true,
+    //         source_id: true
 
-          }
-        },
-        candidate: {
-          select: {
-            hashed_resume_name: true,
+    //       }
+    //     },
+    //     candidate: {
+    //       select: {
+    //         hashed_resume_name: true,
 
-          }
-        }
-      },
-    });
+    //       }
+    //     }
+    //   },
+    // });
 
 
     const fileName = `${id}.pdf`;

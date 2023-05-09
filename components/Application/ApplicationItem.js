@@ -63,14 +63,12 @@ export default function ApplicationItem({ application, handleOnClick, isSelected
                       <h3 className="text-lg font-semibold">{application.name}</h3>
                       <h3 className="text-lg text-gray-700 text-sm">{application.email}</h3>
 
-                      <span className="mt-4 text-gray-700">
-                        
+                      <p className="mt-4 text-gray-700">
                         {application.status}
-                      </span>
-                      <span className="mt-4 text-gray-700">
-                        
+                      </p>
+                      <p className="mt-4 text-gray-700">
                         {application.created_at}
-                      </span>
+                      </p>
                       {/* show on VIEWED PAGE */}
                       {/* {viewedTime && (
                         <div className="flex justify-end mt-4 text-gray-400">

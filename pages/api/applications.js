@@ -7,38 +7,71 @@ export default async function handler(req, res) {
   try {
     const session = await getSession({ req });
     const query = req.query;
-    const { page } = query;
+    const { page, status } = query;
     
 
     if(!session) {
       throw new Error ('Unauthorized');
     }
 
-    console.log(session);
+    // console.log(session);
 
-    const applications = await prisma.applications.findMany({
-      take: 10,
-      skip: (page - 1) * 10,
-      where: { user_id: session?.user?.id },
-      include: {
-        job: {
-          select: {
-            title: true,
-            source_site: true,
-            source_id: true
+    // const applications = await prisma.applications.findMany({
+    //   take: 10,
+    //   skip: (page - 1) * 10,
+    //   where: { user_id: session?.user?.id },
+    //   include: {
+    //     job: {
+    //       select: {
+    //         title: true,
+    //         source_site: true,
+    //         source_id: true
 
+    //       }
+    //     },
+    //     candidate: {
+    //       select: {
+    //         hashed_resume_name: true,
+    //       }
+    //     }
+    //   },
+    // });
+
+    const data = await prisma.$transaction([
+      prisma.applications.count({
+        where: {
+          
+        },
+      }),
+      prisma.applications.findMany({
+        take: 10,
+        skip: (page - 1) * 10,
+        where: { 
+          user_id: session?.user?.id,
+          status: status ? parseInt(status) : undefined,
+       },
+        include: {
+          job: {
+            select: {
+              title: true,
+              source_site: true,
+              source_id: true
+  
+            }
+          },
+          candidate: {
+            select: {
+              hashed_resume_name: true,
+            }
           }
         },
-        candidate: {
-          select: {
-            hashed_resume_name: true,
-          }
-        }
-      },
-    });
+      })
+    ]);
 
     res.status(201).json({
-      applications: applications,
+      applications: data[1],
+      totalPages: data[0] ? Math.ceil(data[0] / 10) : 0,
+      page: page,
     });
 
     // if(session) {

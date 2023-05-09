@@ -53,10 +53,7 @@ export default async function handler(req, res) {
           }); // form.parse
       });
 
-      console.log(formFields);
-
       const { fields, randomCharacter } = formFields;
-      console.log(randomCharacter);
         // Save the candidates
         if(!fields.hashedResumeName) {
           const candidate = await prisma.candidates.create({
