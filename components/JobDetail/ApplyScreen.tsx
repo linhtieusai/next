@@ -8,7 +8,10 @@ import Modal from "./Modal";
 import { useRouter, useSearchParams } from "next/navigation";
 import  GoogleSignIn  from '../GoogleSignin';
 
+
+
 const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
+
   const [isModalOpen, setIsModalOpen] = useState(isModalOpening);
   const [isSecondStep, setIsSecondStep] = useState(false);
   const [name, setName] = useState("");
@@ -21,10 +24,10 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [isApplied, setIsApplied] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [resumeUrl, setResumeUrl] = useState(null);
+  const [resumeUrl, setResumeUrl] = useState("");
   const [resumeUploading, setResumeUploading] = useState(false);
   const [hashedResumeName, setHashedResumeName] = useState("");
-
+  const [timer, setTimer] = useState<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
     setIsModalOpen(isModalOpening);
@@ -39,8 +42,12 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
   };
 
   const handleBackClick = () => {
+    console.log("BackClick");
     closeModalCallBack();
     setIsSecondStep(false);
+
+    console.log(timer);
+    clearTimeout(timer);
   };
 
   const  handleFirstStepSubmit = async (event) => {
@@ -54,7 +61,8 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
     const file = event.target.files[0];
     const reader = new FileReader();
     reader.onload = () => {
-      setResumeUrl(reader.result);
+      const resumeUrl = reader.result as string;
+      setResumeUrl(resumeUrl);
       //setPdfFile(event?.target?.files?.[0] ?? "");
     };
     reader.readAsDataURL(file);
@@ -134,7 +142,8 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
     const file = event.target.files[0];
     const reader = new FileReader();
     reader.onload = () => {
-      setResume(reader.result);
+      const resumeUrl = reader.result as string
+      // setResume(resumeUrl);
       setPdfFile(event?.target?.files?.[0] ?? "");
     };
     reader.readAsDataURL(file);
@@ -167,16 +176,16 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
         setSubmitSuccess(true);
         setIsApplied(true);
         resetForm();
-        setTimeout(() => {
-          setIsModalOpen(false);
-          setIsSecondStep(false);
-          closeModalCallBack();
-          setSubmitSuccess(false);
-          
 
-        }, 10000);
-        
-        
+        const timer = setTimeout(() => {
+            setIsModalOpen(false);
+            setIsSecondStep(false);
+            closeModalCallBack();
+            setSubmitSuccess(false);
+          }, 10000);
+
+          setTimer(timer);
+
       } else {
         const data = await response.json();
         throw(data.message);
@@ -185,13 +194,22 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
       setResumeSubmitting(false);
       
       setErrorMessage("Error: " + error ?? "An error occurred. Please try again later.");
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         setErrorMessage("");
         closeModalCallBack();
 
       }, 10000);
+
+      setTimer(timer);
     }
+
   };
+
+  // useEffect(() => {
+  //     if(!isModalOpen) {
+
+  //     }
+  // }, [isModelOpen]);
 
   return (
     <>
@@ -213,7 +231,7 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
                   </button> */}
 
                   <div className="flex items-center justify-center w-full">
-                      <label for="dropzone-file" className="flex flex-col items-center justify-center w-full px-5 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                      <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full px-5 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
                           <div className="flex flex-col items-center justify-center pt-5 pb-6">
                               <svg aria-hidden="true" className="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>

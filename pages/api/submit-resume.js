@@ -15,7 +15,7 @@ export const config = {
 
 export default async function handler(req, res) {
   try {
-    const session = await getSession();
+    const session = await getSession({ req });
     //   if (!session) {
     //     res.status(401).json({ message: 'Unauthorized' });
     //     return;
@@ -66,7 +66,7 @@ export default async function handler(req, res) {
         // Save the candidates
         const candidate = await prisma.candidates.findFirstOrThrow({
             where: {
-              user_id: session && session.user ? { connect: { id: session.user.id } } : undefined,
+              user_id: session && session.user ? session.user.id : undefined,
               hashed_resume_name: formFields.hashedResumeName,
             },
         });
@@ -88,7 +88,7 @@ export default async function handler(req, res) {
               name: formFields.name,
               email: formFields.email,
               tel: formFields.tel,
-              user_id: session && session.user ? { connect: { id: session.user.id } } : undefined,
+              user_id: session && session.user ? session.user.id : undefined,
               job_id: jobId,
               candidate_id: candidate.id,
               status: 1,
@@ -100,7 +100,7 @@ export default async function handler(req, res) {
             name: formFields.name,
             email: formFields.email,
             tel: formFields.tel,
-            user_id: session && session.user ? { connect: { id: session.user.id } } : undefined,
+            user_id: session && session.user ? session.user.id : undefined,
             job_id: jobId,
             status: 1,
             application_id: application.id

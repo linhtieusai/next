@@ -58,6 +58,7 @@ export default function ViewedJobPage({ searchParams }) {
   const [jobViewHistory, setJobViewHistory] = useState<any[]>();
 
   const [showJobList, setShowJobList] = useState(true); 
+  const [isMoving, setIsMoving] = useState(false);
 
   let page = searchParams.page;
   if(!page) page = 1;
@@ -81,6 +82,30 @@ export default function ViewedJobPage({ searchParams }) {
 
   const path = usePathname();
   
+
+  const handleFollowButtonClick = (job, isFollowed) => {
+    if(isFollowed) {
+      doUnfollowJob(job);
+    } else {
+      addFollowedJobToLocalStorage(job);
+    }
+  }
+
+  function doUnfollowJob(job) {
+    const followedJobs = JSON.parse(localStorage.getItem("followedJobs") ?? "{}");
+    delete followedJobs[job.id];
+
+    localStorage.setItem("followedJobs", JSON.stringify(followedJobs));
+    setFollowedJobs(followedJobs);
+  }
+
+  function addFollowedJobToLocalStorage(job) {
+    const followedJobs = JSON.parse(localStorage.getItem("followedJobs") ?? "{}");
+    followedJobs[job.id] = true;
+
+    localStorage.setItem("followedJobs", JSON.stringify(followedJobs));
+    setFollowedJobs(followedJobs);
+  }
   
   function handleBackButton() {
 
@@ -107,6 +132,10 @@ export default function ViewedJobPage({ searchParams }) {
   //   //Home page
   //   page = 1;
   // }
+
+  const pageChangeCallback = () => {
+    setIsMoving(true);
+  }
 
   useEffect(() => {
     // if(page > 1) {
@@ -216,7 +245,9 @@ export default function ViewedJobPage({ searchParams }) {
       <div className="sm:p-4 md:w-2/3">
       {!showJobList &&  (
           <>
-          <JobDetail selectedJob={selectedJob} handleBackButton={handleBackButton} handleApplyButtonClick={handleApplyButtonClick} />
+          <JobDetail selectedJob={selectedJob} isFollowed={followedJobs[selectedJob.id]}
+          handleFollowButtonClick={handleFollowButtonClick}
+          handleBackButton={handleBackButton} handleApplyButtonClick={handleApplyButtonClick} />
           <ApplyScreen jobId={selectedJob?.id} isModalOpening={isModalOpening} closeModalCallBack={closeModalCallBack}/>
           <div className="sticky bottom-0 left-0 z-10 w-full p-4 bg-gray-100 border-t border-gray-200 sm:hidden">
             <div className="flex items-center justify-between">

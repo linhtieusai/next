@@ -8,7 +8,7 @@ import Image from 'next/image';
 
 const Navbar = () => {
   const { data: session } = useSession();
-  const [notifications, setNotifications] = useState<any[]>([]);
+  const [notifications, setNotifications] = useState<any[]>();
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   
@@ -16,10 +16,10 @@ const Navbar = () => {
     async function fetchNotifications() {
       const response = await fetch("http://localhost:3000/api/notifications");
       const data = await response.json();
-      setNotifications(data);
+      setNotifications(data.data);
     }
 
-    if (showPopup && notifications.length === 0) {
+    if (showPopup && !notifications) {
       fetchNotifications();
     }
   }, [showPopup, notifications]);
@@ -91,9 +91,9 @@ const Navbar = () => {
           <div className='flex p-4 bg-slate-200 font-bold'>Thông báo </div>
           <div className='flex-1 bg-white'>
             <ul className='p-4'>
-            {notifications.data ? (
-                notifications.data.length > 0 ? (
-                  notifications.data.map((notification, index) => (
+            {notifications ? (
+                notifications.length > 0 ? (
+                  notifications.map((notification, index) => (
                     <li key={notification.id} className='flex px-4 py-4 hover:bg-gray-100 hover:cursor-pointer'>
                       <div className='logo'>
                         <Image src={`/company_logo/${notification.job.source_site}/${notification.job.source_id}.jpg`} alt="me" width="40" height="40" className="object-cover mr-3 rounded-full"/>

@@ -15,7 +15,7 @@ export const config = {
 
 export default async function handler(req, res) {
   try {
-      const session = await getSession();
+      const session = await getSession({ req });
       //   if (!session) {
       //     res.status(401).json({ message: 'Unauthorized' });
       //     return;
@@ -61,7 +61,7 @@ export default async function handler(req, res) {
         if(!fields.hashedResumeName) {
           const candidate = await prisma.candidates.create({
             data: {
-              user_id: session && session.user ? { connect: { id: session.user.id } } : undefined,
+              user_id: session && session.user ? session.user.id: undefined,
               hashed_resume_name: randomCharacter,
             },
           });
@@ -74,6 +74,7 @@ export default async function handler(req, res) {
 
   } catch (err) {
     res.status(500).json({message: err.message});
+
   } finally {
     await prisma.$disconnect()
   }

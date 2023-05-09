@@ -57,22 +57,27 @@ export default NextAuth({
             if (userInfo) {
               const connection = await mysql.createConnection(dbConfig);
               // Check if the user exists in the database
-              const [rows] = await connection.execute(
-                'SELECT * FROM user WHERE email = ?',
+              var [rows] = await connection.execute(
+                'SELECT * FROM user WHERE email = ? LIMIT 1',
                 [userInfo.email]
               );
         
               if (rows.length === 0) {
                 // If the user doesn't exist, insert a new row into the users table
-                await connection.execute(
+                 rows = await connection.execute(
                   'INSERT INTO user (email, name) VALUES (?, ?)',
                   [userInfo.email, userInfo.name]
                 );
+                console.log(rows);
+                userInfo.id = rows.id;
+
               } else {
                 // If the user exists, retrieve their information from the users table
-                userInfo.name = rows[0].name;
+                userInfo.naxme = rows[0].name;
+                //Set value as token.sub
+                userInfo.id = rows[0].id;
               }
-        
+              
                // Close the database connection
                await connection.end();
 
@@ -87,4 +92,13 @@ export default NextAuth({
           }
         })
     ],
+    callbacks: {
+      session: async ({ session, token, user }) => {
+        if (session?.user) {
+          //Assign ID from Custom Credential
+          session.user.id = parseInt(token.sub);
+        }
+        return session;
+      },
+    },
 })

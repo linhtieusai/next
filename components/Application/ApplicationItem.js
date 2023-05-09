@@ -4,7 +4,7 @@ import { Suspense } from 'react';
 
 import dynamic from 'next/dynamic'
 
-export default function JobItem({ job, isViewed, handleOnClick, isFollowed, isSelected, viewedTime }) {
+export default function ApplicationItem({ application, handleOnClick, isSelected }) {
   function timeAgo(timestamp) {
     const seconds = Math.floor((Date.now() - timestamp) / 1000);
   
@@ -40,12 +40,11 @@ export default function JobItem({ job, isViewed, handleOnClick, isFollowed, isSe
   }
 
     return (
-        <div onClick={() => handleOnClick(job)}
+        <div onClick={() => handleOnClick(application)}
             className={`mb-4 rounded-lg p-4 cursor-pointer hover:shadow-lg 
                 hover:border-green-300  hover:border-opacity-50 hover:rounded-lg 
                 focus:border-green-500 focus:outline-none focus:shadow-lg focus:border-opacity-50 focus:rounded-lg 
                 active:border-gray-400 active:border-opacity-75 
-                ${isViewed ? "border-b-4 border-b-green-300" : ""}
 
                 ${
                   isSelected ? 
@@ -56,34 +55,34 @@ export default function JobItem({ job, isViewed, handleOnClick, isFollowed, isSe
             >
               <div className={`relative flex justify-between items-center`}>
                   <div className="flex items-center">
-                    <Image src={`/company_logo/${job.source_site}/${job.source_id}.jpg`} alt="me" width="55" height="55" className="object-cover mr-3 rounded-full"/>
+                    <Image src={`/company_logo/${application.job.source_site}/${application.job.source_id}.jpg`} alt="me" width="55" height="55" className="object-cover mr-3 rounded-full"/>
                     <div>
                       <div className='flex'>
-                        <p className="text-gray-600">{job.company_name}</p>
-                        
-                        
+                        <p className="text-gray-600">{application.job.title}</p>
                       </div>
-                      <h3 className="text-lg font-semibold">{job.title}</h3>
+                      <h3 className="text-lg font-semibold">{application.name}</h3>
+                      <h3 className="text-lg text-gray-700 text-sm">{application.email}</h3>
+
                       <span className="mt-4 text-gray-700">
                         
-                        {job.gross_month_salary}
+                        {application.status}
                       </span>
                       <span className="mt-4 text-gray-700">
                         
-                        {job.location}
+                        {application.created_at}
                       </span>
                       {/* show on VIEWED PAGE */}
-                      {viewedTime && (
+                      {/* {viewedTime && (
                         <div className="flex justify-end mt-4 text-gray-400">
                           {timeAgo(viewedTime)}
                         </div>
-                      )}
+                      )} */}
 
-                        {isFollowed && (
+                        {/* {isFollowed && (
                           <svg className={`absolute top-0 right-0 inline-block text-red-300 w-4 h-4 fill-red-300`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" >
                             <path d="M20.84 4.76a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-.9a5.5 5.5 0 0 0-7.78 7.78L12 21l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"></path>
                           </svg>
-                        )}
+                        )} */}
                   </div>
                 </div>
             </div>

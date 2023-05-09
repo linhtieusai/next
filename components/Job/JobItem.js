@@ -4,7 +4,7 @@ import { Suspense } from 'react';
 
 import dynamic from 'next/dynamic'
 
-export default function JobItem({ job, isViewed, handleOnClick, isFollowed, isSelected, viewedTime }) {
+export default function JobItem({ job, isViewed, handleOnClick, isFollowed, isSelected, viewedTime = false }) {
   function timeAgo(timestamp) {
     const seconds = Math.floor((Date.now() - timestamp) / 1000);
   

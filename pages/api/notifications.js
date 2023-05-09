@@ -2,11 +2,11 @@ import { getSession } from 'next-auth/react';
 import prisma from '../../lib/prisma';
 import { sendMail } from '../../lib/mail';
 
-import { NextRequest, NextResponse } from "next/server";
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(req, res) {
   try {
-    const session = await getSession();
+    const session = await getSession({ req });
 
     const notifications = await prisma.notifications.findMany({
       where: { user_id: 3 },
@@ -16,7 +16,6 @@ export default async function handler(req, res) {
             title: true,
             source_site: true,
             source_id: true
-
           }
         },
       },

@@ -42,6 +42,7 @@ model job {
   tags                 String?         @db.Text
   updated_at           DateTime?       @db.DateTime(0)
   notifications        notifications[]
+  applications         applications[]
 
   @@unique([source_id, source_site], map: "unique_source")
 }
@@ -79,12 +80,16 @@ model applications {
   candidate_id Int
   status       Int
 
+  job job? @relation(fields: [job_id], references: [id])
+
   candidate candidates? @relation(fields: [candidate_id], references: [id])
 
   message          String?            @db.Text
   created_at       DateTime           @default(now()) @db.DateTime(0)
   updated_at       DateTime           @default(now()) @db.DateTime(0)
   application_logs application_logs[]
+
+  @@index([job_id], map: "notifications_job_id_fkey")
 }
 
 model application_logs {

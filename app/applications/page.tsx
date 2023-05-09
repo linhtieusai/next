@@ -10,8 +10,12 @@ import ApplicationDetail  from '../../components/Application/ApplicationDetail'
 
 import { useState, useEffect, useRef } from 'react';
 import { Suspense } from 'react'
-import ApplicationDetailSkeleton from '../../ui/rendering-job-detail-skeleton'
-import ApplicationListSkeleton from '../../ui/rendering-job-list-skeleton'
+// import ApplicationDetailSkeleton from '../../ui/rendering-application-detail-skeleton'
+import JobListSkeleton from '../../ui/rendering-job-list-skeleton'
+import JobDetailSkeleton from '../../ui/rendering-job-detail-skeleton'
+import { usePathname, useSearchParams } from 'next/navigation';
+import Pagination from '../../components/Job/Pagination'
+
 
 import ApplicationItem from '../../components/Application/ApplicationItem';
 
@@ -24,7 +28,7 @@ async function getFirstPage(page) {
   return await applications.json();
 
   // const prisma = new PrismaClient();
-  // const applications = await prisma.job.findMany({take: 10, skip: (page-1) * 10});
+  // const applications = await prisma.application.findMany({take: 10, skip: (page-1) * 10});
 
   // await prisma.$disconnect()
   // return await applications;
@@ -40,21 +44,31 @@ async function getFirstPage(page) {
 
 
 
-export default function SearchPage() {
+export default function SearchPage({ searchParams }) {
 
-  // console.log("search page job");
-  // console.log(firstPage.applications);
 
   const [selectedApplication, setSelectedApplication] = useState<any>(false);
   const [isModalOpening, setIsModalOpening] = useState(false);
 
-  const [applications, setApplications] = useState<any[]>([]);
+  const [applicationData, setApplicationData] = useState<any[]>([]);
+  const [applications, setApplications] = useState<any[]>();
+
   const [showApplicationList, setShowApplicationList] = useState(true); 
 
-  const handleClick = (job) => {
-    console.log("handle click");
+  let page = searchParams.page;
+  if(!page) page = 1;
 
-    setSelectedApplication(job);
+  const [ totalPages, setTotalPages ] = useState(0);
+  const [currentPage, setCurrentPage] = useState(page);
+  const [isMoving, setIsMoving] = useState(false);
+
+  const [followedApplications, setFollowedApplications] = useState<any[]>([]);
+
+  const pageChangeCallback = () => {
+    setIsMoving(true);
+  }
+  const handleClick = (application) => {
+    setSelectedApplication(application);
     setShowApplicationList(false);
   }
 
@@ -62,12 +76,18 @@ export default function SearchPage() {
   //   setApplications(firstPage.applications);
   // }
 
-  const page = 1;
+  const path = usePathname();
+  
   
   function handleBackButton() {
 
     setSelectedApplication(null);
     setShowApplicationList(true);
+  }
+
+  const callBackMethod = (totalPages, currentPage) => {
+    setTotalPages(totalPages);
+    setCurrentPage(currentPage);
   }
 
   function handleApplyButtonClick() {
@@ -100,29 +120,40 @@ export default function SearchPage() {
   return (
 <>
   <div className="flex flex-col flex-1 hidden px-5 py-10 lg:flex-row md:block">
-    <h1 className="text-lg">Search results for <span className='font-bold'>"PHP"</span></h1>
+    <h1 className="text-lg">Your refer list</h1>
   </div>
   <div className="flex flex-col flex-1 sm:pb-20 md:flex-row">
       <div className={`h-[calc(100vh_-_170px)] sm:h-[calc(100vh_-_200px)] px-4 sm:px-4 md:w-1/3 flex-col  overflow-auto ${selectedApplication ? "hidden md:flex" : "w-full"}`}>
         <ul>
-          {applications.length ? applications.map((job) => (
-            <ApplicationItem key={job.id} job={job} handleOnClick={handleClick} isSelected={selectedApplication && selectedApplication.id === job.id}/>
-          )) : (
+        {applications ? 
+          <>
+          {applications.length ? applications.map((application) => (
+            <ApplicationItem key={application.id} application={application} handleOnClick={handleClick} isSelected={selectedApplication && selectedApplication.id === application.id}/>
+          ))
+          
+          : (
             <>
-              <ApplicationListSkeleton />
+              <p>Không có dữ liệu. Hãy cố gắng lên nhé!</p>
             </>
           )}
+          </>
+          : <JobListSkeleton />
+          }
         </ul>
-        <p>Pagination</p>
       </div>
+      {totalPages > 1 && currentPage && (
+            <div className="sticky bottom-0 z-3 bg-white flex items-center justify-center w-full py-2 md:py-4">
+                <Pagination pageChangeCallback={pageChangeCallback} data={ {totalPages: totalPages, page: currentPage }}  />
+            </div>
+        )}
       <div className="sm:p-4 md:w-2/3">
       {!showApplicationList &&  (
           <>
           <ApplicationDetail selectedApplication={selectedApplication} handleBackButton={handleBackButton} handleApplyButtonClick={handleApplyButtonClick} />
-          <ApplyScreen jobId={selectedApplication?.id} isModalOpening={isModalOpening} closeModalCallBack={closeModalCallBack}/>
+          {/* <ApplyScreen applicationId={selectedApplication?.id} isModalOpening={isModalOpening} closeModalCallBack={closeModalCallBack}/> */}
           <div className="sticky bottom-0 left-0 z-10 w-full p-4 bg-gray-100 border-t border-gray-200 sm:hidden">
             <div className="flex items-center justify-between">
-              <button className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-600" onClick={handleApplyButtonClick}>Apply</button>
+              {/* <button className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-600" onClick={handleApplyButtonClick}>Apply</button> */}
               <button className="px-4 py-2 font-bold text-white bg-gray-500 rounded hover:bg-gray-600" onClick={handleBackButton}>Back</button>
             </div>
           </div>

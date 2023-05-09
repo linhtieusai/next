@@ -104,20 +104,20 @@ export default function SearchPage() {
   <div className="flex flex-col flex-1 sm:pb-20 md:flex-row">
       <div className={`h-[calc(100vh_-_170px)] sm:h-[calc(100vh_-_200px)] px-4 sm:px-4 md:w-1/3 flex-col  overflow-auto ${selectedJob ? "hidden md:flex" : "w-full"}`}>
         <ul>
-          {jobs.length ? jobs.map((job) => (
+          {/* {jobs.length ? jobs.map((job) => (
             <JobItem key={job.id} job={job} handleOnClick={handleClick} isSelected={selectedJob && selectedJob.id === job.id}/>
           )) : (
             <>
               <JobListSkeleton />
             </>
-          )}
+          )} */}
         </ul>
         <p>Pagination</p>
       </div>
       <div className="sm:p-4 md:w-2/3">
       {!showJobList &&  (
           <>
-          <JobDetail selectedJob={selectedJob} handleBackButton={handleBackButton} handleApplyButtonClick={handleApplyButtonClick} />
+          {/* <JobDetail selectedJob={selectedJob} handleBackButton={handleBackButton} handleApplyButtonClick={handleApplyButtonClick} /> */}
           <ApplyScreen jobId={selectedJob?.id} isModalOpening={isModalOpening} closeModalCallBack={closeModalCallBack}/>
           <div className="sticky bottom-0 left-0 z-10 w-full p-4 bg-gray-100 border-t border-gray-200 sm:hidden">
             <div className="flex items-center justify-between">
