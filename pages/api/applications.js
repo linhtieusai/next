@@ -8,36 +8,10 @@ export default async function handler(req, res) {
     const session = await getSession({ req });
     const query = req.query;
     const { page, status } = query;
-    
 
     if(!session) {
       throw new Error ('Unauthorized');
     }
-
-    // console.log(session);
-
-    // const applications = await prisma.applications.findMany({
-    //   take: 10,
-    //   skip: (page - 1) * 10,
-    //   where: { user_id: session?.user?.id },
-    //   include: {
-    //     job: {
-    //       select: {
-    //         title: true,
-    //         source_site: true,
-    //         source_id: true
-
-    //       }
-    //     },
-    //     candidate: {
-    //       select: {
-    //         hashed_resume_name: true,
-    //       }
-    //     }
-    //   },
-    // });
-
-    console.log(page);
 
     const data = await prisma.$transaction([
       prisma.applications.count({
@@ -47,6 +21,9 @@ export default async function handler(req, res) {
         },
       }),
       prisma.applications.findMany({
+        orderBy: {
+          id: 'desc',
+        },
         take: 10,
         skip: (page - 1) * 10,
         where: { 
@@ -65,6 +42,16 @@ export default async function handler(req, res) {
           candidate: {
             select: {
               hashed_resume_name: true,
+            }
+          },
+          application_logs: {
+            orderBy: {
+              id: 'desc',
+            },
+            select: {
+              created_at: true,
+              status: true,
+              message: true,
             }
           }
         },

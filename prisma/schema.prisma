@@ -55,16 +55,18 @@ model user {
 }
 
 model notifications {
-  id         Int      @id @default(autoincrement())
-  type       String?  @db.VarChar(255)
-  content    String   @db.VarChar(255)
-  job_id     Int?
-  is_read    Boolean?
-  user_id    Int
-  created_at DateTime @db.DateTime(0)
-  updated_at DateTime @default(now()) @db.DateTime(0)
+  id             Int      @id @default(autoincrement())
+  type           String?  @db.VarChar(255)
+  content        String   @db.VarChar(255)
+  job_id         Int?
+  application_id Int?
+  is_read        Boolean?
+  user_id        Int
+  created_at     DateTime @db.DateTime(0)
+  updated_at     DateTime @default(now()) @db.DateTime(0)
 
-  job job? @relation(fields: [job_id], references: [id])
+  job         job?          @relation(fields: [job_id], references: [id])
+  application applications? @relation(fields: [application_id], references: [id])
 
   @@index([job_id], map: "notifications_job_id_fkey")
   @@index([user_id], map: "user_id")
@@ -88,6 +90,7 @@ model applications {
   created_at       DateTime           @default(now()) @db.DateTime(0)
   updated_at       DateTime           @default(now()) @db.DateTime(0)
   application_logs application_logs[]
+  notifications    notifications[]
 
   @@index([job_id], map: "notifications_job_id_fkey")
 }

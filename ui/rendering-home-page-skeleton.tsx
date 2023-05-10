@@ -1,22 +1,17 @@
 export default function HomePageSkeleton() {
   return (
     <>
-    <div className="flex flex-col justify-center items-center ">
-      <div className="w-full">
-        <div className="grid grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-8">
-          {Array.from({ length: 10 }).map((_, index) => (
-            <div
-              key={index}
-              className="bg-white shadow-md rounded-lg animate-pulse p-4"
-            >
-              <div className="h-32 bg-gray-400 rounded-lg mb-4"></div>
-              <div className="h-4 bg-gray-400 mb-2"></div>
-              <div className="h-4 bg-gray-400"></div>
-            </div>
-          ))}
-        </div>
-      </div>
+    
+
+<div className=" w-full min-h-screen flex justify-center items-center">
+  <div className="flex min-h-screen w-full items-center justify-center ">
+    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-tr from-indigo-500 to-pink-500 animate-spin">
+      <div className="h-9 w-9 rounded-full "></div>
     </div>
+  </div>
+</div>
+
+
     </>
   );
 };

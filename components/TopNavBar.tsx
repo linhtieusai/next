@@ -99,9 +99,14 @@ const Navbar = () => {
                         <Image src={`/company_logo/${notification.job.source_site}/${notification.job.source_id}.jpg`} alt="me" width="40" height="40" className="object-cover mr-3 rounded-full"/>
                       </div>
                       <div className='flex-col'>
-                        <div className='font-bold text-sm text-slate-800'>
+                        <div className={`${notification.application ? "text-gray-500": "font-semibold text-slate-800"} text-xs `}>
                           {notification.job.title}
                         </div>
+                        {notification.application && (
+                          <div className='font-semibold text-sm text-slate-800'>
+                          {notification.application.name}
+                        </div>
+                        )}
                         <div className='text-gray-700 text-xs'>
                           {notification.content}
                         </div>
