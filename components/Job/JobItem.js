@@ -55,7 +55,7 @@ export default function JobItem({ job, isViewed, handleOnClick, isFollowed, isSe
               `}
             >
               <div className={`relative flex justify-between items-center`}>
-                  <div className="flex items-center text-sm">
+                  <div className="flex items-center text-sm text-green-900">
                     <Image src={`/company_logo/${job.source_site}/${job.source_id}.jpg`} alt="me" width="55" height="55" className="object-cover mr-3 rounded-full"/>
                     <div>
                       <div className='flex'>
