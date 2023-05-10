@@ -43,6 +43,7 @@ export default async function handler(req, res) {
       prisma.applications.count({
         where: {
           user_id: session.user.id,
+          status: status ? parseInt(status) : undefined,
         },
       }),
       prisma.applications.findMany({

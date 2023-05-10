@@ -120,9 +120,7 @@ export default function SearchPage({ searchParams }) {
     // if(searchParams) {
       const params = new URLSearchParams(searchParams);
       params.set('status', status);
-      if(!searchParams.page) {
-        params.set('page', page);
-      }
+      params.delete('page');
 
     // }
     const newPath = `${currentPath}?${params.toString()}`;
@@ -166,7 +164,7 @@ export default function SearchPage({ searchParams }) {
           <div className="hidden sm:flex items-center w-1/3 ">
               <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24"
                   stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" strokeWidth="2"
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                       d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
               <input type="text" name="name" placeholder="Search Email / Name"
@@ -206,7 +204,7 @@ export default function SearchPage({ searchParams }) {
           
           : (
             <>
-              <p>Không có dữ liệu. Hãy cố gắng lên nhé!</p>
+              <p>Không có dữ liệu.</p>
             </>
           )}
           </>
@@ -226,7 +224,9 @@ export default function SearchPage({ searchParams }) {
           <ApplicationDetail selectedApplication={selectedApplication} handleBackButton={handleBackButton} handleApplyButtonClick={handleApplyButtonClick} />
           {/* <ApplyScreen applicationId={selectedApplication?.id} isModalOpening={isModalOpening} closeModalCallBack={closeModalCallBack}/> */}
           <div className="sticky bottom-0 left-0 z-10 w-full p-4 bg-gray-100 border-t border-gray-200 sm:hidden">
+           
             <div className="flex items-center justify-between">
+              <div className='flex'></div>
               {/* <button className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-600" onClick={handleApplyButtonClick}>Apply</button> */}
               <button className="px-4 py-2 font-bold text-white bg-gray-500 rounded hover:bg-gray-600" onClick={handleBackButton}>Back</button>
             </div>

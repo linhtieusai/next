@@ -1,14 +1,22 @@
 'use client';
 
 import { Pagination } from '@mui/material';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 function Paginationx ({ data, pageChangeCallback })  {
   const router =  useRouter();
   const currentPath = usePathname();
+  const searchParams = useSearchParams();
+
   function handleChangePage(event, value) {
     pageChangeCallback();
-    router.push(currentPath + `?page=${value}`,undefined, { shallow: true });
+    console.log("currentPath");
+    const params = new URLSearchParams(searchParams);
+    params.set("page", value);
+    console.log(searchParams);
+    console.log(searchParams.toString());
+
+    router.push(currentPath + `?` + params.toString());
   }
 
   const page = parseInt(data.page);
