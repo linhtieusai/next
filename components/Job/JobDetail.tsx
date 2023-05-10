@@ -20,7 +20,7 @@ function JobDetail({ selectedJob, handleBackButton, handleApplyButtonClick, isFo
             >
                 Back to Search Results for "PHP"
             </a> */}
-            <div className="sticky top-0 flex-col items-center justify-between px-5 pb-10 h-[calc(100vh_-_200px)] overflow-auto bg-white border-b text-sm ">
+            <div className="sticky top-0 flex-col items-center justify-between px-5 pb-10 h-[calc(100vh_-_200px)] overflow-auto bg-white border-b text-sm">
                 <div className="sticky top-0 flex justify-between py-3 bg-white">
                   <h1 className="flex ml-2 text-xl font-bold overflow-ellipsis clamp-2 text-green-950 opacity-80">{selectedJob.title}</h1>
                   <div className="flex items-center gap-2" >
@@ -37,7 +37,7 @@ function JobDetail({ selectedJob, handleBackButton, handleApplyButtonClick, isFo
                     </button>
                   </div>
                 </div>
-                <div className="pl-5 pt-13 opacity-80">
+                <div className="pl-5 pt-13 text-green-900">
                     <h3 className="mt-3 text-md font-semibold">Required Skill</h3>
                     <p className="pl-4 whitespace-pre-wrap">{selectedJob?.job_required_skill}</p>
                     <h3 className="mt-3 text-md font-semibold">Preferred</h3>
