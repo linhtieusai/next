@@ -21,24 +21,8 @@ export default async function handler(req, res) {
     ORDER BY id DESC
     LIMIT ? OFFSET ?
   `, [limit, offset]);
-  // `, [`%${query}%`, limit, offset]);
 
   const jobs = rows.map((row) => (row));
-
-  // const jobs = rows.map((row) => ({
-  //   id: row.id,
-  //   title: row.title,
-  //   location: row.location,
-  //   preferred_skill: row.preferred_skill,
-  //   job_responsibility: row.job_responsibility,
-  //   description: row.description,
-  //   gross_month_salary: row.gross_month_salary,
-  //   source_site: row.source_site,
-  //   source_id: row.source_id,
-  //   job_location: row.job_location,
-    
-  // }));
-
 
   const [countRows] = await connection.query(`
     SELECT COUNT(*) as count FROM job

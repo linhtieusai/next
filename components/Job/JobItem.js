@@ -55,17 +55,14 @@ export default function JobItem({ job, isViewed, handleOnClick, isFollowed, isSe
               `}
             >
               <div className={`relative flex justify-between items-center`}>
-                  <div className="flex items-center">
+                  <div className="flex items-center text-sm">
                     <Image src={`/company_logo/${job.source_site}/${job.source_id}.jpg`} alt="me" width="55" height="55" className="object-cover mr-3 rounded-full"/>
                     <div>
                       <div className='flex'>
                         <p className="text-gray-600">{job.company_name}</p>
-                        
-                        
                       </div>
-                      <h3 className="text-lg font-semibold">{job.title}</h3>
-                      <span className="mt-4 text-gray-700">
-                        
+                      <h3 className="text-md font-semibold">{job.title}</h3>
+                      <span className="mt-4 text-gray-400">
                         {job.gross_month_salary}
                       </span>
                       <span className="mt-4 text-gray-700">
@@ -87,7 +84,7 @@ export default function JobItem({ job, isViewed, handleOnClick, isFollowed, isSe
                   </div>
                 </div>
             </div>
-            </div>
+        </div>
     );
   }
   

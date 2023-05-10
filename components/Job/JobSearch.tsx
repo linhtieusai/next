@@ -263,8 +263,8 @@ export default function SearchPage({ firstPageData, moving }) {
           <ApplyScreen jobId={selectedJob?.id} isModalOpening={isModalOpening} closeModalCallBack={closeModalCallBack}/>
             <div className="sticky bottom-0 left-0 z-10 w-full p-4 bg-gray-100 border-t border-gray-200 sm:hidden">
               <div className="flex items-center justify-between">
-                <button className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-600" onClick={handleApplyButtonClick}>Apply</button>
-                <button className="px-4 py-2 font-bold text-white bg-gray-500 rounded hover:bg-gray-600" onClick={handleBackButton}>Back</button>
+                <button className="px-8 py-2 font-bold text-white bg-green-600 rounded-full hover:opacity-80" onClick={handleApplyButtonClick}>Apply</button>
+                <button className="px-8 py-2 font-bold text-white bg-gray-500 rounded-full hover:opacity-80" onClick={handleBackButton}>Back</button>
               </div>
             </div>
           </>

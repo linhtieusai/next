@@ -174,10 +174,10 @@ export default function SearchPage({ searchParams }) {
       <div className="flex items-center justify-center  ">
           <span className='text-sm text-gray-600 mr-3'> Filter by Status </span>
           <button onClick={() => handleFilterStatus(1)} className={`${isActive(1)}
-           flex items-center border text-gray-500 border-red-200 rounded-full px-3 py-1 
+           flex items-center border text-gray-500 border-red-200 rounded-full p-1 pl-3 
            text-gray-800 mr-2 text-xs hover:cursor-pointer hover:opacity-80 `}>
             Đang chờ duyệt 
-            <span className="ml-2 bg-gray-300 text-gray-700 rounded-full w-5 h-5
+            <span className="ml-2 bg-gray-300 text-gray-700 rounded-full w-6 h-6
              flex items-center justify-center text-xs font-semibold  flex-shrink-0 min-w-[1.25rem]">
               {statusCount[1]}
             </span>

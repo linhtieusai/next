@@ -20,9 +20,9 @@ function JobDetail({ selectedJob, handleBackButton, handleApplyButtonClick, isFo
             >
                 Back to Search Results for "PHP"
             </a> */}
-            <div className="sticky top-0 flex-col items-center justify-between px-5 pb-10 h-[calc(100vh_-_200px)] overflow-auto bg-white border-b">
+            <div className="sticky top-0 flex-col items-center justify-between px-5 pb-10 h-[calc(100vh_-_200px)] overflow-auto bg-white border-b text-sm">
                 <div className="sticky top-0 flex justify-between py-3 bg-white">
-                  <h1 className="flex ml-2 text-2xl font-bold overflow-ellipsis clamp-2">{selectedJob.title}</h1>
+                  <h1 className="flex ml-2 text-xl font-semibold overflow-ellipsis clamp-2">{selectedJob.title}</h1>
                   <div className="flex items-center gap-2" >
                     <button className="group flex items-center px-4 py-2 font-bold text-red-400 border border-red-300 bg-white rounded-full hover:text-red-600"
                       onClick={() => handleFollowButtonClick(selectedJob, isFollowed)}
@@ -38,19 +38,19 @@ function JobDetail({ selectedJob, handleBackButton, handleApplyButtonClick, isFo
                   </div>
                 </div>
                 <div className="pl-5 pt-13">
-                    <h3 className="mt-3 text-lg font-bold">Required Skill</h3>
+                    <h3 className="mt-3 text-md font-semibold">Required Skill</h3>
                     <p className="pl-4 whitespace-pre-wrap">{selectedJob?.job_required_skill}</p>
-                    <h3 className="mt-3 text-lg font-bold">Preferred</h3>
+                    <h3 className="mt-3 text-md font-semibold">Preferred</h3>
                     <p className="pl-4 whitespace-pre-wrap">{selectedJob?.preferred_skill}</p>
                     {/* <h3 className="text-lg font-bold">Job overview</h3>
                     <p className="whitespace-pre-wrap">{selectedJob?.overview}</p> */}
-                    <h3 className="mt-3 text-lg font-bold">Job Responsibilites</h3>
+                    <h3 className="mt-3 text-md font-semibold">Job Responsibilites</h3>
                     <p className="pl-4 whitespace-pre-wrap">{selectedJob?.job_responsibility}</p>
                     
-                    <h3 className="mt-3 text-lg font-bold">Why you should Apply?</h3>
+                    <h3 className="mt-3 text-md font-semibold">Why you should Apply?</h3>
                     <p className="pl-4 whitespace-pre-wrap">{selectedJob?.why_should_apply}</p>
                     <hr className="my-4"></hr>
-                    <h3 className="mt-3 text-lg font-bold">About {selectedJob?.company_name}</h3>
+                    <h3 className="mt-3 text-md font-semibold">About {selectedJob?.company_name}</h3>
                     <p className="pl-4 whitespace-pre-wrap">{selectedJob?.company_description}</p>
                     <p className="mb-2">Company Address: {selectedJob?.company_address}</p>
                 </div>

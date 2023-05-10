@@ -14,12 +14,14 @@ export default async function handler(req, res) {
     }
 
     const data = await prisma.$transaction([
+      // count all
       prisma.applications.count({
         where: {
           user_id: session.user.id,
           status: status ? parseInt(status) : undefined,
         },
       }),
+      // select pagination
       prisma.applications.findMany({
         orderBy: {
           id: 'desc',
@@ -56,6 +58,7 @@ export default async function handler(req, res) {
           }
         },
       }),
+      // count group by status
       prisma.applications.groupBy({
         by: ['status'],
         where: { 
@@ -67,7 +70,7 @@ export default async function handler(req, res) {
       })
     ]);
 
-    console.log(data[2]);
+    // console.log(data[2]);
     const statusCount = {};
     data[2].forEach((item) => {
       const { status, _count } = item;
@@ -80,20 +83,6 @@ export default async function handler(req, res) {
       page: page,
       statusCount: statusCount,
     });
-
-    // if(session) {
-    //     // Check if the user has already submitted the job
-    //     const notifications = await prisma.notifications.findMany({
-    //         where: { userId: { userId: session.user.id } },
-    //     });
-
-    //     res.status(201).json({
-    //       data: notifications,
-    //     });
-    // } else {
-    //   res.status(201).json({
-    //   });
-    // }
   } catch (err) {
     res.status(500).json({message: err.message});
   } finally {

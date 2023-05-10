@@ -8,13 +8,12 @@ const Navbar = () => {
   const pathname = usePathname();
 
   const isActive = (path) => {
-    return pathname === path ? 'text-green-700 hover:text-green-600' : 'text-gray-500 hover:text-gray-700';
+    return pathname === path ? 'text-green-700 font-semibold hover:text-green-600' : 'text-gray-500 hover:text-gray-700';
   };
   
   return (
     <>
-    <div className="flex-col justify-between hidden w-40 p-2 overflow-auto bg-gray-100 md:flex">
-                 
+    <div className="flex-col text-sm justify-between hidden w-40 p-2 overflow-auto bg-gray-100 md:flex">
                     <div className="flex flex-col ">
                     <button >
                     <svg

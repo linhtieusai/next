@@ -15,8 +15,6 @@ export default async function handler(req, res) {
       throw new Error ('Unauthorized');
     }
 
-    console.log(session);
-
     // const applications = await prisma.applications.findMany({
     //   where: { user_id: session?.user?.id },
     //   include: {
@@ -36,8 +34,6 @@ export default async function handler(req, res) {
     //     }
     //   },
     // });
-
-
     const fileName = `${id}.pdf`;
     const filePath = path.join(process.cwd(), 'media', 'resume', fileName);
 
