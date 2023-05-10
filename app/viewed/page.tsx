@@ -14,9 +14,9 @@ import JobListSkeleton from '../../ui/rendering-job-list-skeleton'
 
 import JobItem from '../../components/Job/JobItem';
 import { usePathname, useSearchParams } from 'next/navigation';
-import Pagination from '../../components/Job/Pagination'
+// import Pagination from '../../components/Job/Pagination'
 import dynamic from 'next/dynamic'
-
+import { Pagination } from '@mui/material';
 // localhost:3000
 
 import { PrismaClient } from "@prisma/client";
@@ -133,8 +133,9 @@ export default function ViewedJobPage({ searchParams }) {
   //   page = 1;
   // }
 
-  const pageChangeCallback = () => {
+  const handleChangePage = (event, value) => {
     setIsMoving(true);
+    setCurrentPage(value);
   }
 
   useEffect(() => {
@@ -150,7 +151,7 @@ export default function ViewedJobPage({ searchParams }) {
     console.log("go use effect");
     // if(page != currentPage) {
       console.log("go here");
-      getViewedJobFromLocalStorage(page)
+      getViewedJobFromLocalStorage(currentPage)
       .then(data => {
         setJobViewHistory(data.jobs);
 
@@ -165,7 +166,7 @@ export default function ViewedJobPage({ searchParams }) {
     
     //setJobs(await getViewedJobFromLocalStorage(page));
 
-  }, [page]);
+  }, [currentPage]);
 
 
   return (
@@ -235,7 +236,9 @@ export default function ViewedJobPage({ searchParams }) {
 
         <div className="sticky bottom-0 z-3 bg-white flex items-center justify-center w-full py-2 md:py-4">
           {totalPages > 1 && currentPage && (
-            <Pagination pageChangeCallback={() => {}} data={ {totalPages: totalPages, page: currentPage }}  />
+            <Pagination count={totalPages} page={currentPage} onChange={handleChangePage} shape="rounded" />
+
+            // <Pagination pageChangeCallback={() => {}} data={ {totalPages: totalPages, page: currentPage }}  />
           )}
         </div>
         <div className="flex">
