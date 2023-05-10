@@ -18,7 +18,6 @@ import Link from 'next/link';
 // localhost:3000
 import dynamic from 'next/dynamic'
 import Router  from 'next/router';
-
 import { PrismaClient } from "@prisma/client";
 
 async function getFirstPage(page) {
@@ -58,6 +57,12 @@ export default function SearchPage({ firstPageData, moving }) {
   const [viewedJobs, setViewedJobs] = useState<any[]>([]);
   const [followedJobs, setFollowedJobs] = useState<any[]>([]);
 
+  const jobListRef = useRef(null);
+  const scrollToFirstChild = () => {
+    if(jobListRef.current) {
+      jobListRef.current.firstChild.scrollIntoView({ behavior: "smooth" });
+    }
+  };
   
   // useEffect(() => {
   //   setIsMoving(moving);
@@ -136,6 +141,7 @@ export default function SearchPage({ firstPageData, moving }) {
 
   const pageChangeCallback = () => {
     setIsMoving(true);
+    scrollToFirstChild();
   }
 
   function handleBackButton() {
@@ -197,7 +203,7 @@ export default function SearchPage({ firstPageData, moving }) {
       {/* {(isMoving || loading) ? "Movingggg" : "Not moving"} */}
       {/* {(isMoving) ? "Movingggg" : "Not moving"} */}
 
-        <div className={`px-4 sm:px-4 ${isMoving ? 'opacity-50' : 'opacity-100'}`}>
+        <div ref={jobListRef} className={`px-4 sm:px-4 ${isMoving ? 'opacity-50' : 'opacity-100'}`}>
               {jobs.length ? jobs.map((job) => (
                 <JobItem key={job.id} job={job} isViewed={viewedJobs[job.id]} 
                   handleOnClick={handleClick}
