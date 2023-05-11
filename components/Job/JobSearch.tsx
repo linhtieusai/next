@@ -215,12 +215,7 @@ export default function SearchPage({ firstPageData, moving }) {
                 </>
               )}
 
-            {/* {isMoving && (
-                <JobListSkeleton />
-            )} */}
-        </div>
-
-        {isMoving && (
+{isMoving && (
           <div className="absolute top-0 left-0 flex items-center justify-center w-full h-full">
             <div className="absolute top-0 left-0 z-10 w-full h-full bg-green-200 opacity-20"></div>
             <div className="z-20">
@@ -230,6 +225,9 @@ export default function SearchPage({ firstPageData, moving }) {
             </div>
           </div>
         )}
+        </div>
+
+        
 
         {/* {isMoving && (
           <div className="absolute top-0 left-0 z-1 items-center flex justify-center w-full h-full">

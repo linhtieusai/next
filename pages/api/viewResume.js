@@ -15,25 +15,21 @@ export default async function handler(req, res) {
       throw new Error ('Unauthorized');
     }
 
-    // const applications = await prisma.applications.findMany({
-    //   where: { user_id: session?.user?.id },
-    //   include: {
-    //     job: {
-    //       select: {
-    //         title: true,
-    //         source_site: true,
-    //         source_id: true
-
-    //       }
-    //     },
-    //     candidate: {
-    //       select: {
-    //         hashed_resume_name: true,
-
-    //       }
-    //     }
-    //   },
-    // });
+    const application = await prisma.applications.findFirstOrThrow({
+      where: {
+        candidate: {
+          hashed_resume_name: id,
+        },
+      },
+      select: {
+        candidate: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+    
     const fileName = `${id}.pdf`;
     const filePath = path.join(process.cwd(), 'media', 'resume', fileName);
 
@@ -45,7 +41,7 @@ export default async function handler(req, res) {
     } else {
       // Set the response headers
       res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', 'inline ');
+      res.setHeader('Content-Disposition', `inline; filename=${application.candidate.name}.pdf`);
       
       // Write the PDF file to the response
       res.write(data);
