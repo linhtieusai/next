@@ -20,9 +20,9 @@ function JobDetail({ selectedJob, handleBackButton, handleApplyButtonClick, isFo
             >
                 Back to Search Results for "PHP"
             </a> */}
-            <div className="sticky top-0 flex-col items-center justify-between px-5 pb-10 h-[calc(100vh_-_200px)] overflow-auto bg-white border-b text-sm">
-                <div className="sticky top-0 flex justify-between py-3 bg-white">
-                  <h1 className="flex ml-2 text-xl font-bold overflow-ellipsis clamp-2 text-green-950 opacity-60">{selectedJob.title}</h1>
+            <div className=" sticky top-0 flex-col items-center justify-between px-5 pb-10 h-[calc(100vh_-_200px)] overflow-auto border-b text-sm">
+                <div className="sticky top-0 flex items-center justify-between py-3 bg-white">
+                  <h1 className="flex-1 ml-2 text-xl font-bold truncate text-green-950 opacity-60">{selectedJob.title}</h1>
                   <div className="flex items-center gap-2" >
                     <button className="group flex items-center px-4 py-2 font-bold text-red-400 border border-red-300 bg-white rounded-full hover:text-red-600"
                       onClick={() => handleFollowButtonClick(selectedJob, isFollowed)}
@@ -32,7 +32,7 @@ function JobDetail({ selectedJob, handleBackButton, handleApplyButtonClick, isFo
                       </svg>
                       <span  className="hidden ml-2 md:inline-block">{isFollowed ? 'Following' : 'Follow'}</span>
                     </button>
-                    <button onClick={handleApplyButtonClick} className="hidden px-4 lg:px-12 py-2 font-bold text-white bg-green-700 rounded-full lg:block hover:bg-green-600">
+                    <button onClick={handleApplyButtonClick} className="hidden px-4 lg:px-12 py-2 font-bold text-white bg-green-700 rounded-full md:block hover:bg-green-600">
                       Apply
                     </button>
                   </div>

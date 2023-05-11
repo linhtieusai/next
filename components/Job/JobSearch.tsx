@@ -220,6 +220,17 @@ export default function SearchPage({ firstPageData, moving }) {
             )} */}
         </div>
 
+        {isMoving && (
+          <div className="absolute top-0 left-0 flex items-center justify-center w-full h-full">
+            <div className="absolute top-0 left-0 z-10 w-full h-full bg-green-200 opacity-20"></div>
+            <div className="z-20">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-tr from-indigo-500 to-pink-500 animate-spin">
+                <div className="h-9 w-9 rounded-full "></div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* {isMoving && (
           <div className="absolute top-0 left-0 z-1 items-center flex justify-center w-full h-full">
             <div className="absolute top-0 left-0 z-1 w-full h-full bg-black opacity-20"></div>
