@@ -7,7 +7,7 @@ import NotificationSkeleton from '../ui/rendering-notification-skeleton'
 import Image from 'next/image';
 
 const Navbar = () => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession()
   const [notifications, setNotifications] = useState<any[]>();
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
@@ -73,14 +73,21 @@ const Navbar = () => {
           </svg>
         </div>
         <div ref={notificationIconRef} className='flex ml-4' onClick={() => setShowPopup((prevShowPopup) => !prevShowPopup)}>
-          <svg strokeWidth="1.5" stroke="currentColor" className={`w-6 h-6 ${showPopup ? "text-green-600 hover:text-green-800" : "text-gray-600 hover:text-gray-800"} hover:cursor-pointer xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"`}>
+          <svg strokeWidth="1.5" stroke="currentColor" className={`w-6 h-6 ${showPopup ? "text-green-600 hover:text-green-600" : "text-gray-600 hover:text-gray-800"} hover:cursor-pointer xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"`}>
             <path strokeLinecap="round" fill={showPopup ? 'green' : 'none'} strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"></path>
           </svg>
         </div>
         <div className="ml-4">
           <Link href="/my-page">
-            <button className="px-4 py-2 border rounded-full text-green-600 border-slate-300 hover:border-emerald-100 hover:bg-emerald-100 hover:bg-gray-100">
-                {session ? "My Page" : "Login"}
+            <button className="px-4 py-2 text-sm border rounded-full text-green-600 border-slate-300 hover:border-emerald-100 hover:bg-emerald-100 hover:bg-gray-100">
+                {/* {if (status === "authenticated") &&
+                  "My Page"
+                } */}
+                {status === "loading" ? (
+                  <div className="flex animate-pulse">
+                    <h3 className="h-4 w-10 bg-gray-200 rounded-md dark:bg-gray-700"></h3>
+                  </div>
+                ) : (session ? "My Page" : "Login")}
             </button>
           </Link>
         </div>
@@ -88,7 +95,7 @@ const Navbar = () => {
       </div>
       {showPopup && (
        <div className='z-10 max-h-[calc(100vh_-_300px)] max-w-[460px] overflow-auto p-4 notification-popup flex flex-col border rounded-lg shadow-lg bg-slate-50 flex absolute top-16 right-5 ml:10 min-h-[150px] w-[90%] md:w-auto md:min-w-[360px]' ref={popupRef}>
-          <div className='flex p-4 bg-slate-200 font-bold'>Thông báo </div>
+          <div className='flex p-4 text-sm bg-slate-200 text-green-900 font-bold'>Thông báo </div>
           <div className='flex-1 bg-white'>
             <ul className='p-4'>
             {notifications ? (
@@ -99,11 +106,11 @@ const Navbar = () => {
                         <Image src={`/company_logo/${notification.job.source_site}/${notification.job.source_id}.jpg`} alt="me" width="40" height="40" className="object-cover mr-3 rounded-full"/>
                       </div>
                       <div className='flex-col'>
-                        <div className={`${notification.application ? "text-gray-500": "font-semibold text-slate-800"} text-xs `}>
+                        <div className={`${notification.application ? "text-gray-500": "font-semibold text-slate-600"} text-xs `}>
                           {notification.job.title}
                         </div>
                         {notification.application && (
-                          <div className='font-semibold text-sm text-slate-800'>
+                          <div className='font-semibold text-sm text-slate-600'>
                           {notification.application.name}
                         </div>
                         )}

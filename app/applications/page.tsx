@@ -15,6 +15,7 @@ import JobListSkeleton from '../../ui/rendering-job-list-skeleton'
 import JobDetailSkeleton from '../../ui/rendering-job-detail-skeleton'
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import Pagination from '../../components/Job/Pagination'
+import { ApplicationStatus } from '../../lib/const'
 
 import ApplicationItem from '../../components/Application/ApplicationItem';
 
@@ -68,11 +69,15 @@ export default function SearchPage({ searchParams }) {
 
 
   const pathname = usePathname();
-  const isActive = (status) => {
-    let fileredStatus = searchParams.status;
-    console.log(fileredStatus);
+  const isActive = (status = "0") => {
+    console.log("status is");
+
     console.log(status);
-    return fileredStatus == status ? 'bg-gray-100' : 'bg-white';
+    let filteredStatus = searchParams.status;
+    if(!filteredStatus) filteredStatus = "0";
+    console.log(filteredStatus);
+    console.log(status);
+    return filteredStatus === status ? 'bg-gray-100' : 'bg-white';
   };
 
   const pageChangeCallback = () => {
@@ -172,7 +177,33 @@ export default function SearchPage({ searchParams }) {
           </div>
       </div>
       <div className="flex items-center justify-center  ">
-          <span className='text-sm text-gray-600 mr-3'> Filter by Status </span>
+          {/* <span className='text-sm text-gray-600 mr-3'> Filter by Status </span> */}
+          {statusCount && statusCount['0'] > 0 && Object.entries(statusCount).map(([index, count]) => (
+                    <>
+                    <button key={index} onClick={() => handleFilterStatus(index)} className={`${isActive(index)}
+                      flex items-center border text-gray-500 border-red-200 rounded-full p-1 pl-3 
+                      text-gray-800 mr-2 text-xs hover:cursor-pointer hover:opacity-80 `}>
+                      {index === "0" ? 'All job' : ApplicationStatus.STATUS[index]}
+                      <span className="ml-2 bg-gray-300 text-gray-700 rounded-full w-6 h-6
+                        flex items-center justify-center text-xs font-semibold  flex-shrink-0 min-w-[1.25rem]">
+                        {count}
+                      </span>
+                      </button>
+                  </>
+          
+              
+          ))}
+
+
+          {/* <button onClick={() => handleFilterStatus(1)} className={`${isActive()}
+           flex items-center border text-gray-500 border-red-200 rounded-full p-1 pl-3 
+           text-gray-800 mr-2 text-xs hover:cursor-pointer hover:opacity-80 `}>
+           All job
+            <span className="ml-2 bg-gray-300 text-gray-700 rounded-full w-6 h-6
+             flex items-center justify-center text-xs font-semibold  flex-shrink-0 min-w-[1.25rem]">
+              {statusCount[0]}
+            </span>
+          </button>
           <button onClick={() => handleFilterStatus(1)} className={`${isActive(1)}
            flex items-center border text-gray-500 border-red-200 rounded-full p-1 pl-3 
            text-gray-800 mr-2 text-xs hover:cursor-pointer hover:opacity-80 `}>
@@ -187,7 +218,7 @@ export default function SearchPage({ searchParams }) {
           border text-gray-500 border-green-200 rounded-full px-3 py-1
           text-gray-800 mr-2 text-xs hover:cursor-pointer hover:opacity-80`}>
             Đang chờ phong van
-          </button>
+          </button> */}
       </div>
   </div>
   {/* <div className="flex flex-col flex-1 sm:pb-20 md:flex-row">

@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { Suspense } from 'react';
 
 import dynamic from 'next/dynamic'
+import { ApplicationStatus } from '../../lib/const'
 
 export default function ApplicationItem({ application, handleOnClick, isSelected }) {
   function timeAgo(timestamp) {
@@ -64,7 +65,7 @@ export default function ApplicationItem({ application, handleOnClick, isSelected
                       <h3 className="overflow-hidden text-ellipsis  text-gray-700 text-sm ">{application.email}</h3>
 
                       <p className="mt-4 text-gray-700">
-                        {application.status}
+                        <span className="border rounded-full px-3 py-1 border-gray-400">{ApplicationStatus.STATUS[application.status]}</span>
                       </p>
                       <p className="mt-4 text-gray-700">
                         {application.created_at}

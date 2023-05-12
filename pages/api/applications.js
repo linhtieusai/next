@@ -7,7 +7,12 @@ export default async function handler(req, res) {
   try {
     const session = await getSession({ req });
     const query = req.query;
-    const { page, status } = query;
+    const { page } = query;
+    let { status } = query;
+
+    if(!status) {
+      status = 0;
+    }
 
     if(!session) {
       throw new Error ('Unauthorized');
@@ -18,7 +23,7 @@ export default async function handler(req, res) {
       prisma.applications.count({
         where: {
           user_id: session.user.id,
-          status: status ? parseInt(status) : undefined,
+          status: status != 0 ? parseInt(status) : undefined,
         },
       }),
       // select pagination
@@ -30,7 +35,7 @@ export default async function handler(req, res) {
         skip: (page - 1) * 10,
         where: { 
           user_id: session.user.id,
-          status: status ? parseInt(status) : undefined,
+          status: status != 0 ? parseInt(status) : undefined,
        },
         include: {
           job: {
@@ -67,7 +72,12 @@ export default async function handler(req, res) {
         _count: {
           status: true,
         },
-      })
+      }),
+      prisma.applications.count({
+        where: {
+          user_id: session.user.id,
+        },
+      }),
     ]);
 
     // console.log(data[2]);
@@ -77,12 +87,16 @@ export default async function handler(req, res) {
       statusCount[status] = _count.status;
     });
 
+    statusCount[0] = data[3] ?? 0;
+
     res.status(201).json({
       applications: data[1],
       totalPages: data[0] ? Math.ceil(data[0] / 10) : 0,
       page: page,
       statusCount: statusCount,
     });
+
+    console.log(statusCount);
   } catch (err) {
     res.status(500).json({message: err.message});
   } finally {
