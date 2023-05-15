@@ -8,7 +8,7 @@ export default async function handler(req, res) {
     const session = await getSession({ req });
     const query = req.query;
     const { page } = query;
-    let { status } = query;
+    let { status, applicationId } = query;
 
     if(!status) {
       status = 0;
@@ -16,6 +16,44 @@ export default async function handler(req, res) {
 
     if(!session) {
       throw new Error ('Unauthorized');
+    }
+
+    const includeQuery = {
+      job: {
+        select: {
+          title: true,
+          source_site: true,
+          source_id: true
+        }
+      },
+      candidate: {
+        select: {
+          hashed_resume_name: true,
+        }
+      },
+      application_logs: {
+        orderBy: {
+          id: 'desc',
+        },
+        select: {
+          created_at: true,
+          status: true,
+          message: true,
+        }
+      }
+    };
+
+    let whereQuery = { 
+      user_id: session.user.id,
+      status: status != 0 ? parseInt(status) : undefined,
+      
+    };
+
+    if(applicationId) {
+      applicationId = parseInt(applicationId);
+      whereQuery.NOT = {
+        id: applicationId
+      };
     }
 
     const data = await prisma.$transaction([
@@ -29,39 +67,12 @@ export default async function handler(req, res) {
       // select pagination
       prisma.applications.findMany({
         orderBy: {
-          id: 'desc',
+          id: "desc"
         },
         take: 10,
         skip: (page - 1) * 10,
-        where: { 
-          user_id: session.user.id,
-          status: status != 0 ? parseInt(status) : undefined,
-       },
-        include: {
-          job: {
-            select: {
-              title: true,
-              source_site: true,
-              source_id: true
-  
-            }
-          },
-          candidate: {
-            select: {
-              hashed_resume_name: true,
-            }
-          },
-          application_logs: {
-            orderBy: {
-              id: 'desc',
-            },
-            select: {
-              created_at: true,
-              status: true,
-              message: true,
-            }
-          }
-        },
+        where: whereQuery,
+        include: includeQuery,
       }),
       // count group by status
       prisma.applications.groupBy({
@@ -80,6 +91,19 @@ export default async function handler(req, res) {
       }),
     ]);
 
+    if(applicationId) {
+      applicationId = parseInt(applicationId);
+      const additionalData = await prisma.applications.findFirstOrThrow({
+        where: {
+          user_id: session.user.id,
+          id: applicationId
+          // additional condition here
+        },
+        include: includeQuery
+      });
+      data.push(additionalData);
+    }
+
     // console.log(data[2]);
     const statusCount = {};
     data[2].forEach((item) => {
@@ -94,7 +118,9 @@ export default async function handler(req, res) {
       totalPages: data[0] ? Math.ceil(data[0] / 10) : 0,
       page: page,
       statusCount: statusCount,
+      specificApplication: applicationId ? data[4] : ""
     });
+
 
     console.log(statusCount);
   } catch (err) {

@@ -5,12 +5,16 @@ import { useSession } from "next-auth/react";
 import { useState, useEffect, useRef } from 'react';
 import NotificationSkeleton from '../ui/rendering-notification-skeleton'
 import Image from 'next/image';
+import { ApplicationStatus } from '../lib/const'
+import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 
 const Navbar = () => {
   const { data: session, status } = useSession()
   const [notifications, setNotifications] = useState<any[]>();
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
+
+  const router = useRouter();
   
   useEffect(() => {
     async function fetchNotifications() {
@@ -26,6 +30,15 @@ const Navbar = () => {
 
   const popupRef = useRef<HTMLDivElement>(null);
   const notificationIconRef = useRef<HTMLDivElement>(null);
+
+  function handleClickNotification(notification) {
+    if(notification.application) {
+      
+      router.push(`/applications?applicationId=${notification.application.id}`)
+    } else if(notification.job) {
+      router.push(`/?jobId=${notification.job.id}`)
+    } 
+  }
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -101,7 +114,8 @@ const Navbar = () => {
             {notifications ? (
                 notifications.length > 0 ? (
                   notifications.map((notification, index) => (
-                    <li key={notification.id} className='flex px-4 py-4 hover:bg-gray-100 hover:cursor-pointer'>
+                    <li key={notification.id} onClick={() => handleClickNotification(notification)}
+                      className='flex px-4 py-4 hover:bg-gray-100 hover:cursor-pointer'>
                       <div className='logo'>
                         <Image src={`/company_logo/${notification.job.source_site}/${notification.job.source_id}.jpg`} alt="me" width="40" height="40" className="object-cover mr-3 rounded-full"/>
                       </div>
@@ -115,7 +129,7 @@ const Navbar = () => {
                         </div>
                         )}
                         <div className='text-gray-700 text-xs'>
-                          {notification.content}
+                          {ApplicationStatus.STATUS[notification.content]} 
                         </div>
                         <div className='text-green-700 text-xs'>
                           4 giờ trước

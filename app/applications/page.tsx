@@ -66,7 +66,7 @@ export default function SearchPage({ searchParams }) {
 
   const [followedApplications, setFollowedApplications] = useState<any[]>([]);
   const [statusCount, setStatusCount] = useState({});
-
+  const [specificApplication, setSpecificApplication] = useState<any>(false);
 
   const pathname = usePathname();
   const isActive = (status = "0") => {
@@ -83,20 +83,15 @@ export default function SearchPage({ searchParams }) {
   const pageChangeCallback = () => {
     setIsMoving(true);
   }
-  const handleClick = (application) => {
+  const handleApplicationItemClick = (application) => {
     setSelectedApplication(application);
     setShowApplicationList(false);
   }
-
-  // if(firstPage) {
-  //   setApplications(firstPage.applications);
-  // }
 
   const path = usePathname();
   const router = useRouter();
   
   function handleBackButton() {
-
     setSelectedApplication(null);
     setShowApplicationList(true);
   }
@@ -148,6 +143,24 @@ export default function SearchPage({ searchParams }) {
       .then(data =>  {
           callBackMethod(data.totalPages, data.page, data.statusCount);
           setApplications(data.applications);
+          console.log("page is");
+
+          console.log(page);
+          if(page == 1 && data.specificApplication) {
+            console.log("kakka");
+            setSpecificApplication(data.specificApplication);
+            handleApplicationItemClick(data.specificApplication);
+
+
+            // if(!selectedApplication || (selectedApplication && selectedApplication.id == data.specificApplication.id)) {
+            //   // setSpecificApplication(data.specificApplication);
+            //   handleApplicationItemClick(data.specificApplication);
+            // }
+            
+          } else {
+            setSpecificApplication(false);
+            // handleApplicationItemClick(data.specificApplication);
+          }
         }).catch(error => {
           console.error(error)
         });
@@ -179,19 +192,17 @@ export default function SearchPage({ searchParams }) {
       <div className="flex items-center justify-center  ">
           {/* <span className='text-sm text-gray-600 mr-3'> Filter by Status </span> */}
           {statusCount && statusCount['0'] > 0 && Object.entries(statusCount).map(([index, count]) => (
-                    <>
-                    <button key={index} onClick={() => handleFilterStatus(index)} className={`${isActive(index)}
-                      flex items-center border text-gray-500 border-red-200 rounded-full p-1 pl-3 
-                      text-gray-800 mr-2 text-xs hover:cursor-pointer hover:opacity-80 `}>
-                      {index === "0" ? 'All job' : ApplicationStatus.STATUS[index]}
-                      <span className="ml-2 bg-gray-300 text-gray-700 rounded-full w-6 h-6
-                        flex items-center justify-center text-xs font-semibold  flex-shrink-0 min-w-[1.25rem]">
-                        {count}
-                      </span>
-                      </button>
-                  </>
-          
-              
+              <>
+              <button key={index} onClick={() => handleFilterStatus(index)} className={`${isActive(index)}
+                flex items-center border text-gray-500 border-red-200 rounded-full p-1 pl-3 
+                text-gray-800 mr-2 text-xs hover:cursor-pointer hover:opacity-80 `}>
+                {index === "0" ? 'All job' : ApplicationStatus.STATUS[index]}
+                <span className="ml-2 bg-gray-300 text-gray-700 rounded-full w-6 h-6
+                  flex items-center justify-center text-xs font-semibold  flex-shrink-0 min-w-[1.25rem]">
+                  {count}
+                </span>
+                </button>
+              </>
           ))}
 
 
@@ -227,17 +238,30 @@ export default function SearchPage({ searchParams }) {
 <div className="flex flex-col flex-1 pb-[15px] sm:pb-20 md:flex-row">
       <div className={`relative h-[calc(100vh_-_250px)] sm:h-[calc(100vh_-_200px)]  px-4 sm:px-4 md:w-1/3 flex-col  overflow-auto ${selectedApplication ? "hidden md:flex" : "w-full"}`}>
         <ul>
+        {specificApplication &&
+            <ApplicationItem key={specificApplication.id} application={specificApplication} handleOnClick={handleApplicationItemClick} isSelected={selectedApplication && selectedApplication.id === specificApplication.id}/>
+        }
         {applications ? 
           <>
-          {applications.length ? applications.map((application) => (
-            <ApplicationItem key={application.id} application={application} handleOnClick={handleClick} isSelected={selectedApplication && selectedApplication.id === application.id}/>
-          ))
-          
-          : (
-            <>
-              <p>Không có dữ liệu.</p>
-            </>
-          )}
+          {applications.length ? applications.map((application) => {
+              if (specificApplication && application.id === specificApplication.id) {
+                return null; // Skip this application
+              }
+
+              return (
+                <ApplicationItem
+                  key={application.id}
+                  application={application}
+                  handleOnClick={handleApplicationItemClick}
+                  isSelected={selectedApplication && selectedApplication.id === application.id}
+                />
+              );
+            }) : (
+              <>
+                <p>Không có dữ liệu.</p>
+              </>
+            )}
+     
           </>
           : <JobListSkeleton />
           }
@@ -255,7 +279,6 @@ export default function SearchPage({ searchParams }) {
           <ApplicationDetail selectedApplication={selectedApplication} handleBackButton={handleBackButton} handleApplyButtonClick={handleApplyButtonClick} />
           {/* <ApplyScreen applicationId={selectedApplication?.id} isModalOpening={isModalOpening} closeModalCallBack={closeModalCallBack}/> */}
           <div className="sticky bottom-0 left-0 z-10 w-full p-4 bg-gray-100 border-t border-gray-200 sm:hidden">
-           
             <div className="flex items-center justify-between">
               <div className='flex'></div>
               {/* <button className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-600" onClick={handleApplyButtonClick}>Apply</button> */}
