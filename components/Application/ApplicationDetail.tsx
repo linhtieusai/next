@@ -5,16 +5,12 @@ import { Pagination } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { useSearchParams, usePathname  } from 'next/navigation';
 import { Suspense } from "react";
-import { ApplicationStatus } from '../../lib/const'
+import { ApplicationStatus } from '../../lib/const';
+import Link from "next/link";
+
 
 function ApplicationDetail({ selectedApplication, handleBackButton, handleApplyButtonClick }) {
 
-  // console.log(selectedApplication.application_logs[0].status);
-  console.log(selectedApplication.application_logs);
-
-  console.log(selectedApplication.application_logs[0].status);
-
-  console.log(ApplicationStatus.STATUS_NEXT[selectedApplication.application_logs[0].status]);
   return (
     <>
       {/* <div className="p-4 lg:w-2/3"> */}
@@ -30,15 +26,25 @@ function ApplicationDetail({ selectedApplication, handleBackButton, handleApplyB
               justify-between px-5 pb-10 h-[calc(100vh_-_200px)]
               overflow-auto bg-white border-b text-sm">
                 <div className="flex-row md:flex-row-reverse md:flex">
-                  <div className="flex w-full md:w-1/2">
+                  <div className="flex-row w-full md:w-1/2">
+                      <div className='flex justify-end space-x-2'>
+                          <Link href={`/job/${selectedApplication.job_id}`} className="px-3 py-1 text-slate-600 bg-gray-300  rounded-full hover:opacity-80 text-sm">
+                            View job
+                          </Link>
+                          <button className="px-3 py-1 text-white text-sm bg-green-700 rounded-full hover:bg-green-600">
+                            Edit candidate
+                          </button>
+                      </div>
                       <div className="pl-5 pt-13">
                         <h3 className="mt-3 text-sm">{selectedApplication?.email}</h3>
                       </div>
                   </div>
                   <div className="flex w-full md:w-1/2">
+                    
                     <div className="flex-row">
-                      <h3 className="mt-3 text-sm font-bold">{selectedApplication?.name}</h3>
-                      <h3 className="mt-3 text-sm text-gray-500 mb-4">Time Line</h3>
+                     
+                      <h3 className="mt-3 text-lg font-bold text-slate-700 mb-4">{selectedApplication?.name}</h3>
+                      {/* <h3 className="mt-3 text-sm text-gray-500 mb-4">Time Line</h3> */}
                       <div className="timeline text-sm">
                           <ol className="relative border-l border-gray-200 dark:border-gray-700 text-sm">
                           {selectedApplication.application_logs && selectedApplication.application_logs
@@ -73,7 +79,7 @@ function ApplicationDetail({ selectedApplication, handleBackButton, handleApplyB
                             )}
                             {selectedApplication.application_logs && selectedApplication.application_logs.map((applicationLog) => (
                                 <>
-                                  <li className="mb-10 ml-6">            
+                                  <li className="mb-10 ml-6">
                                     <span className="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -left-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
                                     
                                     {ApplicationStatus.STATUS_ICON[applicationLog.status] == 'y' ? (
@@ -88,7 +94,6 @@ function ApplicationDetail({ selectedApplication, handleBackButton, handleApplyB
                                         <path fill="#fff" d="M32.484,29.656l-2.828,2.828l-14.14-14.14l2.828-2.828L32.484,29.656z"/>
                                       </svg>
                                     )}
-                                    
                                     </span>
                                     <h3 className="flex items-center mb-1 font-semibold text-slate-600 dark:text-white">
                                       {ApplicationStatus.STATUS[applicationLog.status]} 
@@ -113,7 +118,7 @@ function ApplicationDetail({ selectedApplication, handleBackButton, handleApplyB
                                 </>
                             ))}
                             
-                            <li className="ml-6">
+                            {/* <li className="ml-6">
                                 <span className="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -left-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48px" height="48px">
                                       <path fill="#c8e6c9" d="M44,24c0,11.045-8.955,20-20,20S4,35.045,4,24S12.955,4,24,4S44,12.955,44,24z"/>
@@ -122,17 +127,21 @@ function ApplicationDetail({ selectedApplication, handleBackButton, handleApplyB
                                 </span>
                                 <h3 className="mb-1 font-semibold text-gray-900 dark:text-white"> {ApplicationStatus.STATUS[ApplicationStatus.STATUS_SUBMITTED]}</h3>
                                 <time className="block mb-2 font-normal leading-none text-gray-400 dark:text-gray-500">{selectedApplication.created_at}</time>
-                                {/* <p className="text-base font-normal text-gray-500 dark:text-gray-400">Get started with dozens of web components and interactive elements built on top of Tailwind CSS.</p> */}
-                            </li>
+                            </li> */}
                         </ol>
                       </div>
                       
                   </div>
                   </div>
                 </div>
-                
-                {selectedApplication.candidate.hashed_resume_name && <embed src={`http://localhost:3000/api/viewResume?id=` + selectedApplication.candidate.hashed_resume_name}
+                <div className='flex-row'>
+                  <div className='flex justify-end items-center'>
+                    <Link href={`/api/viewResume?download=1&&id=${selectedApplication.candidate.hashed_resume_name}`} className='p-2 border border-gray-300 rounded-full mb-4 hover:text-green-600 hover:border-green-600'>Download PDF</Link>
+                  </div>
+                  {selectedApplication.candidate.hashed_resume_name && <embed src={`http://localhost:3000/api/viewResume?id=` + selectedApplication.candidate.hashed_resume_name}
                   className='w-full min-w-[400px] h-[50vh]'/>}
+                </div>
+                
                 {/* <div className="sticky top-0 flex justify-between py-3 bg-white">
                   <h1 className="flex ml-2 text-2xl font-bold overflow-ellipsis clamp-2">{selectedApplication.title}</h1>
                   <div className="flex items-center gap-2" >

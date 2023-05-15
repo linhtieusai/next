@@ -37,7 +37,7 @@ function JobDetail({ selectedJob, handleBackButton, handleApplyButtonClick, isFo
                     </button>
                   </div>
                 </div>
-                <div className="pl-5 pt-13 text-green-900">
+                <div className="pl-5 pt-13 text-slate-700">
                     <h3 className="mt-3 text-md font-semibold">Required Skill</h3>
                     <p className="pl-4 whitespace-pre-wrap">{selectedJob?.job_required_skill}</p>
                     <h3 className="mt-3 text-md font-semibold">Preferred</h3>

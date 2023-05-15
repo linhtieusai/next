@@ -122,14 +122,13 @@ export default function SearchPage({ searchParams }) {
 
 
   const handleFilterStatus = (status) => {
-    console.log(searchParams);
+    // console.log(searchParams);
     // if(searchParams) {
-      const params = new URLSearchParams(searchParams);
-      params.set('status', status);
-      params.delete('page');
-
+      // const params = new URLSearchParams(searchParams);
+      // params.set('status', status);
+      // params.delete('page');
     // }
-    const newPath = `${currentPath}?${params.toString()}`;
+    const newPath = `${currentPath}?status=${status}`;
     router.push(newPath);
   };
 
@@ -201,7 +200,7 @@ export default function SearchPage({ searchParams }) {
               <>
               <button key={index} onClick={() => handleFilterStatus(index)} className={`${isActive(index)}
                 flex items-center border text-gray-500 border-red-200 rounded-full p-1 pl-3 
-                text-gray-800 mr-2 text-xs hover:cursor-pointer hover:opacity-80 `}>
+                text-gray-800 mr-2 text-xs hover:cursor-pointer hover:opacity-80`}>
                 {index === "0" ? 'All job' : ApplicationStatus.STATUS[index]}
                 <span className="ml-2 bg-gray-300 text-gray-700 rounded-full w-6 h-6
                   flex items-center justify-center text-xs font-semibold  flex-shrink-0 min-w-[1.25rem]">
@@ -241,7 +240,7 @@ export default function SearchPage({ searchParams }) {
   {/* <div className="flex flex-col flex-1 sm:pb-20 md:flex-row">
       <div className={`h-[calc(100vh_-_170px)] sm:h-[calc(100vh_-_200px)] px-4 sm:px-4 md:w-1/3 flex-col  overflow-auto ${selectedApplication ? "hidden md:flex" : "w-full"}`}> */}
 
-<div className="flex flex-col flex-1 pb-[15px] sm:pb-20 md:flex-row">
+<div className="flex flex-col flex-1 md:flex-row">
       <div className={`relative h-[calc(100vh_-_250px)] sm:h-[calc(100vh_-_200px)]  px-4 sm:px-4 md:w-1/3 flex-col  overflow-auto ${selectedApplication ? "hidden md:flex" : "w-full"}`}>
         <div ref={applicationListRef}>
         {specificApplication &&

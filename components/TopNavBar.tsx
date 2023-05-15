@@ -124,9 +124,21 @@ const Navbar = () => {
                           {notification.job.title}
                         </div>
                         {notification.application && (
-                          <div className='font-semibold text-sm text-slate-600'>
-                          {notification.application.name}
-                        </div>
+                          <div className='flex items-center font-semibold text-sm text-slate-600'>
+                            {ApplicationStatus.STATUS_ICON[notification.content] == 'y' ? (
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="16px" height="16px">
+                                  <path fill="none" d="M44,24c0,11.045-8.955,20-20,20S4,35.045,4,24S12.955,4,24,4S44,12.955,44,24z"/>
+                                  <path fill="#4caf50" d="M34.586,14.586l-13.57,13.586l-5.602-5.586l-2.828,2.828l8.434,8.414l16.395-16.414L34.586,14.586z"/>
+                                </svg>
+                              ) : (
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="16px" height="16px">
+                                  <path fill="none" d="M44,24c0,11.045-8.955,20-20,20S4,35.045,4,24S12.955,4,24,4S44,12.955,44,24z"/>
+                                  <path fill="#f44336" d="M29.656,15.516l2.828,2.828l-14.14,14.14l-2.828-2.828L29.656,15.516z"/>
+                                  <path fill="#f44336" d="M32.484,29.656l-2.828,2.828l-14.14-14.14l2.828-2.828L32.484,29.656z"/>
+                                </svg>
+                              )}
+                            <span className='ml-1'>{notification.application.name}</span>
+                          </div>
                         )}
                         <div className='text-gray-700 text-xs'>
                           {ApplicationStatus.STATUS[notification.content]} 

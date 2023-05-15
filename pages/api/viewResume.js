@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   try {
     const session = await getSession({ req });
     const query = req.query;
-    const { id } = query;
+    const { id, download } = query;
     
 
     if(!session) {
@@ -41,7 +41,13 @@ export default async function handler(req, res) {
     } else {
       // Set the response headers
       res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', `inline; filename=${application.candidate.name}.pdf`);
+      if(download) {
+        res.setHeader('Content-Disposition', `attachment; filename=${application.candidate.name}.pdf`);
+
+      } else {
+        res.setHeader('Content-Disposition', `inline; filename=${application.candidate.name}.pdf`);
+
+      }
       
       // Write the PDF file to the response
       res.write(data);
