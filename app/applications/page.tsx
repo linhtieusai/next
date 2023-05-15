@@ -59,6 +59,12 @@ export default function SearchPage({ searchParams }) {
   let page = searchParams.page;
   if(!page) page = 1;
   
+  const applicationListRef = useRef(null);
+  const scrollToFirstChild = () => {
+    if(applicationListRef.current) {
+      applicationListRef.current.firstChild.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   const [ totalPages, setTotalPages ] = useState(0);
   const [currentPage, setCurrentPage] = useState(page);
@@ -150,7 +156,7 @@ export default function SearchPage({ searchParams }) {
             console.log("kakka");
             setSpecificApplication(data.specificApplication);
             handleApplicationItemClick(data.specificApplication);
-
+            scrollToFirstChild();
 
             // if(!selectedApplication || (selectedApplication && selectedApplication.id == data.specificApplication.id)) {
             //   // setSpecificApplication(data.specificApplication);
@@ -237,7 +243,7 @@ export default function SearchPage({ searchParams }) {
 
 <div className="flex flex-col flex-1 pb-[15px] sm:pb-20 md:flex-row">
       <div className={`relative h-[calc(100vh_-_250px)] sm:h-[calc(100vh_-_200px)]  px-4 sm:px-4 md:w-1/3 flex-col  overflow-auto ${selectedApplication ? "hidden md:flex" : "w-full"}`}>
-        <ul>
+        <div ref={applicationListRef}>
         {specificApplication &&
             <ApplicationItem key={specificApplication.id} application={specificApplication} handleOnClick={handleApplicationItemClick} isSelected={selectedApplication && selectedApplication.id === specificApplication.id}/>
         }
@@ -265,7 +271,7 @@ export default function SearchPage({ searchParams }) {
           </>
           : <JobListSkeleton />
           }
-        </ul>
+        </div>
         <div className="sticky bottom-0 z-3 bg-white flex items-center justify-center w-full py-2 md:py-4">
           {totalPages > 1 && currentPage && (
             <Pagination pageChangeCallback={() => {}} data={ {totalPages: totalPages, page: currentPage }}  />
