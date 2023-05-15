@@ -80,11 +80,9 @@ export default function ApplicationItem({ application, handleOnClick, isSelected
                       <h3 className="text-md font-semibold">{application.name}</h3>
                       <h3 className="overflow-hidden text-ellipsis  text-gray-500 text-sm ">{application.email}</h3>
 
-                      <p className="mt-4 text-gray-700">
-                        <span className={`${className} border rounded-full px-3 py-1 border-gray-200`}>
-                          {ApplicationStatus.STATUS[application.status]}
-                        </span>
-                      </p>
+                      <h3 className={`${className} mt-4 overflow-hidden text-ellipsis text-gray-700 border rounded-full px-3 py-1 border-gray-200`}>
+                        {ApplicationStatus.STATUS[application.status]}
+                      </h3>
                       <p className="mt-4 text-gray-700">
                         {application.created_at}
                       </p>
