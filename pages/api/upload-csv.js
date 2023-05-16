@@ -93,7 +93,8 @@ export default async function handler(req, res) {
         }
         
       res.status(201).json({
-        hashedResumeName: randomCharacter
+        hashedResumeName: randomCharacter,
+        applicationId: application.id
       });
 
   } catch (err) {

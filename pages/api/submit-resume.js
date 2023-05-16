@@ -32,7 +32,23 @@ export default async function handler(req, res) {
       });
   
       let jobId = parseInt(formFields.jobId);
-      // Save the candidates
+      // let applicationId = parseInt(formFields.applicationId);
+      //updating candidate
+      if(candidateId) {
+        const candidateUpdate = await prisma.candidates.update({
+          where: {
+            id: candidateId
+          },
+          data: {
+            name: formFields.name,
+            email: formFields.email,
+            tel: formFields.tel,
+          },
+        });
+
+        res.status(201).json({});
+      }
+
       const isCandidateSubmitted = await prisma.applications.findFirst({
         where: {
           job_id: jobId,

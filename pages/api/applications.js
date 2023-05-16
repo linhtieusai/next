@@ -8,7 +8,7 @@ export default async function handler(req, res) {
     const session = await getSession({ req });
     const query = req.query;
     const { page } = query;
-    let { status, applicationId } = query;
+    let { status, applicationId, excludeJobId } = query;
 
     if(!status) {
       status = 0;
@@ -46,7 +46,7 @@ export default async function handler(req, res) {
     let whereQuery = { 
       user_id: session.user.id,
       status: status != 0 ? parseInt(status) : undefined,
-      
+      is_submitted: 1
     };
 
     if(applicationId) {
@@ -56,24 +56,34 @@ export default async function handler(req, res) {
       };
     }
 
+    if(excludeJobId) {
+      excludeJobId = parseInt(excludeJobId);
+      whereQuery.NOT = {
+        job_id: excludeJobId
+      };
+    }
+
+    let findQuery = {
+      orderBy: {
+        id: "desc"
+      },
+      take: 10,
+      skip: (page - 1) * 10,
+      where: whereQuery,
+      include: includeQuery,
+    };
+
     const data = await prisma.$transaction([
       // count all
       prisma.applications.count({
         where: {
           user_id: session.user.id,
           status: status != 0 ? parseInt(status) : undefined,
+          is_submitted: 1
         },
       }),
       // select pagination
-      prisma.applications.findMany({
-        orderBy: {
-          id: "desc"
-        },
-        take: 10,
-        skip: (page - 1) * 10,
-        where: whereQuery,
-        include: includeQuery,
-      }),
+      prisma.applications.findMany(findQuery),
       // count group by status
       prisma.applications.groupBy({
         by: ['status'],
@@ -87,6 +97,7 @@ export default async function handler(req, res) {
       prisma.applications.count({
         where: {
           user_id: session.user.id,
+          is_submitted: 1
         },
       }),
     ]);

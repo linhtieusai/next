@@ -70,7 +70,7 @@ function ApplicationDetail({ selectedApplication, handleBackButton, handleApplyB
                            && ApplicationStatus.STATUS_NEXT[selectedApplication.application_logs[0].status] 
                            && (
                               <li className="mb-5 ml-6">            
-                                <span className="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -left-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                                <span className="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -left-3 ring-8 ring-white">
                                   {/* <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48px" height="48px">
                                     <path fill="#f44336" d="M44,24c0,11.045-8.955,20-20,20S4,35.045,4,24S12.955,4,24,4S44,12.955,44,24z"/>
                                     <path fill="#fff" d="M29.656,15.516l2.828,2.828l-14.14,14.14l-2.828-2.828L29.656,15.516z"/>
@@ -99,8 +99,7 @@ function ApplicationDetail({ selectedApplication, handleBackButton, handleApplyB
                             {selectedApplication.application_logs && selectedApplication.application_logs.map((applicationLog) => (
                                 <>
                                   <li className="mb-5 ml-6">
-                                    <span className="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -left-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
-                                    
+                                    <span className="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -left-3 ring-8 ring-white ">
                                     {ApplicationStatus.STATUS_ICON[applicationLog.status] == 'y' ? (
                                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48px" height="48px">
                                         <path fill="#c8e6c9" d="M44,24c0,11.045-8.955,20-20,20S4,35.045,4,24S12.955,4,24,4S44,12.955,44,24z"/>
@@ -134,7 +133,7 @@ function ApplicationDetail({ selectedApplication, handleBackButton, handleApplyB
                                       </a>
                                     )}
                                 </li>
-                                </>
+                              </>
                             ))}
                             
                             {/* <li className="ml-6">
@@ -157,8 +156,8 @@ function ApplicationDetail({ selectedApplication, handleBackButton, handleApplyB
                   <div className='flex justify-end items-center'>
                     <Link href={`/api/viewResume?download=1&&id=${selectedApplication.candidate.hashed_resume_name}`} className='p-2 border border-gray-300 rounded-full mb-4 hover:text-green-600 hover:border-green-600'>Download PDF</Link>
                   </div>
-                  {selectedApplication.candidate.hashed_resume_name && <embed src={`http://localhost:3000/api/viewResume?id=` + selectedApplication.candidate.hashed_resume_name}
-                  className='w-full min-w-[400px] h-[50vh]'/>}
+                  {selectedApplication.candidate.hashed_resume_name && <iframe src={`http://localhost:3000/api/viewResume?id=${selectedApplication.candidate.hashed_resume_name}`}
+                  className='w-full min-w-[400px] h-[50vh]'></iframe>}
                 </div>
                 
                 {/* <div className="sticky top-0 flex justify-between py-3 bg-white">
@@ -169,9 +168,6 @@ function ApplicationDetail({ selectedApplication, handleBackButton, handleApplyB
                     </button>
                   </div>
                 </div> */}
-
-
-
                 <button onClick={handleApplyButtonClick} className="flex fixed hover:opacity-100 opacity-70 bottom-[170px] md:bottom-[50px] right-[5vh] px-4 lg:px-12 py-2 font-bold text-white bg-purple-700 rounded-full hover:bg-purple-800">
                   <svg className="w-6 h-6 text-gray-400 hover:text-green-400 hover:cursor-pointer mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 58 58" strokeWidth="1.5" stroke="currentColor" aria-hidden="true">
                     <g xmlns="http://www.w3.org/2000/svg">
