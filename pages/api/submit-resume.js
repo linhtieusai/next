@@ -32,6 +32,7 @@ export default async function handler(req, res) {
       });
   
       let jobId = parseInt(formFields.jobId);
+      let candidateId = parseInt(formFields.candidateId);
       // let applicationId = parseInt(formFields.applicationId);
       //updating candidate
       if(candidateId) {

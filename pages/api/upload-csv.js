@@ -90,12 +90,15 @@ export default async function handler(req, res) {
             },
         });
         console.log(application);
+
+        res.status(201).json({
+          hashedResumeName: randomCharacter,
+          applicationId: application.id,
+          candidateId: candidate.id,
+        });
         }
         
-      res.status(201).json({
-        hashedResumeName: randomCharacter,
-        applicationId: application.id
-      });
+     
 
   } catch (err) {
     res.status(500).json({message: err.message});
