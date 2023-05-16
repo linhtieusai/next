@@ -74,19 +74,19 @@ model notifications {
 
 model applications {
   id           Int     @id @default(autoincrement())
-  email        String? @db.VarChar(255)
-  name         String? @db.VarChar(255)
-  tel          String? @db.VarChar(255)
-  user_id      Int?
-  job_id       Int
-  candidate_id Int
-  status       Int
+  email        String? @db.VarChar(255) @default("")
+  name         String? @db.VarChar(255) @default("")
+  tel          String? @db.VarChar(255) @default("")
+  user_id      Int? @default(0)
+  job_id       Int? @default(0)
+  candidate_id Int? @default(0)
+  status       Int? @default(1)
+  is_submitted Int? @default(0)
 
   job job? @relation(fields: [job_id], references: [id])
-
   candidate candidates? @relation(fields: [candidate_id], references: [id])
 
-  message          String?            @db.Text
+  message          String?            @db.Text @default("")
   created_at       DateTime           @default(now()) @db.DateTime(0)
   updated_at       DateTime           @default(now()) @db.DateTime(0)
   application_logs application_logs[]

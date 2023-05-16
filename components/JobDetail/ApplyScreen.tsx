@@ -10,7 +10,7 @@ import  GoogleSignIn  from '../GoogleSignin';
 
 
 
-const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
+const ApplyButton = ({jobId, presubmitInfo, isModalOpening, closeModalCallBack}) => {
 
   const [isModalOpen, setIsModalOpen] = useState(isModalOpening);
   const [isSecondStep, setIsSecondStep] = useState(false);
@@ -41,6 +41,17 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
     setIsSecondStep(true);
   };
 
+  const selectFromDraft = (draftApplication) => {
+    setResumeUrl(`/api/viewResume?id=${draftApplication.candidate.hashed_resume_name}`);
+    setFormFromApplicationData(draftApplication);
+  }
+
+  const setFormFromApplicationData = (application) => {
+    setName(application.candidate.name);
+    setEmail(application.candidate.email);
+    setTel(application.candidate.tel);
+  }
+
   const handleBackClick = () => {
     console.log("BackClick");
     closeModalCallBack();
@@ -52,7 +63,6 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
 
   const  handleFirstStepSubmit = async (event) => {
 
-    // setResumeSubmitting(true);
     if(!isSecondStep) {
       setIsSecondStep(true);
     }
@@ -65,7 +75,6 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
     reader.onload = () => {
       const resumeUrl = reader.result as string;
       setResumeUrl(resumeUrl);
-      //setPdfFile(event?.target?.files?.[0] ?? "");
     };
     reader.readAsDataURL(file);
 
@@ -74,6 +83,8 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
     if(isSecondStep) {
       formData.append("hashedResumeName", hashedResumeName);
     }
+
+    formData.append("jobId", jobId);
 
     try {
       const response = await fetch("/api/upload-csv", {
@@ -113,34 +124,7 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
     setTel("");
   }
 
-
-  // function handleFileUpload(event) {
-  //   const file = event.target.files[0];
-  //   if (file instanceof File) {
-  //     const reader = new FileReader();
-  //     reader.onload = () => {
-  //       const resumeData = reader.result;
-  //       const emailRegex = /([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/gi;
-  //       const matchedEmail = resumeData.match(emailRegex);
-  //       console.log(resumeData);
-  //       if (matchedEmail && matchedEmail.length > 0) {
-
-  //         setEmail(matchedEmail[0]);
-  //       }
-
-  //       setResume(file);
-  //     };
-
-  //     reader.onerror = (error) => {
-  //       console.error('Error reading file:', error);
-  //     };
-  //     reader.readAsDataURL(file);
-  //   }
-  // }
-
-
   const handleFileUpload = (event) =>{
-
     const file = event.target.files[0];
     const reader = new FileReader();
     reader.onload = () => {
@@ -204,7 +188,6 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
 
       setTimer(timer);
     }
-
   };
 
   // useEffect(() => {
@@ -223,37 +206,23 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
               <p className="mb-4 text-sm text-gray-600">
                 You can submit your resume without registering
               </p>
-              <div className="flex min-w-1/3 flex-col items-center">
+              <div className="flex min-w-1/3 flex-col items-center text-sm">
                 <div className="flex flex-col items-center justify-center">
-                  {/* <button
-                    className="w-64 py-2 mr-2 text-white bg-green-700 rounded-full shadow-lg hover:bg-green-600"
-                    onClick={handleFirstStepSubmit}
-                    >
-                    Choose Resume
-                  </button> */}
-
                   <div className="flex items-center justify-center w-full">
                       <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full px-5 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
                           <div className="flex flex-col items-center justify-center pt-5 pb-6">
                               <svg aria-hidden="true" className="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
-                              <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">Click to <span className="font-semibold">upload</span> Resume</p>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                              </svg>
+                              <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                                Click to <span className="font-semibold">upload</span> Resume
+                              </p>
                               <p className="text-xs text-gray-500 dark:text-gray-400">PDF Only (Max 10MB)</p>
                           </div>
                           <input id="dropzone-file" type="file" className="hidden" accept=".pdf"
-                                        onChange={handleFirstStepSubmit}/>
+                             onChange={handleFirstStepSubmit}/>
                       </label>
                   </div> 
-
-                  {/* <input
-                      type="file"
-                      id="resume"
-                      name="resume"
-                      accept=".pdf"
-                      onChange={handleFirstStepSubmit}
-                      className="w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      required
-                    /> */}
                 </div>
                 <hr className="w-full my-4"/>
                 <div className="flex flex-col items-center justify-center">
@@ -273,23 +242,76 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
               </h2>
               <div className='flex-row sm:flex overflow-auto max-h-[90vh]'>
                 <div className='flex-row'>
-                  <div className="mb-4">
-                    <label htmlFor="pdf" className="block text-gray-700 text-sm">
-                      Choose Other Candidates (PDF only)
-                    </label>
-                    <input
-                      type="file"
-                      id="resume"
-                      name="resume"
-                      accept=".pdf"
-                      onChange={handleFirstStepSubmit}
-                      className="w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  <div className="flex-col items-center justify-center w-full mb-2">
+                      <label htmlFor="dropzone-file" className="mb-5 flex flex-col items-center justify-center w-full px-5 border-2 border-gray-300 border-dashed rounded-lg 
+                      cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100
+                       dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                          <div className="flex items-center justify-center py-2 space-x-2">
+                              <svg aria-hidden="true" className="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                              </svg>
+                              <div>
+                                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                                  {resumeUrl ? (
+                                    <>
+                                      Choose <span className="font-semibold">other candidate</span>
+                                    </>
+                                  ) : (
+                                    <>
+                                    Click to <span className="font-semibold">upload</span> Resume
+                                    </>
+                                  )}
+                                </p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400">PDF Only (Max 10MB)</p>
+                              </div>
+                              
+                          </div>
+                          <input id="dropzone-file" type="file" className="hidden" accept=".pdf" onChange={handleFirstStepSubmit}/>
+                      </label>
+                      {presubmitInfo.draftApplication && (
+                        <label htmlFor="dropzone-file" className=" mb-5 flex flex-col items-center justify-center w-full px-5 border-2 border-gray-300 border-dashed rounded-lg 
+                          cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100
+                          dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600" onClick={() => selectFromDraft(presubmitInfo.draftApplication)}>
+                          <div className="flex items-center justify-center py-2 space-x-2">
+                              <svg aria-hidden="true" className="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                              </svg>
+                              <div>
+                                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                                  Select from drafting candidate:
+                                </p>
+                                {presubmitInfo.draftApplication.name && (
+                                  <p className="text-xs font-bold text-gray-500 dark:text-gray-400">{presubmitInfo.draftApplication.name}</p>
+                                )}
+                              </div>
+                              
+                          </div>
+                      </label>
+                      )}
+                      {presubmitInfo.latestApplication && (
                       
-                    />
-                  </div>
-                  {resumeUrl && <embed src={resumeUrl} className='w-full min-w-[400px] h-[50vh]' />}
+                      <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full px-5 border-2 border-gray-300 border-dashed rounded-lg 
+                      cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100
+                       dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                          <div className="flex items-center justify-center py-2 space-x-2">
+                              <svg aria-hidden="true" className="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                              </svg>
+                              <div>
+                                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                                  Select from your candidate:
+                                </p>
+                              </div>
+                          </div>
+                          <input id="dropzone-file" type="file" className="hidden" accept=".pdf" onChange={handleFirstStepSubmit}/>
+                      </label>
+                      )}
+                  </div> 
                 </div>
-                <div className=' flex-row w-full sm:w-2/3 p-4'>
+                {resumeUrl && (
+                  <embed src={resumeUrl} className='w-full min-w-[400px] h-[50vh]' />
+                )}
+                <div className=' flex-row w-full text-sm sm:w-2/3 p-4'>
                     <div className="mb-4">
                       <label htmlFor="email" className="block text-gray-700">
                         Email
@@ -411,7 +433,7 @@ const ApplyButton = ({jobId, isModalOpening, closeModalCallBack}) => {
                         )}
                     </div>
 
-                    {resumeUploading && (
+                    {(resumeUploading || !presubmitInfo) && (
                         <div className="absolute top-0 left-0 flex items-center justify-center w-full h-full">
                           <div className="absolute top-0 left-0 z-10 w-full h-full bg-black opacity-20"></div>
                           <div className="z-20">

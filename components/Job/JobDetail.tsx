@@ -27,7 +27,7 @@ function JobDetail({ selectedJob, handleBackButton, handleApplyButtonClick, isFo
                     <button className="group flex items-center px-4 py-2 font-bold text-red-400 border border-red-300 bg-white rounded-full hover:text-red-600"
                       onClick={() => handleFollowButtonClick(selectedJob, isFollowed)}
                     >
-                      <svg className={`inline-block w-4 h-4 ${isFollowed ? 'fill-red-400' : 'fill-none'} group-hover:fill-red-500`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" >
+                      <svg className={`inline-block w-4 h-4 ${isFollowed ? 'fill-red-400' : 'fill-none'} group-hover:fill-red-500`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" >
                         <path d="M20.84 4.76a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-.9a5.5 5.5 0 0 0-7.78 7.78L12 21l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"></path>
                       </svg>
                       <span  className="hidden ml-2 md:inline-block">{isFollowed ? 'Following' : 'Follow'}</span>

@@ -11,7 +11,7 @@ export default async function handler(req, res) {
     const { id, download } = query;
     
 
-    if(!session) {
+    if(!session.user) {
       throw new Error ('Unauthorized');
     }
 
@@ -33,29 +33,28 @@ export default async function handler(req, res) {
     const fileName = `${id}.pdf`;
     const filePath = path.join(process.cwd(), 'media', 'resume', fileName);
 
-   // Read the PDF file
-  fs.readFile(filePath, function (err, data) {
-    if (err) {
-      console.log(err);
-      res.status(500).end();
-    } else {
-      // Set the response headers
-      res.setHeader('Content-Type', 'application/pdf');
-      if(download) {
-        res.setHeader('Content-Disposition', `attachment; filename=${application.candidate.name}.pdf`);
-
+    // Read the PDF file
+    fs.readFile(filePath, function (err, data) {
+      if (err) {
+        res.status(500).end();
       } else {
-        res.setHeader('Content-Disposition', `inline; filename=${application.candidate.name}.pdf`);
+        // Set the response headers
+        res.setHeader('Content-Type', 'application/pdf');
+        if(download) {
+          res.setHeader('Content-Disposition', `attachment; filename=${application.candidate.name}.pdf`);
 
+        } else {
+          res.setHeader('Content-Disposition', `inline; filename=${application.candidate.name}.pdf`);
+
+        }
+        
+        // Write the PDF file to the response
+        res.write(data);
+        
+        // End the response
+        res.end();
       }
-      
-      // Write the PDF file to the response
-      res.write(data);
-      
-      // End the response
-      res.end();
-    }
-  });
+    });
 
     // if(session) {
     //     // Check if the user has already submitted the job

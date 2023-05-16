@@ -7,17 +7,17 @@ import { ApplicationStatus } from '../../lib/const'
 
 export default function ApplicationItem({ application, handleOnClick, isSelected }) {
 
-  let className;
+  let colorClassName;
   switch (ApplicationStatus.STATUS_COLOR[application.status]) {
     case 'green':
-      className = "text-green-700";
+      colorClassName = "text-green-700";
       break;
     case 'red':
-      className = "text-red-700";
+      colorClassName = "text-red-700";
       break;
     default:
       // Handle the case when x is neither 1 nor 2
-      className = `text-${ApplicationStatus.STATUS_COLOR[application.status]}-700`;
+      colorClassName = `text-${ApplicationStatus.STATUS_COLOR[application.status]}-700`;
       break;
   }
 
@@ -75,20 +75,22 @@ export default function ApplicationItem({ application, handleOnClick, isSelected
                     <Image src={`/company_logo/${application.job.source_site}/${application.job.source_id}.jpg`} alt="me" width="55" height="55" className="object-cover mr-3 rounded-full"/>
                     <div className='overflow-hidden'>
                       <div className='flex'>
-                        <p className="text-xs truncate text-gray-500">{application.job.title}</p>
+                        <p className="text-xs truncate text-gray-500">
+                          {application.job.title}
+                        </p>
                       </div>
-                      <h3 className={`${className} text-lg font-semibold`}>{application.name}</h3>
-                      {/* <h3 className="overflow-hidden text-ellipsis  text-gray-500 text-sm ">{application.email}</h3> */}
-
-                      <p className={`${className} mt-4 text-sm text-gray-700`}>
-                        <span className='truncate border rounded-full px-3 py-1 border-gray-200 '>{ApplicationStatus.STATUS[application.status]}</span>
+                      <h3 className={`${colorClassName} text-lg font-semibold`}>{application.name}</h3>
+                      <p className={`${colorClassName} mt-4 text-gray-700`}>
+                        <span className='truncate border text-sm rounded-full px-3 py-1 border-gray-200 '>
+                          {ApplicationStatus.STATUS[application.status]}
+                        </span>
                       </p>
                       {ApplicationStatus.STATUS_NEXT[application.status] && (
-                        <p className={`mt-4 text-sm text-gray-700`}>
+                        <p className={`mt-4 text-xs text-gray-700`}>
                           {ApplicationStatus.STATUS_NEXT[application.status]}
                         </p>
                       )}
-                      <p className="text-sm mt-4 text-gray-400">
+                      <p className="truncate text-xs mt-4 text-gray-400">
                         {application.created_at}
                       </p>
                       {/* show on VIEWED PAGE */}

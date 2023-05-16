@@ -69,9 +69,15 @@ export default function SearchPage() {
     setShowJobList(true);
   }
 
-  function handleApplyButtonClick() {
+  function handleApplyButtonClick(jobId) {
     console.log("Apply button clicked");
+    console.log(jobId);
     setIsModalOpening(true);
+
+    // fetch(`http://localhost:3000/api/pre-submit?jobId=${jobId}`)
+    //   .then(response => response.json())
+    //   .then(data => setJobs(data.jobs))
+    //   .catch(error => console.error(error));
   }
 
   const closeModalCallBack = () => {
@@ -94,7 +100,7 @@ export default function SearchPage() {
   <div className="flex flex-col flex-1 hidden px-5 py-10 lg:flex-row md:block">
     <h1 className="text-lg">Search results for <span className='font-bold'>"PHP"</span></h1>
   </div>
-  <div className="flex flex-col flex-1 sm:pb-20 md:flex-row">
+  <div className="flex flex-col flex-1 md:flex-row">
       <div className={`h-[calc(100vh_-_170px)] sm:h-[calc(100vh_-_200px)] px-4 sm:px-4 md:w-1/3 flex-col  overflow-auto ${selectedJob ? "hidden md:flex" : "w-full"}`}>
         <ul>
           {/* {jobs.length ? jobs.map((job) => (
@@ -114,7 +120,7 @@ export default function SearchPage() {
           <ApplyScreen jobId={selectedJob?.id} isModalOpening={isModalOpening} closeModalCallBack={closeModalCallBack}/>
           <div className="sticky bottom-0 left-0 z-10 w-full p-4 bg-gray-100 border-t border-gray-200 sm:hidden">
             <div className="flex items-center justify-between">
-              <button className="px-4 py-2 font-bold text-white bg-green-500 rounded-full hover:opacity-80" onClick={handleApplyButtonClick}>Apply</button>
+              <button className="px-4 py-2 font-bold text-white bg-green-500 rounded-full hover:opacity-80" onClick={() => handleApplyButtonClick(selectedJob?.id)}>Apply</button>
               <button className="px-4 py-2 font-bold text-white bg-gray-500 rounded-full hover:opacity-80" onClick={handleBackButton}>Back</button>
             </div>
           </div>

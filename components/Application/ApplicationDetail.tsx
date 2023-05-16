@@ -11,6 +11,25 @@ import Link from "next/link";
 
 function ApplicationDetail({ selectedApplication, handleBackButton, handleApplyButtonClick }) {
 
+  function getColorClassName(status) {
+    let colorClassName;
+
+    switch (ApplicationStatus.STATUS_COLOR[status]) {
+      case 'green':
+        colorClassName = "text-green-700";
+        break;
+      case 'red':
+        colorClassName = "text-red-700";
+        break;
+      default:
+        // Handle the case when x is neither 1 nor 2
+        colorClassName = `text-${ApplicationStatus.STATUS_COLOR[status]}-700`;
+        break;
+    }
+
+    return colorClassName;
+  }
+
   return (
     <>
       {/* <div className="p-4 lg:w-2/3"> */}
@@ -50,7 +69,7 @@ function ApplicationDetail({ selectedApplication, handleBackButton, handleApplyB
                           {selectedApplication.application_logs && selectedApplication.application_logs
                            && ApplicationStatus.STATUS_NEXT[selectedApplication.application_logs[0].status] 
                            && (
-                              <li className="mb-10 ml-6">            
+                              <li className="mb-5 ml-6">            
                                 <span className="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -left-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
                                   {/* <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48px" height="48px">
                                     <path fill="#f44336" d="M44,24c0,11.045-8.955,20-20,20S4,35.045,4,24S12.955,4,24,4S44,12.955,44,24z"/>
@@ -79,7 +98,7 @@ function ApplicationDetail({ selectedApplication, handleBackButton, handleApplyB
                             )}
                             {selectedApplication.application_logs && selectedApplication.application_logs.map((applicationLog) => (
                                 <>
-                                  <li className="mb-10 ml-6">
+                                  <li className="mb-5 ml-6">
                                     <span className="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -left-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
                                     
                                     {ApplicationStatus.STATUS_ICON[applicationLog.status] == 'y' ? (
@@ -101,7 +120,7 @@ function ApplicationDetail({ selectedApplication, handleBackButton, handleApplyB
                                     </h3>
                                     <time className="block mb-2 font-normal leading-none text-gray-400 dark:text-gray-500">{ applicationLog.created_at } </time>
                                     {applicationLog.message && (
-                                      <p className="mb-4 font-normal text-gray-500 dark:text-gray-400">
+                                      <p className={`${getColorClassName(applicationLog.status)} mb-4 font-normal text-gray-500 dark:text-gray-400`}>
                                       {applicationLog.message}
                                       </p>
                                     )}

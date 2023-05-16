@@ -20,6 +20,7 @@ export default async function handler(req, res) {
       //     res.status(401).json({ message: 'Unauthorized' });
       //     return;
       //   }
+      const query = req.query;
 
         const form = new formidable.IncomingForm({
           keepExtensions: true
@@ -62,8 +63,34 @@ export default async function handler(req, res) {
               hashed_resume_name: randomCharacter,
             },
           });
+
+          console.log(fields);
+          console.log(candidate);
+
+          // const application = await prisma.applications.create({
+          //   data: {
+          //     user_id: session && session.user ? session.user.id: undefined,
+          //     job_id: fields.jobId,
+          //     candidate_id: candidate.id,
+          //     status: 1,
+          //   },
+          // });
+
+          // console.log(application);
+          const application = await prisma.applications.create({
+            data: {
+              // name: formFields.name,
+              // email: formFields.email,
+              // tel: formFields.tel,
+              user_id: (session && session.user) ? session.user.id : undefined,
+              job_id: parseInt(fields.jobId),
+              candidate_id: parseInt(candidate.id),
+              status: 1,
+              // is_submitted: 0,
+            },
+        });
+        console.log(application);
         }
-        
         
       res.status(201).json({
         hashedResumeName: randomCharacter

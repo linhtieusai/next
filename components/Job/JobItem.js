@@ -46,7 +46,6 @@ export default function JobItem({ job, isViewed, handleOnClick, isFollowed, isSe
                 focus:border-green-500 focus:outline-none focus:shadow-lg focus:border-opacity-50 focus:rounded-lg 
                 active:border-gray-400 active:border-opacity-75 
                 ${isViewed ? "border-b-4 border-b-green-300" : ""}
-
                 ${
                   isSelected ? 
                     "border-2 border-gray-300 border-opacity-50 !border-green-500  border-b-green-500 shadow-lg"
@@ -59,7 +58,7 @@ export default function JobItem({ job, isViewed, handleOnClick, isFollowed, isSe
                     <Image src={`/company_logo/${job.source_site}/${job.source_id}.jpg`} alt="me" width="55" height="55" className="object-cover mr-3 rounded-full"/>
                     <div>
                       <div className='flex'>
-                        <p className="text-gray-600">{job.company_name}</p>
+                        <p className="text-gray-600 text-xs">{job.company_name}</p>
                       </div>
                       <h3 className="text-md font-semibold">{job.title}</h3>
                       <span className="mt-4 text-gray-400">
@@ -69,18 +68,16 @@ export default function JobItem({ job, isViewed, handleOnClick, isFollowed, isSe
                         
                         {job.location}
                       </span>
-                      {/* show on VIEWED PAGE */}
                       {viewedTime && (
                         <div className="flex justify-end mt-4 text-gray-400">
                           {timeAgo(viewedTime)}
                         </div>
                       )}
-
-                        {isFollowed && (
-                          <svg className={`absolute top-0 right-0 inline-block text-red-300 w-4 h-4 fill-red-300`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" >
-                            <path d="M20.84 4.76a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-.9a5.5 5.5 0 0 0-7.78 7.78L12 21l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"></path>
-                          </svg>
-                        )}
+                      {isFollowed && (
+                        <svg className={`absolute top-0 right-0 inline-block text-red-300 w-4 h-4 fill-red-300`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" >
+                          <path d="M20.84 4.76a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-.9a5.5 5.5 0 0 0-7.78 7.78L12 21l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+                      )}
                   </div>
                 </div>
             </div>

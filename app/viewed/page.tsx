@@ -174,7 +174,7 @@ export default function ViewedJobPage({ searchParams }) {
   <div className="flex flex-col flex-1 px-5 py-5">
     <h1 className="text-lg font-bold">Viewed Jobs</h1>
   </div>
-  <div className="flex flex-col flex-1 pb-[15px] sm:pb-20 md:flex-row">
+  <div className="flex flex-col flex-1 pb-[15px] md:flex-row">
       <div className={`relative h-[calc(100vh_-_180px)] sm:h-[calc(100vh_-_180px)]  px-4 sm:px-4 md:w-1/3 flex-col  overflow-auto ${selectedJob ? "hidden md:flex" : "w-full"}`}>
 
       {/* {(isMoving || loading) ? "Movingggg" : "Not moving"} */}

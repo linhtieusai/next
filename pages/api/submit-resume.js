@@ -16,86 +16,74 @@ export const config = {
 export default async function handler(req, res) {
   try {
       const session = await getSession({ req });
-      //   if (!session) {
-      //     res.status(401).json({ message: 'Unauthorized' });
-      //     return;
-      //   }
 
       const form = new formidable.IncomingForm({
         keepExtensions: true
       });
 
       const formFields = await new Promise(function (resolve, reject) {
-        form.parse(req, function (err, fields, files) {
-        if (err) {
-            reject(err);
-            return;
-        }
-          resolve(fields);
-        }); // form.parse
-    });
-  
-        let jobId = parseInt(formFields.jobId);
-        // if(session) {
-        //     // Check if the user has already submitted the job
-        //     const existingJob = await prisma.userApplies.findUnique({
-        //         where: { userId_jobId: { userId: session.user.id, jobId } },
-        //     });
-        //     if (existingJob) {
-        //         res.status(409).json({ message: 'Job Already Submitted' });
-        //         return;
-        //     }
-        // }
-
-        // Save the candidates
-
-        const isCandidateSubmitted = await prisma.applications.findFirst({
-          where: {
-            job_id: jobId,
-            candidate: {
-              email: formFields.email
-            }
+          form.parse(req, function (err, fields, files) {
+          if (err) {
+              reject(err);
+              return;
           }
-        })
-
-        if(isCandidateSubmitted) {
-          throw new Error ('Candidate submitted');
+            resolve(fields);
+          }); // form.parse
+      });
+  
+      let jobId = parseInt(formFields.jobId);
+      // Save the candidates
+      const isCandidateSubmitted = await prisma.applications.findFirst({
+        where: {
+          job_id: jobId,
+          candidate: {
+            email: formFields.email
+          }
         }
+      })
 
-
+      if(isCandidateSubmitted) {
+        throw new Error ('Candidate submitted');
+      }
+      // Save the candidates
+      const candidate = await prisma.candidates.findFirstOrThrow({
+          where: {
+            user_id: session && session.user ? session.user.id : undefined,
+            hashed_resume_name: formFields.hashedResumeName,
+          },
+      });
         // Save the candidates
-        const candidate = await prisma.candidates.findFirstOrThrow({
-            where: {
-              user_id: session && session.user ? session.user.id : undefined,
-              hashed_resume_name: formFields.hashedResumeName,
-            },
-        });
-         // Save the candidates
-         const candidateUpdate = await prisma.candidates.update({
-            where: {
-              id: candidate.id
-            },
-            data: {
-              name: formFields.name,
-              email: formFields.email,
-              tel: formFields.tel,
-            },
-        });
+      const candidateUpdate = await prisma.candidates.update({
+          where: {
+            id: candidate.id
+          },
+          data: {
+            name: formFields.name,
+            email: formFields.email,
+            tel: formFields.tel,
+          },
+      });
 
-        // Save the applications
-        const application = await prisma.applications.create({
-            data: {
-              name: formFields.name,
-              email: formFields.email,
-              tel: formFields.tel,
-              user_id: session && session.user ? session.user.id : undefined,
-              job_id: jobId,
-              candidate_id: candidate.id,
-              status: 1,
-            },
-        });
+      console.log(candidateUpdate);
 
-        const applicationLog = await prisma.application_logs.create({
+      // Save the applications
+      const application = await prisma.applications.create({
+          data: {
+            name: formFields.name,
+            email: formFields.email,
+            tel: formFields.tel,
+            user_id: session && session.user ? session.user.id : undefined,
+            job_id: jobId,
+            candidate_id: candidate.id,
+            status: 1,
+            is_submitted: 1,
+          },
+      });
+
+      console.log(application);
+
+
+      const applicationLog = await prisma.application_logs.create({
           data: {
             name: formFields.name,
             email: formFields.email,
@@ -107,6 +95,9 @@ export default async function handler(req, res) {
           },
       });
     
+
+      console.log(applicationLog);
+
         // Send email to admin
         // await sendMail({
         //   to: process.env.ADMIN_EMAIL,
@@ -128,5 +119,4 @@ export default async function handler(req, res) {
   } finally {
     await prisma.$disconnect()
   }
-
 }

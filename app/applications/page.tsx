@@ -133,11 +133,6 @@ export default function SearchPage({ searchParams }) {
   };
 
   useEffect(() => {
-    // let page = searchParams.page;
-    // let status = searchParams.status;
-
-    // let apiUrl = `http://localhost:3000/api/applications?${searchParams.toString()}`;
-
     const params = new URLSearchParams(searchParams);
     params.set("page", page)
     let apiUrl = `http://localhost:3000/api/applications?${params.toString()}`;

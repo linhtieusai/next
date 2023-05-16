@@ -63,6 +63,8 @@ export default function SearchPage({ firstPageData, moving }) {
       jobListRef.current.firstChild.scrollIntoView({ behavior: "smooth" });
     }
   };
+
+  const [presubmitInfo, setPresubmitInfo] = useState<any>(false);
   
   // useEffect(() => {
   //   setIsMoving(moving);
@@ -150,9 +152,15 @@ export default function SearchPage({ firstPageData, moving }) {
     setShowJobList(true);
   }
 
-  function handleApplyButtonClick() {
-    console.log("Apply button clicked");
+  function handleApplyButtonClick(jobId) {
     setIsModalOpening(true);
+
+    fetch(`http://localhost:3000/api/presubmit?jobId=${jobId}`)
+      .then(response => response.json())
+      .then(data => {
+        setPresubmitInfo(data);
+      })
+      .catch(error => console.error(error));
   }
 
   const closeModalCallBack = () => {
@@ -195,7 +203,7 @@ export default function SearchPage({ firstPageData, moving }) {
   <div className="flex flex-col flex-1 hidden px-5 py-10 lg:flex-row md:block">
     <h1 className="text-lg">Search results for <span className='font-bold'>"PHP"</span></h1>
   </div>
-  <div className="flex flex-col flex-1 sm:pb-20 md:flex-row">
+  <div className="flex flex-col flex-1 md:flex-row">
       <div className={`relative h-[calc(100vh_-_140px)] sm:h-[calc(100vh_-_170px)] md:w-1/3 flex-col  overflow-auto 
         ${selectedJob ? "hidden md:flex" : "w-full"}`}
       >
@@ -215,7 +223,7 @@ export default function SearchPage({ firstPageData, moving }) {
                 </>
               )}
 
-{isMoving && (
+        {isMoving && (
           <div className="absolute top-0 left-0 flex items-center justify-center w-full h-full">
             <div className="absolute top-0 left-0 z-10 w-full h-full bg-green-200 opacity-20"></div>
             <div className="z-20">
@@ -271,11 +279,11 @@ export default function SearchPage({ firstPageData, moving }) {
       {!showJobList &&  (
           <>
           <JobDetail selectedJob={selectedJob} 
-            handleBackButton={handleBackButton} handleApplyButtonClick={handleApplyButtonClick}
+            handleBackButton={handleBackButton} handleApplyButtonClick={() => handleApplyButtonClick(selectedJob.id)}
             isFollowed={followedJobs[selectedJob.id]}
             handleFollowButtonClick={handleFollowButtonClick}
           />
-          <ApplyScreen jobId={selectedJob?.id} isModalOpening={isModalOpening} closeModalCallBack={closeModalCallBack}/>
+          <ApplyScreen presubmitInfo={presubmitInfo} jobId={selectedJob?.id} isModalOpening={isModalOpening} closeModalCallBack={closeModalCallBack}/>
             <div className="sticky bottom-0 left-0 z-10 w-full p-4 bg-gray-100 border-t border-gray-200 sm:hidden">
               <div className="flex items-center justify-between">
                 <button className="px-8 py-2 font-bold text-white bg-green-600 rounded-full hover:opacity-80" onClick={handleApplyButtonClick}>Apply</button>
