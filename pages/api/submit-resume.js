@@ -32,30 +32,18 @@ export default async function handler(req, res) {
       });
   
       let jobId = parseInt(formFields.jobId);
-      let candidateId = parseInt(formFields.candidateId);
-      // let applicationId = parseInt(formFields.applicationId);
-      //updating candidate
-      if(candidateId) {
-        const candidateUpdate = await prisma.candidates.update({
-          where: {
-            id: candidateId
-          },
-          data: {
-            name: formFields.name,
-            email: formFields.email,
-            tel: formFields.tel,
-          },
-        });
+      let applicationId = parseInt(formFields.applicationId);
 
-        res.status(201).json({});
-      }
+      let candidateId = parseInt(formFields.candidateId);
 
       const isCandidateSubmitted = await prisma.applications.findFirst({
         where: {
           job_id: jobId,
           candidate: {
             email: formFields.email
-          }
+          },
+          is_submitted: 1,
+          user_id: session.user.id?? undefined,
         }
       })
 
@@ -66,7 +54,7 @@ export default async function handler(req, res) {
       const candidate = await prisma.candidates.findFirstOrThrow({
           where: {
             user_id: session && session.user ? session.user.id : undefined,
-            hashed_resume_name: formFields.hashedResumeName,
+            id: candidateId,
           },
       });
         // Save the candidates
@@ -81,10 +69,38 @@ export default async function handler(req, res) {
           },
       });
 
+    //   const candidateUpdate = await prisma.candidates.update({
+    //     where: {
+    //       id: candidate.id
+    //     },
+    //     data: {
+    //       name: formFields.name,
+    //       email: formFields.email,
+    //       tel: formFields.tel,
+    //     },
+    // });
+
       console.log(candidateUpdate);
 
       // Save the applications
-      const application = await prisma.applications.create({
+      if(applicationId) {
+        const application = await prisma.applications.update({
+            where: {
+              id: applicationId
+            },
+            data: {
+              name: formFields.name,
+              email: formFields.email,
+              tel: formFields.tel,
+              user_id: session && session.user ? session.user.id : undefined,
+              job_id: jobId,
+              candidate_id: candidate.id,
+              status: 1,
+              is_submitted: 1,
+            },
+        });
+      } else {
+        const application = await prisma.applications.create({
           data: {
             name: formFields.name,
             email: formFields.email,
@@ -96,6 +112,8 @@ export default async function handler(req, res) {
             is_submitted: 1,
           },
       });
+      }
+      
 
       console.log(application);
 

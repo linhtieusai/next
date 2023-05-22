@@ -59,11 +59,19 @@ const ApplyButton = ({jobId, presubmitInfo, isModalOpening, closeModalCallBack})
     setFormFromApplicationData(draftApplication);
   }
 
+  const selectFromCandidate = (candidate) => {
+    setIsSelectCandidateOpen(false);
+    setResumeUrl(`/api/viewResume?id=${candidate.hashed_resume_name}`);
+    // setFormFromApplicationData(candidate);
+  }
+
   const setFormFromApplicationData = (application) => {
     setApplicationId(application.id);
     setName(application.candidate.name);
     setEmail(application.candidate.email);
     setTel(application.candidate.tel);
+
+    setCandidateId(application.candidate.id);
   }
 
   const handleBackClick = () => {
@@ -82,7 +90,7 @@ const ApplyButton = ({jobId, presubmitInfo, isModalOpening, closeModalCallBack})
   const handleCandidateSelectButton = () => {
     setIsSelectCandidateOpen(true);
 
-    fetch(`http://localhost:3000/api/applications`)
+    fetch(`http://localhost:3000/api/candidates?excludeJobId=${jobId}`)
       .then(response => response.json())
       .then(data =>  {
 
@@ -92,6 +100,27 @@ const ApplyButton = ({jobId, presubmitInfo, isModalOpening, closeModalCallBack})
           console.error(error)
         });
   }
+
+  let timeout= null;
+  const handleSearchCandidates = (event) => {
+    clearTimeout(timeout); // Clear the previous timeout
+
+    const { value } = event.target;
+    // setSearchTerm(value);
+
+    // Set a new timeout to call the API after 1 second
+    timeout = setTimeout(() => {
+      fetch(`http://localhost:3000/api/candidates?excludeJobId=${jobId}&search=${value}`)
+      .then(response => response.json())
+      .then(data =>  {
+
+          setLatestCandidateList(data.candidates);
+          
+        }).catch(error => {
+          console.error(error)
+        });
+    }, 1000);
+  };
 
   const  handleFirstStepSubmit = async (event) => {
 
@@ -184,7 +213,7 @@ const ApplyButton = ({jobId, presubmitInfo, isModalOpening, closeModalCallBack})
 
     try {
       //UPDATE CANDIDATE
-      const response = await fetch("/api/submit-resume", {
+      const response = await fetch("/api/update-resume", {
         method: "POST",
         body: formData,
         headers: {
@@ -235,6 +264,9 @@ const ApplyButton = ({jobId, presubmitInfo, isModalOpening, closeModalCallBack})
 
     formData.append("hashedResumeName", hashedResumeName);
     formData.append('jobId', jobId );
+
+    formData.append('applicationId', applicationId );
+    formData.append('candidateId', candidateId );
 
     try {
       const response = await fetch("/api/submit-resume", {
@@ -374,7 +406,7 @@ const ApplyButton = ({jobId, presubmitInfo, isModalOpening, closeModalCallBack})
                           </div>
                       </label>
                       )}
-                      {presubmitInfo.latestApplication && (
+                      {presubmitInfo.latestApplication && presubmitInfo.latestApplication.length > 0 && (
                       <label className="flex flex-col items-center justify-center w-full px-5 border-2 border-gray-300 border-dashed rounded-lg 
                       cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100
                        dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600" onClick={handleCandidateSelectButton}>
@@ -553,43 +585,95 @@ const ApplyButton = ({jobId, presubmitInfo, isModalOpening, closeModalCallBack})
             )}
           </Modal>
         )}
-      {isSelectCandidateOpen && (
-        <Modal zIndex={6} onClose={handleCandidateSelectBack} showCloseButton>
-          <div className="flex">
-            {latestCandidateList ? (
-              <>
-              ddsdsd
-              </>
-            ) : (
-                    <div className="absolute top-0 left-0 flex items-center justify-center w-full h-full">
-                      <div className="absolute top-0 left-0 z-10 w-full h-full bg-black opacity-20"></div>
-                      <div className="z-20">
-                        <svg
-                          className="w-8 h-8 mx-auto text-white animate-spin"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <circle
-                            className="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                          ></circle>
-                          <path
-                            className="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                          ></path>
-                        </svg>
+        {isSelectCandidateOpen && (
+          <Modal zIndex={6} onClose={handleCandidateSelectBack} showCloseButton>
+            <div className="flex-row min-w-[25vw]">
+              {latestCandidateList ? (
+                <>
+                <div className="flex">
+                    {/* {latestCandidateList.length > 0 && ( */}
+                      <>
+                        <div className="flex items-center w-full min-w-[50%] mb-5">
+                              <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24"
+                                  stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                              </svg>
+                              <input type="text" name="name" placeholder="Search name/email"
+                                  className="w-full py-2 border-b-2 border-gray-400 outline-none focus:border-green-600"
+                                  onChange={handleSearchCandidates}
+                                  />
+                          </div>
+                      </>
+                    {/* )} */}
+                </div>
+                {latestCandidateList.length > 0 ? (
+                  <>
+                  <div className="flex-row">
+                    {/* <div className="flex">
+                        Select from your candidate:
+                    </div> */}
+                    
+                    <div className="flex">
+                        {latestCandidateList.map( (latestCandidate) => (
+                            <>
+                              <div className="flex-row">
+                                  <div className="flex items-center space-x-3 mb-4 p-4 hover:bg-gray-200 hover:cursor-pointer" onClick={() => selectFromCandidate(latestCandidate.id)}>
+                                    <div className="flex-row">
+                                      <p className="text-slate-500">{latestCandidate.name} sdfds sdfsdf sdfdsf fsdfsdf </p>
+                                      <p className="text-gray-400">{latestCandidate.email}</p>
+                                    </div>
+                                    <div class="flex items-center text-sm justify-end">
+                                      <button className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow">
+                                          Select
+                                        </button>
+                                    </div>
+                                  </div>
+                                  {/* <div className="flex-row">
+                                    <p className="text-slate-500">{latestCandidate.name}</p>
+                                    <p className="text-gray-400">{latestCandidate.email}</p>
+                                  </div> */}
+                              </div>
+                            </>
+                          ))}
                       </div>
-                    </div>
-                  )}
-            </div>
-          
-          </Modal>
+                  </div>
+                </>
+                ) : (
+                  <>
+                  <p className="py-4">Không tìm thấy ứng viên</p>
+                  </>
+                )}
+               </>
+              ) : (
+                      <div className="absolute top-0 left-0 flex items-center justify-center w-full h-full">
+                        <div className="absolute top-0 left-0 z-10 w-full h-full bg-black opacity-20"></div>
+                        <div className="z-20">
+                          <svg
+                            className="w-8 h-8 mx-auto text-white animate-spin"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            ></circle>
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            ></path>
+                          </svg>
+                        </div>
+                      </div>
+                    )}
+              </div>
+            </Modal>
         )}
       </>
       );

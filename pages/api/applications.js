@@ -8,7 +8,7 @@ export default async function handler(req, res) {
     const session = await getSession({ req });
     const query = req.query;
     const { page } = query;
-    let { status, applicationId, excludeJobId } = query;
+    let { status, applicationId } = query;
 
     if(!status) {
       status = 0;
@@ -49,21 +49,7 @@ export default async function handler(req, res) {
       is_submitted: 1
     };
 
-    if(applicationId) {
-      applicationId = parseInt(applicationId);
-      whereQuery.NOT = {
-        id: applicationId
-      };
-    }
-
-    if(excludeJobId) {
-      excludeJobId = parseInt(excludeJobId);
-      whereQuery.NOT = {
-        job_id: excludeJobId
-      };
-    }
-
-    let findQuery = {
+     let findQuery = {
       orderBy: {
         id: "desc"
       },
@@ -72,6 +58,13 @@ export default async function handler(req, res) {
       where: whereQuery,
       include: includeQuery,
     };
+
+    if(applicationId) {
+      applicationId = parseInt(applicationId);
+      whereQuery.NOT = {
+        id: applicationId
+      };
+    }
 
     const data = await prisma.$transaction([
       // count all
@@ -112,10 +105,10 @@ export default async function handler(req, res) {
         },
         include: includeQuery
       });
+
       data.push(additionalData);
     }
 
-    // console.log(data[2]);
     const statusCount = {};
     data[2].forEach((item) => {
       const { status, _count } = item;

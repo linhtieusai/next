@@ -46,7 +46,8 @@ export default async function handler(req, res) {
           user_id: session.user.id,
           NOT: {
             job_id: jobId
-          }
+          },
+          is_submitted: 1,
         },
         include: {
           candidate: true
