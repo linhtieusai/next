@@ -14,12 +14,7 @@ function JobDetail({ selectedJob, handleBackButton, handleApplyButtonClick, isFo
       {/* <div className="p-4 lg:w-2/3"> */}
         {selectedJob ? (
           <>
-            {/* <button className="sticky top-0 px-4 py-2 bg-white border-b" onClick={() => handleBackButton()}>Back</button> */}
-            {/* <a onClick={() => handleBackButton()} 
-                className="px-4 py-2 underline lg:hidden hover:cursor-pointer"
-            >
-                Back to Search Results for "PHP"
-            </a> */}
+
             <div className=" sticky top-0 flex-col items-center justify-between px-5 pb-10 h-[calc(100vh_-_200px)] overflow-auto border-b text-sm">
                 <div className="sticky top-0 flex items-center justify-between py-3 bg-white">
                   <h1 className="flex-1 ml-2 text-xl font-bold truncate text-green-950 opacity-60">{selectedJob.title}</h1>

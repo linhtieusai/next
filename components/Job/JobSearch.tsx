@@ -200,8 +200,17 @@ export default function SearchPage({ firstPageData, moving }) {
   return (
    
 <>
-  <div className="flex flex-col flex-1 hidden px-5 py-10 lg:flex-row md:block">
-    <h1 className="text-lg">Search results for <span className='font-bold'>"PHP"</span></h1>
+  <div className="text-xs flex flex-col flex-1 hidden px-5 py-10 lg:flex-row md:block">
+    <span className="text-gray-400 mr-2">Địa điểm</span>
+    <button className="mr-2 px-2 py-1 text-xs border rounded-full text-slate-600 border-slate-300  hover:bg-emerald-100 hover:bg-gray-100">
+        Ha Noi
+    </button>
+    <button className="mr-2 px-2 py-1 text-xs border rounded-full text-slate-600 border-slate-300 hover:bg-emerald-100 hover:bg-gray-100">
+        Đà Nẵng
+    </button>
+    <button className="mr-2 px-2 py-1 text-xs border rounded-full text-slate-600 border-slate-300 hover:bg-emerald-100 hover:bg-gray-100">
+        HCM
+    </button>
   </div>
   <div className="flex flex-col flex-1 md:flex-row">
       <div className={`relative h-[calc(100vh_-_140px)] sm:h-[calc(100vh_-_170px)] md:w-1/3 flex-col  overflow-auto 
@@ -284,7 +293,7 @@ export default function SearchPage({ firstPageData, moving }) {
             handleFollowButtonClick={handleFollowButtonClick}
           />
           <ApplyScreen presubmitInfo={presubmitInfo} jobId={selectedJob?.id} isModalOpening={isModalOpening} closeModalCallBack={closeModalCallBack}/>
-            <div className="sticky bottom-0 left-0 z-10 w-full p-4 bg-gray-100 border-t border-gray-200 sm:hidden">
+            <div className="sticky bottom-0 left-0 w-full p-4 bg-gray-100 border-t border-gray-200 sm:hidden">
               <div className="flex items-center justify-between">
                 <button className="px-8 py-2 font-bold text-white bg-green-600 rounded-full hover:opacity-80" onClick={handleApplyButtonClick}>Apply</button>
                 <button className="px-8 py-2 font-bold text-white bg-gray-500 rounded-full hover:opacity-80" onClick={handleBackButton}>Back</button>

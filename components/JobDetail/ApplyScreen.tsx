@@ -60,6 +60,7 @@ const ApplyButton = ({jobId, presubmitInfo, isModalOpening, closeModalCallBack})
   }
 
   const selectFromCandidate = (candidate) => {
+    console.log(candidate);
     setIsSelectCandidateOpen(false);
     setResumeUrl(`/api/viewResume?id=${candidate.hashed_resume_name}`);
     // setFormFromApplicationData(candidate);
@@ -318,7 +319,7 @@ const ApplyButton = ({jobId, presubmitInfo, isModalOpening, closeModalCallBack})
   return (
     <>
       {isModalOpen && (
-        <Modal onClose={handleBackClick} showCloseButton>
+        <Modal zindex={20} onClose={handleBackClick} showCloseButton>
           {!isSecondStep && !session ? (
             <>
               <h2 className="mb-4 text-lg font-medium">Apply for this job</h2>
@@ -506,7 +507,7 @@ const ApplyButton = ({jobId, presubmitInfo, isModalOpening, closeModalCallBack})
                           </div>
                       )}
                     </div>
-                    <div className="flex justify-end sticky bottom-0 left-0">
+                    <div className="flex justify-end sticky bottom-0">
                         {!submitSuccess  && (
                           <>
                             <button
@@ -542,7 +543,7 @@ const ApplyButton = ({jobId, presubmitInfo, isModalOpening, closeModalCallBack})
                         )}
                       
                       {submitSuccess && (
-                          <div className={`z-50 top-0 left-0 w-full flex items-center justify-center`}>
+                          <div className={`z-20 top-0 left-0 w-full flex items-center justify-center`}>
                           <div className="p-8 text-white bg-green-600 rounded-lg shadow-lg">
                             <div className="text-xl font-bold">Your resume has been successfully submitted!</div>
                           </div>
@@ -586,7 +587,7 @@ const ApplyButton = ({jobId, presubmitInfo, isModalOpening, closeModalCallBack})
           </Modal>
         )}
         {isSelectCandidateOpen && (
-          <Modal zIndex={6} onClose={handleCandidateSelectBack} showCloseButton>
+          <Modal zIndex={30} onClose={handleCandidateSelectBack} showCloseButton>
             <div className="flex-row min-w-[25vw]">
               {latestCandidateList ? (
                 <>
@@ -614,25 +615,21 @@ const ApplyButton = ({jobId, presubmitInfo, isModalOpening, closeModalCallBack})
                         Select from your candidate:
                     </div> */}
                     
-                    <div className="flex">
+                    <div className="flex-row">
                         {latestCandidateList.map( (latestCandidate) => (
                             <>
                               <div className="flex-row">
-                                  <div className="flex items-center space-x-3 mb-4 p-4 hover:bg-gray-200 hover:cursor-pointer" onClick={() => selectFromCandidate(latestCandidate.id)}>
+                                  <div className="flex items-center space-x-3 p-4 hover:bg-gray-200 hover:cursor-pointer" onClick={() => selectFromCandidate(latestCandidate)}>
                                     <div className="flex-row">
                                       <p className="text-slate-500">{latestCandidate.name} sdfds sdfsdf sdfdsf fsdfsdf </p>
                                       <p className="text-gray-400">{latestCandidate.email}</p>
                                     </div>
-                                    <div class="flex items-center text-sm justify-end">
+                                    <div class="flex flex-1 items-center text-sm justify-end">
                                       <button className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow">
                                           Select
                                         </button>
                                     </div>
                                   </div>
-                                  {/* <div className="flex-row">
-                                    <p className="text-slate-500">{latestCandidate.name}</p>
-                                    <p className="text-gray-400">{latestCandidate.email}</p>
-                                  </div> */}
                               </div>
                             </>
                           ))}
@@ -641,7 +638,7 @@ const ApplyButton = ({jobId, presubmitInfo, isModalOpening, closeModalCallBack})
                 </>
                 ) : (
                   <>
-                  <p className="py-4">Không tìm thấy ứng viên</p>
+                  <p className="py-4 text-slate-700">Không tìm thấy ứng viên</p>
                   </>
                 )}
                </>
