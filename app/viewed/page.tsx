@@ -46,11 +46,6 @@ const ApplyScreen = dynamic(() => import('../../components/JobDetail/ApplyScreen
 
 export default function ViewedJobPage({ searchParams }) {
 
-  
-
-  // console.log("search page job");
-  // console.log(firstPage.jobs);
-
   const [selectedJob, setSelectedJob] = useState<any>(false);
   const [isModalOpening, setIsModalOpening] = useState(false);
 
@@ -76,12 +71,7 @@ export default function ViewedJobPage({ searchParams }) {
     setShowJobList(false);
   }
 
-  // if(firstPage) {
-  //   setJobs(firstPage.jobs);
-  // }
-
   const path = usePathname();
-  
 
   const handleFollowButtonClick = (job, isFollowed) => {
     if(isFollowed) {

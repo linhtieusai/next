@@ -83,8 +83,9 @@ export default async function handler(req, res) {
       console.log(candidateUpdate);
 
       // Save the applications
+      let application;
       if(applicationId) {
-        const application = await prisma.applications.update({
+        application = await prisma.applications.update({
             where: {
               id: applicationId
             },
@@ -100,7 +101,7 @@ export default async function handler(req, res) {
             },
         });
       } else {
-        const application = await prisma.applications.create({
+        application = await prisma.applications.create({
           data: {
             name: formFields.name,
             email: formFields.email,
@@ -115,7 +116,7 @@ export default async function handler(req, res) {
       }
       
 
-      console.log(application);
+      // console.log(application);
 
 
       const applicationLog = await prisma.application_logs.create({

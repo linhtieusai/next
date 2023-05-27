@@ -79,9 +79,9 @@ export default function ApplicationItem({ application, handleOnClick, isSelected
                           {application.job.title}
                         </p>
                       </div>
-                      <h3 className={`${colorClassName} text-lg font-semibold`}>{application.name}</h3>
+                      <h3 className={`${colorClassName} text-sm font-semibold`}>{application.name}</h3>
                       <p className={`${colorClassName} mt-4 text-gray-700`}>
-                        <span className='truncate border text-sm rounded-full px-3 py-1 border-gray-200 '>
+                        <span className='truncate border text-xs rounded-full px-3 py-1 border-gray-200 '>
                           {ApplicationStatus.STATUS[application.status]}
                         </span>
                       </p>
