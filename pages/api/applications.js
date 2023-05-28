@@ -101,7 +101,6 @@ export default async function handler(req, res) {
         where: {
           user_id: session.user.id,
           id: applicationId
-          // additional condition here
         },
         include: includeQuery
       });

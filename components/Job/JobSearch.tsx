@@ -77,11 +77,26 @@ export default function SearchPage({ firstPageData, moving }) {
 
   const path = usePathname();
 
-  const handleClick = (job) => {
+  const handleJobItemClick = (job) => {
     setSelectedJob(job);
     setShowJobList(false);
     addViewedJobToLocalStorage(job);
+    addViewedJobToServer(job);
+  }
 
+  function addViewedJobToServer(job) {
+    fetch(`http://localhost:3000/api/addViewedJob?jobId=${job.id}`)
+      .then(response => response.json())
+      .then(data => {
+        // setPresubmitInfo(data);
+      })
+      .catch(error => console.error(error));
+
+    const followedJobs = JSON.parse(localStorage.getItem("followedJobs") ?? "{}");
+    followedJobs[job.id] = true;
+
+    localStorage.setItem("followedJobs", JSON.stringify(followedJobs));
+    setFollowedJobs(followedJobs);
   }
 
   if (process.browser) {
@@ -203,6 +218,9 @@ export default function SearchPage({ firstPageData, moving }) {
   <div className="text-xs flex flex-col flex-1 hidden px-5 py-10 lg:flex-row md:block">
     <span className="text-gray-400 mr-2">Địa điểm</span>
     <button className="mr-2 px-2 py-1 text-xs border rounded-full text-slate-600 border-slate-300  hover:bg-emerald-100 hover:bg-gray-100">
+        All
+    </button>
+    <button className="mr-2 px-2 py-1 text-xs border rounded-full text-slate-600 border-slate-300  hover:bg-emerald-100 hover:bg-gray-100">
         Ha Noi
     </button>
     <button className="mr-2 px-2 py-1 text-xs border rounded-full text-slate-600 border-slate-300 hover:bg-emerald-100 hover:bg-gray-100">
@@ -223,7 +241,7 @@ export default function SearchPage({ firstPageData, moving }) {
         <div ref={jobListRef} className={`px-4 sm:px-4 ${isMoving ? 'opacity-50' : 'opacity-100'}`}>
               {jobs.length ? jobs.map((job) => (
                 <JobItem key={job.id} job={job} isViewed={viewedJobs[job.id]} 
-                  handleOnClick={handleClick}
+                  handleOnClick={handleJobItemClick}
                   isFollowed={followedJobs[job.id]} 
                   isSelected={selectedJob && selectedJob.id === job.id}/>
               )) : (

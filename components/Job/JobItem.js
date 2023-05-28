@@ -54,20 +54,23 @@ export default function JobItem({ job, isViewed, handleOnClick, isFollowed, isSe
               `}
             >
               <div className={`relative flex justify-between items-center`}>
-                  <div className="flex items-center text-sm text-green-900">
+                  <div className="flex items-center text-sm text-green-900 overflow-hidden">
                     <Image src={`/company_logo/${job.source_site}/${job.source_id}.jpg`} alt="me" width="55" height="55" className="object-cover mr-3 rounded-full"/>
                     <div>
                       <div className='flex'>
-                        <p className="text-gray-600 text-xs">{job.company_name}</p>
+                        <p className="text-gray-600 text-xs">
+                         {job.company_name}</p>
                       </div>
                       <h3 className="text-md font-semibold">{job.title}</h3>
-                      <span className="mt-4 text-gray-400">
+                      <span className="mt-4 text-gray-400 overflow-hidden">
                         {job.gross_month_salary}
+                        <span className="ml-2 mt-4 text-gray-500 truncate">
+                          {job.job_location}
+                        </span>
                       </span>
-                      <span className="mt-4 text-gray-700">
-                        
-                        {job.location}
-                      </span>
+                      <p className="mt-4 text-red-600 overflow-hidden">
+                        {job.reward}
+                      </p>
                       {viewedTime && (
                         <div className="flex justify-end mt-4 text-gray-400">
                           {timeAgo(viewedTime)}
