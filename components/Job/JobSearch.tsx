@@ -112,6 +112,23 @@ export default function SearchPage({ firstPageData, moving }) {
     } else {
       addFollowedJobToLocalStorage(job);
     }
+
+    addFollowedJobToServer(job);
+  }
+
+  function addFollowedJobToServer(job) {
+    fetch(`http://localhost:3000/api/addFollowedJob?jobId=${job.id}`)
+      .then(response => response.json())
+      .then(data => {
+        // setPresubmitInfo(data);
+      })
+      .catch(error => console.error(error));
+
+    const followedJobs = JSON.parse(localStorage.getItem("followedJobs") ?? "{}");
+    followedJobs[job.id] = true;
+
+    localStorage.setItem("followedJobs", JSON.stringify(followedJobs));
+    setFollowedJobs(followedJobs);
   }
 
   function doUnfollowJob(job) {
