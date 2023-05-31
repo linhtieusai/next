@@ -69,19 +69,6 @@ export default async function handler(req, res) {
           },
       });
 
-    //   const candidateUpdate = await prisma.candidates.update({
-    //     where: {
-    //       id: candidate.id
-    //     },
-    //     data: {
-    //       name: formFields.name,
-    //       email: formFields.email,
-    //       tel: formFields.tel,
-    //     },
-    // });
-
-      console.log(candidateUpdate);
-
       // Save the applications
       let application;
       if(applicationId) {

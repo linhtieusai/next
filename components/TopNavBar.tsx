@@ -7,20 +7,26 @@ import NotificationSkeleton from '../ui/rendering-notification-skeleton'
 import Image from 'next/image';
 import { ApplicationStatus } from '../lib/const'
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
+import InfiniteScroll  from "react-infinite-scroll-component"
 
 const Navbar = () => {
   const { data: session, status } = useSession()
   const [notifications, setNotifications] = useState<any[]>();
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
+  // const { loading, items, hasNextPage, error, loadMore } = useLoadItems();
+  const [hasMore, setHasMore] = useState(true);  //再読み込み判定
 
   const router = useRouter();
   
   useEffect(() => {
     async function fetchNotifications() {
-      const response = await fetch("http://localhost:3000/api/notifications");
+      const response = await fetch("http://localhost:3000/api/notifications?start=0");
       const data = await response.json();
-      setNotifications(data.data);
+      setNotifications(data.notifications);
+      if(!data.hasMore) {
+        setHasMore(false);
+      }
     }
 
     if (showPopup && !notifications) {
@@ -56,6 +62,44 @@ const Navbar = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  //項目を読み込むときのコールバック
+  const loadMore = async () => {
+    console.log("loading page");
+    // console.log(page);
+    if(notifications) {
+      const response = await fetch(`http://localhost:3000/api/notifications?start=${notifications.length}`);  //API通信
+      const data = await response.json();  //取得データ
+  
+      console.log(data);
+      console.log(hasMore);
+      //データ件数が0件の場合、処理終了
+      if (data.notifications.length < 1) {
+        setHasMore(false);
+        return;
+      } else {
+        if(!data.hasMore) {
+          console.log("set false more");
+          console.log(data.hasMore);
+          console.log(hasMore);
+          setHasMore(false);
+        }
+
+        setNotifications([...notifications, ...data.notifications]);
+      }
+    }
+    //取得データをリストに追加
+   
+  }
+
+  const loader = (
+    <div className="flex w-full pb-4">
+        <div className="w-full mx-4">
+          <p className="h-4 w-1/2 bg-gray-200 rounded-md dark:bg-gray-700"></p>
+          <p className="h-20 mt-5 bg-gray-200 rounded-md dark:bg-gray-700 w-full"></p>
+        </div>
+    </div>
+  );
 
   return (
     <>
@@ -107,58 +151,83 @@ const Navbar = () => {
         
       </div>
       {showPopup && (
-       <div className='z-10 max-h-[calc(100vh_-_300px)] max-w-[460px] overflow-auto p-4 notification-popup flex flex-col border rounded-lg shadow-lg bg-slate-50 flex absolute top-16 right-5 ml:10 min-h-[150px] w-[90%] md:w-auto md:min-w-[360px]' ref={popupRef}>
+       <div  id='scrollableDiv' className='z-10 flex absolute top-16 
+        max-h-[calc(100vh_-_150px)] max-w-[460px] overflow-auto p-4
+        notification-popup flex-col 
+       border rounded-lg shadow-lg bg-slate-50
+        right-5 ml:10 min-h-[150px] w-[90%] md:w-auto md:min-w-[360px]'
+        ref={popupRef}>
           <div className='flex p-4 text-sm bg-slate-200 text-green-900 font-bold'>Thông báo </div>
           <div className='flex-1 bg-white'>
-            <ul className='p-4'>
-            {notifications ? (
-                notifications.length > 0 ? (
-                  notifications.map((notification, index) => (
-                    <li key={notification.id} onClick={() => handleClickNotification(notification)}
-                      className='flex px-4 py-4 hover:bg-gray-100 hover:cursor-pointer'>
-                      <div className='logo'>
-                        <Image src={`/company_logo/${notification.job.source_site}/${notification.job.source_id}.jpg`} alt="me" width="40" height="40" className="object-cover mr-3 rounded-full"/>
-                      </div>
-                      <div className='flex-col'>
-                        <div className={`${notification.application ? "text-gray-500": "font-semibold text-slate-600"} text-xs `}>
-                          {notification.job.title}
-                        </div>
-                        {notification.application && (
-                          <div className='flex items-center font-semibold text-sm text-slate-600'>
-                            {ApplicationStatus.STATUS_ICON[notification.content] == 'y' ? (
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="16px" height="16px">
-                                  <path fill="none" d="M44,24c0,11.045-8.955,20-20,20S4,35.045,4,24S12.955,4,24,4S44,12.955,44,24z"/>
-                                  <path fill="#4caf50" d="M34.586,14.586l-13.57,13.586l-5.602-5.586l-2.828,2.828l8.434,8.414l16.395-16.414L34.586,14.586z"/>
-                                </svg>
-                              ) : (
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="16px" height="16px">
-                                  <path fill="none" d="M44,24c0,11.045-8.955,20-20,20S4,35.045,4,24S12.955,4,24,4S44,12.955,44,24z"/>
-                                  <path fill="#f44336" d="M29.656,15.516l2.828,2.828l-14.14,14.14l-2.828-2.828L29.656,15.516z"/>
-                                  <path fill="#f44336" d="M32.484,29.656l-2.828,2.828l-14.14-14.14l2.828-2.828L32.484,29.656z"/>
-                                </svg>
+           
+            <InfiniteScroll
+                dataLength={notifications? notifications.length : 0 } 
+                next={loadMore}    //項目を読み込む際に処理するコールバック関数
+                hasMore={hasMore}
+                // threshold={50}     //読み込みを行うかどうかの判定
+                loader={loader}
+                // useWindow={false}
+                // below props only if you need pull down functionality
+                // refreshFunction={this.refresh}
+                // pullDownToRefresh
+                pullDownToRefreshThreshold={50}
+                pullDownToRefreshContent={
+                  <h3 style={{ textAlign: 'center' }}>&#8595; Pull down to refresh</h3>
+                }
+                releaseToRefreshContent={
+                  <h3 style={{ textAlign: 'center' }}>&#8593; Release to refresh</h3>
+                }
+                scrollableTarget='scrollableDiv'
+                > 
+                <ul className='p-4'>
+                  {notifications ? (
+                      notifications.length > 0 ? (
+                        notifications.map((notification, index) => (
+                          <li key={notification.id} onClick={() => handleClickNotification(notification)}
+                            className='flex px-4 py-4 hover:bg-gray-100 hover:cursor-pointer'>
+                            <div className='logo'>
+                              <Image src={`/company_logo/${notification.job.source_site}/${notification.job.source_id}.jpg`} alt="me" width="40" height="40" className="object-cover mr-3 rounded-full"/>
+                            </div>
+                            <div className='flex-col'>
+                              <div className={`${notification.application ? "text-gray-500": "font-semibold text-slate-600"} text-xs `}>
+                                {notification.job.title}
+                              </div>
+                              {notification.application && (
+                                <div className='flex items-center font-semibold text-sm text-slate-600'>
+                                  {ApplicationStatus.STATUS_ICON[notification.content] == 'y' ? (
+                                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="16px" height="16px">
+                                        <path fill="none" d="M44,24c0,11.045-8.955,20-20,20S4,35.045,4,24S12.955,4,24,4S44,12.955,44,24z"/>
+                                        <path fill="#4caf50" d="M34.586,14.586l-13.57,13.586l-5.602-5.586l-2.828,2.828l8.434,8.414l16.395-16.414L34.586,14.586z"/>
+                                      </svg>
+                                    ) : (
+                                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="16px" height="16px">
+                                        <path fill="none" d="M44,24c0,11.045-8.955,20-20,20S4,35.045,4,24S12.955,4,24,4S44,12.955,44,24z"/>
+                                        <path fill="#f44336" d="M29.656,15.516l2.828,2.828l-14.14,14.14l-2.828-2.828L29.656,15.516z"/>
+                                        <path fill="#f44336" d="M32.484,29.656l-2.828,2.828l-14.14-14.14l2.828-2.828L32.484,29.656z"/>
+                                      </svg>
+                                    )}
+                                  <span className='ml-1'>{notification.application.name}</span>
+                                </div>
                               )}
-                            <span className='ml-1'>{notification.application.name}</span>
-                          </div>
-                        )}
-                        <div className='text-gray-700 text-xs'>
-                          {ApplicationStatus.STATUS[notification.content]} 
+                              <div className='text-gray-700 text-xs'>
+                                {ApplicationStatus.STATUS[notification.content]} 
+                              </div>
+                              <div className='text-green-700 text-xs'>
+                                4 giờ trước
+                              </div>
+                            </div>
+                          </li>
+                        ))
+                      ) : (
+                        <div className='flex items-center justify-center px-4 py-8'>
+                          Không có thông báo nào.
                         </div>
-                        <div className='text-green-700 text-xs'>
-                          4 giờ trước
-                        </div>
-                      </div>
-                    </li>
-                  ))
-                ) : (
-                  <div className='flex items-center justify-center px-4 py-8'>
-                    Không có thông báo nào.
-                  </div>
-                )
-              ) : (
-                <NotificationSkeleton />
-              )}
-
-            </ul>
+                      )
+                    ) : (
+                      <NotificationSkeleton />
+                    )}
+                </ul>
+            </InfiniteScroll>
           </div>
       </div>
       )}

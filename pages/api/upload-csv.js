@@ -16,10 +16,6 @@ export const config = {
 export default async function handler(req, res) {
   try {
       const session = await getSession({ req });
-      //   if (!session) {
-      //     res.status(401).json({ message: 'Unauthorized' });
-      //     return;
-      //   }
       const query = req.query;
 
         const form = new formidable.IncomingForm({

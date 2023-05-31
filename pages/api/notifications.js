@@ -7,34 +7,74 @@ import { NextApiRequest, NextApiResponse } from 'next';
 export default async function handler(req, res) {
   try {
     const session = await getSession({ req });
+    const query = req.query;
+    let { start } = query;
 
-    const notifications = await prisma.notifications.findMany({
-      orderBy: {
-        id: 'desc',
-      },
-      where: { user_id: session.user.id },
-      include: {
-        job: {
-          select: {
-            title: true,
-            source_site: true,
-            source_id: true
+    start = parseInt(start);
+
+    const data = await prisma.$transaction([
+      // count all
+      prisma.notifications.count({
+        where: {
+          user_id: session.user.id,
+        },
+      }),
+      prisma.notifications.findMany({
+        take: 10,
+        skip: start,
+        orderBy: {
+          id: 'desc',
+        },
+        where: { user_id: session.user.id },
+        include: {
+          job: {
+            select: {
+              title: true,
+              source_site: true,
+              source_id: true
+            }
+          },
+          application: {
+            select: {
+              id: true,
+              name: true,
+              status: true,
+            }
           }
         },
-        application: {
-          select: {
-            id: true,
-            name: true,
-            status: true,
-          }
-        }
-      },
-    });
+      })
+    ]);
 
-    console.log(notifications);
+    // const notifications = await prisma.notifications.findMany({
+    //   take: 10,
+    //   skip: start,
+    //   orderBy: {
+    //     id: 'desc',
+    //   },
+    //   where: { user_id: session.user.id },
+    //   include: {
+    //     job: {
+    //       select: {
+    //         title: true,
+    //         source_site: true,
+    //         source_id: true
+    //       }
+    //     },
+    //     application: {
+    //       select: {
+    //         id: true,
+    //         name: true,
+    //         status: true,
+    //       }
+    //     }
+    //   },
+    // });
+
+    // console.log(notifications);
 
     res.status(201).json({
-      data: notifications,
+      hasMore: data[0] - start > 10,
+      notifications: data[1],
     });
 
     // if(session) {

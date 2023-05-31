@@ -11,8 +11,8 @@ export default function SkeletonCard() {
               </div>
 
               <div className="w-full mt-2 ml-4">
-                <h3 className="h-4 w-1/2 bg-gray-200 rounded-md dark:bg-gray-700"></h3>
-                <h3 className="h-20 mt-5 bg-gray-200 rounded-md dark:bg-gray-700 w-full"></h3>
+                <p className="h-4 w-1/2 bg-gray-200 rounded-md dark:bg-gray-700"></p>
+                <p className="h-20 mt-5 bg-gray-200 rounded-md dark:bg-gray-700 w-full"></p>
               </div>
           </div>
       ))}
