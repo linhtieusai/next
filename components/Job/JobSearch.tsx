@@ -40,9 +40,6 @@ const ApplyScreen = dynamic(() => import('../../components/JobDetail/ApplyScreen
 
 export default function SearchPage({ firstPageData, moving }) {
 
-  // console.log("search page job");
-  // console.log(firstPage.jobs);
-
   const [selectedJob, setSelectedJob] = useState<any>(false);
   const [isModalOpening, setIsModalOpening] = useState(false);
 

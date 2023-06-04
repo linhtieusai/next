@@ -20,23 +20,7 @@ import { Pagination } from '@mui/material';
 // localhost:3000
 
 import { PrismaClient } from "@prisma/client";
-
-async function getViewedJobFromLocalStorage(page) {
-  const perPage = 10;
-  let jobViewHistory = JSON.parse(localStorage.getItem("jobViewHistory") ?? "[]");
-
-  jobViewHistory = jobViewHistory.reverse();
-
-  if(!page) page = 1;
-
-  console.log(Math.ceil(jobViewHistory.length / perPage));
-  return {
-    jobs: jobViewHistory.slice((page - 1) * perPage, page * perPage) ?? [],
-    totalPages: Math.ceil(jobViewHistory.length / perPage),
-    page: page
-  }
-}
-
+import { useSession } from "next-auth/react";
 
 const ApplyScreen = dynamic(() => import('../../components/JobDetail/ApplyScreen'), {
   loading: () => <p>Loading...</p>,
@@ -64,6 +48,58 @@ export default function ViewedJobPage({ searchParams }) {
   const [currentPage, setCurrentPage] = useState(page);
 
   const [followedJobs, setFollowedJobs] = useState<any[]>([]);
+  const { data: session, status } = useSession();
+
+
+  
+function getViewedJobs(page) {
+  if(session) {
+    return getViewedJobFromServer(page);
+  } else {
+    return getViewedJobFromLocalStorage(page);
+  }
+}
+
+async function getViewedJobFromLocalStorage(page) {
+  const perPage = 10;
+  let jobViewHistory = JSON.parse(localStorage.getItem("jobViewHistory") ?? "[]");
+
+  jobViewHistory = jobViewHistory.reverse();
+
+  if(!page) page = 1;
+
+  console.log(Math.ceil(jobViewHistory.length / perPage));
+  return {
+    jobs: jobViewHistory.slice((page - 1) * perPage, page * perPage) ?? [],
+    totalPages: Math.ceil(jobViewHistory.length / perPage),
+    page: page
+  }
+}
+
+async function getViewedJobFromServer(page) {
+  const perPage = 10;
+  // let jobViewHistory = JSON.parse(localStorage.getItem("jobViewHistory") ?? "[]");
+
+  // jobViewHistory = jobViewHistory.reverse();
+
+  if(!page) page = 1;
+
+  // console.log(Math.ceil(jobViewHistory.length / perPage));
+  return {
+    jobs: jobViewHistory.slice((page - 1) * perPage, page * perPage) ?? [],
+    totalPages: Math.ceil(jobViewHistory.length / perPage),
+    page: page
+  }
+
+  if(!page) page = 1;
+
+  fetch(`http://localhost:3000/api/viewedJobs?page=${page}`)
+      .then(response => response.json())
+      .then(data => {
+        // setPresubmitInfo(data);
+      })
+      .catch(error => console.error(error));
+}
 
 
   const handleClick = (job) => {
@@ -98,7 +134,6 @@ export default function ViewedJobPage({ searchParams }) {
   }
   
   function handleBackButton() {
-
     setSelectedJob(null);
     setShowJobList(true);
   }
@@ -109,19 +144,12 @@ export default function ViewedJobPage({ searchParams }) {
   }
 
   function handleApplyButtonClick() {
-    console.log("Apply button clicked");
     setIsModalOpening(true);
   }
 
   const closeModalCallBack = () => {
     setIsModalOpening(false);
-
   }
-
-  // if(path === "/" && !page) {
-  //   //Home page
-  //   page = 1;
-  // }
 
   const handleChangePage = (event, value) => {
     setIsMoving(true);
@@ -141,7 +169,7 @@ export default function ViewedJobPage({ searchParams }) {
     console.log("go use effect");
     // if(page != currentPage) {
       console.log("go here");
-      getViewedJobFromLocalStorage(currentPage)
+      getViewedJobs(currentPage)
       .then(data => {
         setJobViewHistory(data.jobs);
 
