@@ -388,7 +388,7 @@ const ApplyButton = ({jobId, presubmitInfo, isModalOpening, closeModalCallBack})
                           </div>
                           <input id="dropzone-file" type="file" className="hidden" accept=".pdf" onChange={handleFirstStepSubmit}/>
                       </label>
-                      {presubmitInfo.draftApplication && (
+                      {presubmitInfo && presubmitInfo.draftApplication && (
                         <label className=" mb-5 flex flex-col items-center justify-center w-full px-5 border-2 border-gray-300 border-dashed rounded-lg 
                           cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100
                           dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600" onClick={() => selectFromDraft(presubmitInfo.draftApplication)}>
@@ -407,7 +407,7 @@ const ApplyButton = ({jobId, presubmitInfo, isModalOpening, closeModalCallBack})
                           </div>
                       </label>
                       )}
-                      {presubmitInfo.latestApplication && presubmitInfo.latestApplication.length > 0 && (
+                      {presubmitInfo && presubmitInfo.latestApplication && presubmitInfo.latestApplication.length > 0 && (
                       <label className="flex flex-col items-center justify-center w-full px-5 border-2 border-gray-300 border-dashed rounded-lg 
                       cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100
                        dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600" onClick={handleCandidateSelectButton}>

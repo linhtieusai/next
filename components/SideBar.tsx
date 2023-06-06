@@ -78,8 +78,8 @@ const Navbar = () => {
                         </li>
                         <li className="rounded-sm">
                           <Link
-                            href="/saved"
-                            className={`flex items-center p-2 space-x-3 rounded-md ${isActive('/saved')}`}
+                            href="/followed"
+                            className={`flex items-center p-2 space-x-3 rounded-md ${isActive('/followed')}`}
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"

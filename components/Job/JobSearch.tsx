@@ -81,6 +81,19 @@ export default function SearchPage({ firstPageData, moving }) {
     addViewedJobToServer(job);
   }
 
+  function addViewedJobToLocalStorage(job) {
+    const viewedJobs = JSON.parse(localStorage.getItem("viewedJobs") ?? "{}");
+    let cloneJob:any = {...job};
+    cloneJob.viewedTime = Date.now();
+    viewedJobs[job.id] = cloneJob;
+    localStorage.setItem("viewedJobs", JSON.stringify(viewedJobs));
+    setViewedJobs(viewedJobs);
+
+    const jobViewHistory  = JSON.parse(localStorage.getItem("jobViewHistory") ?? "[]");
+    jobViewHistory.push( { id: job.id, viewedTime: Date.now() });
+    localStorage.setItem("jobViewHistory", JSON.stringify(jobViewHistory));
+  }
+
   function addViewedJobToServer(job) {
     fetch(`http://localhost:3000/api/addViewedJob?jobId=${job.id}`)
       .then(response => response.json())
@@ -88,12 +101,6 @@ export default function SearchPage({ firstPageData, moving }) {
         // setPresubmitInfo(data);
       })
       .catch(error => console.error(error));
-
-    const followedJobs = JSON.parse(localStorage.getItem("followedJobs") ?? "{}");
-    followedJobs[job.id] = true;
-
-    localStorage.setItem("followedJobs", JSON.stringify(followedJobs));
-    setFollowedJobs(followedJobs);
   }
 
   if (process.browser) {
@@ -145,18 +152,7 @@ export default function SearchPage({ firstPageData, moving }) {
   }
 
 
-  function addViewedJobToLocalStorage(job) {
-    const viewedJobs = JSON.parse(localStorage.getItem("viewedJobs") ?? "{}");
-    let cloneJob:any = {...job};
-    cloneJob.viewedTime = Date.now();
-    viewedJobs[job.id] = cloneJob;
-    localStorage.setItem("viewedJobs", JSON.stringify(viewedJobs));
-    setViewedJobs(viewedJobs);
-
-    const jobViewHistory  = JSON.parse(localStorage.getItem("jobViewHistory") ?? "[]");
-    jobViewHistory.push( { id: job.id, viewedTime: Date.now() });
-    localStorage.setItem("jobViewHistory", JSON.stringify(jobViewHistory));
-  }
+  
 
   // if(firstPage) {
   //   setJobs(firstPage.jobs);

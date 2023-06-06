@@ -8,11 +8,6 @@ export default async function handler(req, res) {
     const session = await getSession({ req });
     const query = req.query;
     const { page } = query;
-    // let { status, applicationId } = query;
-
-    // if(!status) {
-    //   status = 0;
-    // }
 
     if(!session) {
       throw new Error ('Unauthorized');
@@ -39,46 +34,26 @@ export default async function handler(req, res) {
 
     const data = await prisma.$transaction([
       // count all
-      prisma.saved_job.count({
+      prisma.followed_jobs.count({
         where: {
           user_id: session.user.id,
           deleted_at: null
         },
       }),
       // select pagination
-      prisma.saved_job.findMany(findQuery),
+      prisma.followed_jobs.findMany(findQuery),
     ]);
 
-    // if(applicationId) {
-    //   applicationId = parseInt(applicationId);
-    //   const additionalData = await prisma.applications.findFirstOrThrow({
-    //     where: {
-    //       user_id: session.user.id,
-    //       id: applicationId
-    //     },
-    //     include: includeQuery
-    //   });
-
-    //   data.push(additionalData);
-    // }
-
-    const statusCount = {};
-    data[2].forEach((item) => {
-      const { status, _count } = item;
-      statusCount[status] = _count.status;
-    });
-
-    statusCount[0] = data[3] ?? 0;
+    for (const job of data[1]) {
+      job.id=job.job_id;
+    }
 
     res.status(201).json({
-      followedJobs: data[1],
+      jobs: data[1],
       totalPages: data[0] ? Math.ceil(data[0] / 10) : 0,
       page: page,
       // specificApplication: applicationId ? data[4] : ""
     });
-
-
-    console.log(statusCount);
   } catch (err) {
     res.status(500).json({message: err.message});
   } finally {

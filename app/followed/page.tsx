@@ -26,15 +26,13 @@ const ApplyScreen = dynamic(() => import('../../components/JobDetail/ApplyScreen
   loading: () => <p>Loading...</p>,
 })
 
-
-
-export default function ViewedJobPage({ searchParams }) {
+export default function FollowedJobPage({ searchParams }) {
 
   const [selectedJob, setSelectedJob] = useState<any>(false);
   const [isModalOpening, setIsModalOpening] = useState(false);
 
   const [jobData, setJobData] = useState<any[]>([]);
-  const [jobViewHistory, setJobViewHistory] = useState<any[]>();
+  const [followedJobs, setFollowedJobs] = useState<any[]>();
 
   const [showJobList, setShowJobList] = useState(true); 
   const [isMoving, setIsMoving] = useState(false);
@@ -42,50 +40,51 @@ export default function ViewedJobPage({ searchParams }) {
   let page = searchParams.page;
   if(!page) page = 1;
 
+  console.log(page);
+
   const [ totalPages, setTotalPages ] = useState(0);
   const [currentPage, setCurrentPage] = useState(page);
 
-  const [followedJobs, setFollowedJobs] = useState<any[]>([]);
   const { data: session, status } = useSession();
   
-async function getViewedJobs(page) {
+async function getFollowedJobs(page) {
   if(session) {
-    return getViewedJobFromServer(page);
+    return getFollowedJobFromServer(page);
   } else {
-    return getViewedJobFromLocalStorage(page);
+    return getFollowedJobFromLocalStorage(page);
   }
 }
 
-async function getViewedJobFromLocalStorage(page) {
+async function getFollowedJobFromLocalStorage(page) {
   const perPage = 10;
-  let jobViewHistory = JSON.parse(localStorage.getItem("jobViewHistory") ?? "[]");
-  
-  console.log("load from local storage");
+  let followedJobs = JSON.parse(localStorage.getItem("followedJobs") ?? "[]");
 
-  jobViewHistory = jobViewHistory.reverse();
+  console.log(followedJobs);
+  //get key and make array of key
+  followedJobs = Object.keys(followedJobs);
+  followedJobs = followedJobs.reverse();
+  console.log("get from local");
 
   if(!page) page = 1;
 
-
-
-  console.log(Math.ceil(jobViewHistory.length / perPage));
+  console.log(Math.ceil(followedJobs.length / perPage));
   return {
-    jobs: jobViewHistory.slice((page - 1) * perPage, page * perPage) ?? [],
-    totalPages: Math.ceil(jobViewHistory.length / perPage),
+    jobs: followedJobs.slice((page - 1) * perPage, page * perPage) ?? [],
+    totalPages: Math.ceil(followedJobs.length / perPage),
     page: page
   }
 }
 
-async function getViewedJobFromServer(page) {
+async function getFollowedJobFromServer(page) {
   const perPage = 10;
-
   if(!page) page = 1;
-  const data = await fetch(`http://localhost:3000/api/viewedJobs?page=${page}`);
+
+  console.log("get from server");
+  const data = await fetch(`http://localhost:3000/api/followedJobs?page=${page}`);
 
   console.log(data);
   return data.json();
 }
-
 
   const handleClick = (job) => {
     setSelectedJob(job);
@@ -124,8 +123,9 @@ async function getViewedJobFromServer(page) {
   }
 
   const callBackMethod = (totalPages, currentPage) => {
+    currentPage = parseInt(currentPage);
     setTotalPages(totalPages);
-    // setCurrentPage(currentPage);
+    setCurrentPage(currentPage);
   }
 
   function handleApplyButtonClick() {
@@ -143,44 +143,70 @@ async function getViewedJobFromServer(page) {
 
   const getJobData = (jobData) => {
     if(session) {
-      let viewedData = {};
+      let followedData = {};
       for (const job of jobData) {
-        viewedData[job.job_id] = job.job;
+        followedData[job.job_id] = job.job;
       }
 
-      return viewedData;
+      return followedData;
     } else {
       return JSON.parse(localStorage.getItem("viewedJobs") ?? "[]");
     }
   }
 
+  function handleApplyButtonClick(jobId) {
+    setIsModalOpening(true);
+
+    fetch(`http://localhost:3000/api/presubmit?jobId=${jobId}`)
+      .then(response => response.json())
+      .then(data => {
+        setPresubmitInfo(data);
+      })
+      .catch(error => console.error(error));
+  }
+
   useEffect(() => {
     console.log("go use effect");
-    getViewedJobs(currentPage)
+    getFollowedJobs(currentPage)
     .then(data => {
 
+      console.log("console log data");
       console.log(data);
-      setJobViewHistory(data.jobs);
+      
+      if(session) {
+        let followedId = [];
+        for (const job of data.jobs) {
+          followedId.push(job.job_id);
+        }
+
+        setFollowedJobs(followedId);
+      } else {
+        setFollowedJobs(data.jobs);
+      }
+
+      console.log("result");
+
 
       const jobData = getJobData(data.jobs);
       console.log("jobData");
       console.log(jobData);
       setJobData(jobData);
 
-      console.log(JSON.parse(localStorage.getItem("viewedJobs") ?? "[]"));
+      console.log(JSON.parse(localStorage.getItem("followedJobs") ?? "[]"));
 
       callBackMethod(data.totalPages, data.page);
-      const followedJobs = JSON.parse(localStorage.getItem("followedJobs") ?? "[]");
-      setFollowedJobs(followedJobs);
+
+      console.log("followedjob");
+      console.log(followedJobs);
     });
     
-  }, [currentPage]);
+  }, [page, currentPage]);
 
 
   return (
 <>
   <div className="flex flex-col flex-1 px-5 py-5">
-    <h1 className="text-lg font-bold">Viewed Jobs</h1>
+    <h1 className="text-lg font-bold">Followed Jobs</h1>
   </div>
   <div className="flex flex-col flex-1 pb-[15px] md:flex-row">
       <div className={`relative h-[calc(100vh_-_180px)] sm:h-[calc(100vh_-_180px)]  px-4 sm:px-4 md:w-1/3 flex-col  overflow-auto ${selectedJob ? "hidden md:flex" : "w-full"}`}>
@@ -190,17 +216,17 @@ async function getViewedJobFromServer(page) {
 
         {/* <ul style={{ opacity: isMoving ? 0.5 : 1 }}> */}
         <ul>
-            {jobViewHistory
+            {followedJobs
               ?
               <>
-                {jobViewHistory.length ? jobViewHistory.map((jobHistory, index) => (
-                  <JobItem isViewed={0} isFollowed={followedJobs[jobHistory.id]} key={index} 
-                  job={jobData[jobHistory.id]} handleOnClick={handleClick}
-                  viewedTime={jobHistory.viewedTime}
-                  isSelected={selectedJob && selectedJob.id === jobHistory.id}/>
+                {followedJobs.length ? followedJobs.map((jobId) => (
+                  <JobItem isViewed={0} isFollowed={true} key={jobId} 
+                  job={jobData[jobId]} handleOnClick={handleClick}
+                  //viewedTime={jobHistory.viewedTime}
+                  isSelected={selectedJob && selectedJob.id === jobId}/>
                 )) : (
                   <>
-                    <p>Không có lịch sử xem</p>
+                    <p>Không có dữ liệu </p>
                   </>
                 )}
               </>
@@ -212,8 +238,6 @@ async function getViewedJobFromServer(page) {
         <div className="sticky bottom-0 z-3 bg-white flex items-center justify-center w-full py-2 md:py-4">
           {totalPages > 1 && currentPage && (
             <Pagination count={totalPages} page={currentPage} onChange={handleChangePage} shape="rounded" />
-
-            // <Pagination pageChangeCallback={() => {}} data={ {totalPages: totalPages, page: currentPage }}  />
           )}
         </div>
         <div className="flex">
