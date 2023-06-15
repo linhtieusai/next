@@ -308,7 +308,9 @@ export default function SearchPage({ firstPageData, moving }) {
         )}
         
         <div className="flex-col text-sm mb-4 px-4">
-          <Link className='text-gray-400' href="dieu-khoan">Điều khoản </Link>
+          <Link className='text-gray-400' href="/term-of-service">Term of Service </Link>
+          <Link className='ml-4 text-gray-400' href="/question-and-answer">Q&A </Link>
+
           <div className='text-slate-600 flex justify-center items-center'>ViecThom © 2023</div>
         </div>
       </div>

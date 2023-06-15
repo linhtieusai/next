@@ -32,7 +32,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-, "components/JobDetail/FixedBottomBar.tsx", "pages/api/applications.js", "pages/api/notifications.js"  ],
+, "components/JobDetail/FixedBottomBar.tsx", "pages/api/applications.js", "pages/api/notifications.js", "app/term-of-service/page.jsx"  ],
   "exclude": [
     "node_modules"
   ]
