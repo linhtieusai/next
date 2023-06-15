@@ -36,6 +36,7 @@ export default function FollowedJobPage({ searchParams }) {
 
   const [showJobList, setShowJobList] = useState(true); 
   const [isMoving, setIsMoving] = useState(false);
+  const [presubmitInfo, setPresubmitInfo] = useState<any>(false);
 
   let page = searchParams.page;
   if(!page) page = 1;
@@ -128,10 +129,7 @@ async function getFollowedJobFromServer(page) {
     setCurrentPage(currentPage);
   }
 
-  function handleApplyButtonClick() {
-    setIsModalOpening(true);
-  }
-
+  
   const closeModalCallBack = () => {
     setIsModalOpening(false);
   }
@@ -155,6 +153,11 @@ async function getFollowedJobFromServer(page) {
   }
 
   function handleApplyButtonClick(jobId) {
+    console.log("jobId ne");
+
+    console.log(jobId);
+
+
     setIsModalOpening(true);
 
     fetch(`http://localhost:3000/api/presubmit?jobId=${jobId}`)
@@ -249,8 +252,8 @@ async function getFollowedJobFromServer(page) {
           <>
           <JobDetail selectedJob={selectedJob} isFollowed={followedJobs[selectedJob.id]}
           handleFollowButtonClick={handleFollowButtonClick}
-          handleBackButton={handleBackButton} handleApplyButtonClick={handleApplyButtonClick} />
-          <ApplyScreen jobId={selectedJob?.id} isModalOpening={isModalOpening} closeModalCallBack={closeModalCallBack}/>
+          handleBackButton={handleBackButton} handleApplyButtonClick={() => handleApplyButtonClick(selectedJob.id)} />
+          <ApplyScreen jobId={selectedJob?.id} presubmitInfo={presubmitInfo} isModalOpening={isModalOpening} closeModalCallBack={closeModalCallBack}/>
           <div className="sticky bottom-0 left-0 z-10 w-full p-4 bg-gray-100 border-t border-gray-200 sm:hidden">
             <div className="flex items-center justify-between">
               <button className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-600" onClick={handleApplyButtonClick}>Apply</button>

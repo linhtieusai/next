@@ -587,7 +587,7 @@ const ApplyButton = ({jobId, presubmitInfo, isModalOpening, closeModalCallBack})
           </Modal>
         )}
         {isSelectCandidateOpen && (
-          <Modal zIndex={30} onClose={handleCandidateSelectBack} showCloseButton>
+          <Modal zIndex={50} onClose={handleCandidateSelectBack} showCloseButton>
             <div className="flex-row min-w-[25vw]">
               {latestCandidateList ? (
                 <>

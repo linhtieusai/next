@@ -48,6 +48,8 @@ export default function ViewedJobPage({ searchParams }) {
   const [followedJobs, setFollowedJobs] = useState<any[]>([]);
   const { data: session, status } = useSession();
   
+  const [presubmitInfo, setPresubmitInfo] = useState<any>(false);
+  
 async function getViewedJobs(page) {
   if(session) {
     return getViewedJobFromServer(page);
@@ -124,13 +126,27 @@ async function getViewedJobFromServer(page) {
   }
 
   const callBackMethod = (totalPages, currentPage) => {
+    currentPage = parseInt(currentPage);
     setTotalPages(totalPages);
-    // setCurrentPage(currentPage);
+    setCurrentPage(currentPage);
   }
 
-  function handleApplyButtonClick() {
+  function handleApplyButtonClick(jobId) {
+    console.log("jobId ne");
+
+    console.log(jobId);
+
+
     setIsModalOpening(true);
+
+    fetch(`http://localhost:3000/api/presubmit?jobId=${jobId}`)
+      .then(response => response.json())
+      .then(data => {
+        setPresubmitInfo(data);
+      })
+      .catch(error => console.error(error));
   }
+
 
   const closeModalCallBack = () => {
     setIsModalOpening(false);
@@ -225,8 +241,8 @@ async function getViewedJobFromServer(page) {
           <>
           <JobDetail selectedJob={selectedJob} isFollowed={followedJobs[selectedJob.id]}
           handleFollowButtonClick={handleFollowButtonClick}
-          handleBackButton={handleBackButton} handleApplyButtonClick={handleApplyButtonClick} />
-          <ApplyScreen jobId={selectedJob?.id} isModalOpening={isModalOpening} closeModalCallBack={closeModalCallBack}/>
+          handleBackButton={handleBackButton} handleApplyButtonClick={() => handleApplyButtonClick(selectedJob.id)} />
+          <ApplyScreen jobId={selectedJob?.id}  presubmitInfo={presubmitInfo} isModalOpening={isModalOpening} closeModalCallBack={closeModalCallBack}/>
           <div className="sticky bottom-0 left-0 z-10 w-full p-4 bg-gray-100 border-t border-gray-200 sm:hidden">
             <div className="flex items-center justify-between">
               <button className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-600" onClick={handleApplyButtonClick}>Apply</button>
