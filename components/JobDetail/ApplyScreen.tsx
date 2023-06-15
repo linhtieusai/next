@@ -319,7 +319,7 @@ const ApplyButton = ({jobId, presubmitInfo, isModalOpening, closeModalCallBack})
   return (
     <>
       {isModalOpen && (
-        <Modal zindex={20} onClose={handleBackClick} showCloseButton>
+        <Modal zIndex={20} onClose={handleBackClick} showCloseButton>
           {!isSecondStep && !session ? (
             <>
               <h2 className="mb-4 text-lg font-medium">Apply for this job</h2>
