@@ -62,13 +62,13 @@ export default function JobItem({ job, isViewed, handleOnClick, isFollowed, isSe
                          {job.company_name}</p>
                       </div>
                       <h3 className="text-md font-semibold">{job.title}</h3>
-                      <span className="mt-4 text-gray-400 overflow-hidden">
+                      <div className="mt-4 text-gray-400">
                         {job.gross_month_salary}
-                        <span className="ml-2 mt-4 text-gray-500 truncate">
+                        <span className="ml-2 mt-4 text-gray-500 ">
                           {job.job_location}
                         </span>
-                      </span>
-                      <p className="mt-4 text-red-600 overflow-hidden">
+                      </div>
+                      <p className="mt-4 text-red-600 ">
                         {job.reward}
                       </p>
                       {viewedTime && (
