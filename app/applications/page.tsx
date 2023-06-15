@@ -175,11 +175,15 @@ export default function SearchPage({ searchParams }) {
   const handleSearchApplications = (event) => {
     clearTimeout(timeout); // Clear the previous timeout
 
+    setApplications(undefined);
+
+    
     const { value } = event.target;
     // setSearchTerm(value);
 
     // Set a new timeout to call the API after 1 second
     timeout = setTimeout(() => {
+
       fetch(`http://localhost:3000/api/applications?search=${value}`)
       .then(response => response.json())
       .then(data =>  {
