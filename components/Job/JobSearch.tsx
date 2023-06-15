@@ -10,7 +10,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Suspense } from 'react'
 import JobDetailSkeleton from '../../ui/rendering-job-detail-skeleton'
 import JobListSkeleton from '../../ui/rendering-job-list-skeleton'
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 
 import JobItem from '../../components/Job/JobItem';
 import Pagination from '../../components/Job/Pagination'
@@ -70,7 +70,7 @@ export default function SearchPage({ firstPageData, moving }) {
   const searchParams = useSearchParams();
   let page = Number(searchParams?.get("page"));
 
-  // const router = useRouter();
+  const router = useRouter();
 
   const path = usePathname();
 
@@ -152,14 +152,6 @@ export default function SearchPage({ firstPageData, moving }) {
   }
 
 
-  
-
-  // if(firstPage) {
-  //   setJobs(firstPage.jobs);
-  // }
-
-
-  
   const callBackMethod = (totalPages, currentPage) => {
     setTotalPages(totalPages);
     setCurrentPage(currentPage);
@@ -175,6 +167,10 @@ export default function SearchPage({ firstPageData, moving }) {
 
     setSelectedJob(null);
     setShowJobList(true);
+  }
+
+  function handleChatButtonClick() {
+    router.push("http://localhost:3000/message");
   }
 
   function handleApplyButtonClick(jobId) {
@@ -321,6 +317,7 @@ export default function SearchPage({ firstPageData, moving }) {
             handleBackButton={handleBackButton} handleApplyButtonClick={() => handleApplyButtonClick(selectedJob.id)}
             isFollowed={followedJobs[selectedJob.id]}
             handleFollowButtonClick={handleFollowButtonClick}
+            handleChatButtonClick={() => handleChatButtonClick()}
           />
           <ApplyScreen presubmitInfo={presubmitInfo} jobId={selectedJob?.id} isModalOpening={isModalOpening} closeModalCallBack={closeModalCallBack}/>
             <div className="sticky bottom-0 left-0 w-full p-4 bg-gray-100 border-t border-gray-200 sm:hidden">
