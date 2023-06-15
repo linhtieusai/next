@@ -1,5 +1,4 @@
 const MyPage = ({ params })  => {
-  //const { data: session, status } = useSession();
 
     return (
       <>

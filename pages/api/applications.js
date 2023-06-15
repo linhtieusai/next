@@ -7,8 +7,7 @@ export default async function handler(req, res) {
   try {
     const session = await getSession({ req });
     const query = req.query;
-    const { page } = query;
-    let { status, applicationId } = query;
+    let { page, status, applicationId, search } = query;
 
     if(!status) {
       status = 0;
@@ -18,6 +17,52 @@ export default async function handler(req, res) {
       throw new Error ('Unauthorized');
     }
 
+    if(!page) {
+      page = 1;
+    }
+ 
+    // let whereCandidate;
+    // whereCandidate = {
+    //   select: {
+    //     hashed_resume_name: true,
+    //   }
+    // };
+    // if(search) {
+    //   whereCandidate = {
+    //     select: {
+    //       hashed_resume_name: true,
+    //     },
+    //     where: {
+    //       OR: [
+    //         {
+    //           email: {
+    //             contains: search,
+    //           },
+    //         },
+    //         { 
+    //           name: { 
+    //             contains: search 
+    //           } 
+    //         },
+    //       ],
+    //     }
+    //   };
+
+    // } else {
+
+    //   whereCandidate = {
+    //     select: {
+    //       hashed_resume_name: true,
+    //     }
+    //   };
+    // }
+    // whereCandidate = {
+    //   select: {
+    //     hashed_resume_name: true,
+    //   }
+    // };
+    
+ 
     const includeQuery = {
       job: {
         select: {
@@ -27,8 +72,8 @@ export default async function handler(req, res) {
         }
       },
       candidate: {
-        select: {
-          hashed_resume_name: true,
+          select: {
+            hashed_resume_name: true,
         }
       },
       application_logs: {
@@ -46,8 +91,25 @@ export default async function handler(req, res) {
     let whereQuery = { 
       user_id: session.user.id,
       status: status != 0 ? parseInt(status) : undefined,
-      is_submitted: 1
+      is_submitted: 1,
     };
+
+    if(search) {
+      whereQuery.candidate = {
+          OR: [
+            {
+              email: {
+                contains: search,
+              },
+            },
+            { 
+              name: { 
+                contains: search 
+              } 
+            },
+          ],
+      }
+    }
 
      let findQuery = {
       orderBy: {
