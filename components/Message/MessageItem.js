@@ -5,10 +5,10 @@ import { Suspense } from 'react';
 import dynamic from 'next/dynamic'
 import { ApplicationStatus } from '../../lib/const'
 
-export default function ApplicationItem({ application, handleOnClick, isSelected }) {
+export default function ConversationItem({ conversation, handleOnClick, isSelected }) {
 
   let colorClassName;
-  switch (ApplicationStatus.STATUS_COLOR[application.status]) {
+  switch (ApplicationStatus.STATUS_COLOR[conversation.application_status]) {
     case 'green':
       colorClassName = "text-green-700";
       break;
@@ -17,7 +17,7 @@ export default function ApplicationItem({ application, handleOnClick, isSelected
       break;
     default:
       // Handle the case when x is neither 1 nor 2
-      colorClassName = `text-${ApplicationStatus.STATUS_COLOR[application.status]}-700`;
+      colorClassName = `text-${ApplicationStatus.STATUS_COLOR[conversation.application_status]}-700`;
       break;
   }
 
@@ -57,7 +57,7 @@ export default function ApplicationItem({ application, handleOnClick, isSelected
   }
 
     return (
-        <div onClick={() => handleOnClick(application)}
+        <div onClick={() => handleOnClick(conversation)}
             className={`mb-4 rounded-lg p-4 cursor-pointer hover:shadow-lg 
                 hover:border-green-300  hover:border-opacity-50 hover:rounded-lg 
                 focus:border-green-500 focus:outline-none focus:shadow-lg focus:border-opacity-50 focus:rounded-lg 
@@ -72,17 +72,21 @@ export default function ApplicationItem({ application, handleOnClick, isSelected
             >
               <div className={`relative flex-1 justify-between items-center overflow-hidden`}>
                   <div className="flex items-center">
-                    <Image src={`/company_logo/${application.job.source_site}/${application.job.source_id}.jpg`} alt="me" width="55" height="55" className="object-cover mr-3 rounded-full"/>
+                    <Image src={`/company_logo/${conversation.source_site}/${conversation.source_id}.jpg`} alt="me" width="55" height="55" className="object-cover mr-3 rounded-full"/>
                     <div className='overflow-hidden'>
                       <div className='flex'>
                         <p className="text-xs truncate text-gray-500">
-                          {application.job.title}
+                          {conversation.company_name}
                         </p>
                       </div>
-                      <h3 className={`${colorClassName} text-sm font-semibold`}>{application.name}</h3>
+                      <h3 className={`${colorClassName} text-sm font-semibold`}>{conversation.job_title}</h3>
+                      <h3 className={`${colorClassName} text-sm font-semibold`}>{conversation.candidate_email}</h3>
                      
+                      <p className="truncate text-sm mt-4 text-gray-700">
+                        {conversation.last_message_content}
+                      </p>
                       <p className="truncate text-xs mt-4 text-gray-400">
-                        {application.created_at}
+                        {conversation.last_message_date}
                       </p>
                       {/* show on VIEWED PAGE */}
                       {/* {viewedTime && (

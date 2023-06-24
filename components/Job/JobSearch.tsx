@@ -169,8 +169,8 @@ export default function SearchPage({ firstPageData, moving }) {
     setShowJobList(true);
   }
 
-  function handleChatButtonClick() {
-    router.push("http://localhost:3000/message");
+  function handleChatButtonClick(jobId) {
+    router.push(`http://localhost:3000/message?jobId=${jobId}`);
   }
 
   function handleApplyButtonClick(jobId) {
@@ -317,7 +317,7 @@ export default function SearchPage({ firstPageData, moving }) {
             handleBackButton={handleBackButton} handleApplyButtonClick={() => handleApplyButtonClick(selectedJob.id)}
             isFollowed={followedJobs[selectedJob.id]}
             handleFollowButtonClick={handleFollowButtonClick}
-            handleChatButtonClick={() => handleChatButtonClick()}
+            handleChatButtonClick={() => handleChatButtonClick(selectedJob.id)}
           />
           <ApplyScreen presubmitInfo={presubmitInfo} jobId={selectedJob?.id} isModalOpening={isModalOpening} closeModalCallBack={closeModalCallBack}/>
             <div className="sticky bottom-0 left-0 w-full p-4 bg-gray-100 border-t border-gray-200 sm:hidden">

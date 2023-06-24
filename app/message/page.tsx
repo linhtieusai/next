@@ -48,7 +48,7 @@ async function getFirstPage(page) {
 export default function SearchPage({ searchParams }) {
 
 
-  const [selectedMessage, setSelectedMessage] = useState<any>(false);
+  const [selectedConversation, setSelectedConversation] = useState<any>(false);
   const [isModalOpening, setIsModalOpening] = useState(false);
 
   const [messageData, setMessageData] = useState<any[]>([]);
@@ -60,19 +60,16 @@ export default function SearchPage({ searchParams }) {
   if(!page) page = 1;
   
   const messageListRef = useRef(null);
-  const scrollToFirstChild = () => {
-    if(messageListRef.current) {
-      messageListRef.current.firstChild.scrollIntoView({ behavior: "smooth" });
-    }
-  };
 
   const [ totalPages, setTotalPages ] = useState(0);
   const [currentPage, setCurrentPage] = useState(page);
   const [isMoving, setIsMoving] = useState(false);
 
-  const [followedMessages, setFollowedMessages] = useState<any[]>([]);
+  const [isLoadingConversation, setIsLoadingConversation] = useState(false);
+
+  const [conversations, setConversations] = useState<any[]>([]);
   const [statusCount, setStatusCount] = useState({});
-  const [specificMessage, setSpecificMessage] = useState<any>(false);
+  const [specificConversation, setSpecificConversation] = useState<any>(false);
 
   const pathname = usePathname();
   const isActive = (status = "0") => {
@@ -89,8 +86,8 @@ export default function SearchPage({ searchParams }) {
   const pageChangeCallback = () => {
     setIsMoving(true);
   }
-  const handleMessageItemClick = (message) => {
-    setSelectedMessage(message);
+  const handleMessageItemClick = (conversation) => {
+    setSelectedConversation(conversation);
     setShowMessageList(false);
   }
 
@@ -98,7 +95,7 @@ export default function SearchPage({ searchParams }) {
   const router = useRouter();
   
   function handleBackButton() {
-    setSelectedMessage(null);
+    setSelectedConversation(null);
     setShowMessageList(true);
   }
 
@@ -108,11 +105,6 @@ export default function SearchPage({ searchParams }) {
     setStatusCount(statusCount);
   }
 
-  function handleApplyButtonClick() {
-    console.log("Apply button clicked");
-    setIsModalOpening(true);
-  }
-
   const closeModalCallBack = () => {
     setIsModalOpening(false);
 
@@ -120,46 +112,23 @@ export default function SearchPage({ searchParams }) {
 
   const currentPath = usePathname();
 
-
-  const handleFilterStatus = (status) => {
-    // console.log(searchParams);
-    // if(searchParams) {
-      // const params = new URLSearchParams(searchParams);
-      // params.set('status', status);
-      // params.delete('page');
-    // }
-    const newPath = `${currentPath}?status=${status}`;
-    router.push(newPath);
-  };
-
   useEffect(() => {
     const params = new URLSearchParams(searchParams);
     params.set("page", page)
-    let apiUrl = `http://localhost:3000/api/messages?${params.toString()}`;
+    let apiUrl = `http://localhost:3000/api/message?${params.toString()}`;
 
     if(page > 0) {
       fetch(apiUrl)
       .then(response => response.json())
       .then(data =>  {
-          callBackMethod(data.totalPages, data.page, data.statusCount);
-          setMessages(data.messages);
-          console.log("page is");
+          // callBackMethod(data.totalPages, data.page);
+          setConversations(data.conversations);
 
-          console.log(page);
-          if(page == 1 && data.specificMessage) {
-            console.log("kakka");
-            setSpecificMessage(data.specificMessage);
-            handleMessageItemClick(data.specificMessage);
-            scrollToFirstChild();
-
-            // if(!selectedMessage || (selectedMessage && selectedMessage.id == data.specificMessage.id)) {
-            //   // setSpecificMessage(data.specificMessage);
-            //   handleMessageItemClick(data.specificMessage);
-            // }
-            
+          if(page == 1 && data.specificConversation) {
+            setSpecificConversation(data.specificConversation);
+            handleMessageItemClick(data.specificConversation);
           } else {
-            setSpecificMessage(false);
-            // handleMessageItemClick(data.specificMessage);
+            setSpecificConversation(false);
           }
         }).catch(error => {
           console.error(error)
@@ -167,13 +136,6 @@ export default function SearchPage({ searchParams }) {
     }
     
   }, [page, searchParams]);
-
-
-  // console.log("messages is");
-  // console.log(messages);
-
-  // const firstPage = {messages: messages.messages, totalPages: 10}
-
 
   return (
 <>
@@ -192,25 +154,25 @@ export default function SearchPage({ searchParams }) {
   </div>
 
 <div className="flex flex-col flex-1 md:flex-row">
-      <div className={`relative h-[calc(100vh_-_250px)] sm:h-[calc(100vh_-_200px)]  px-4 sm:px-4 md:w-1/3 flex-col  overflow-auto ${selectedMessage ? "hidden md:flex" : "w-full"}`}>
+      <div className={`relative h-[calc(100vh_-_250px)] sm:h-[calc(100vh_-_200px)]  px-4 sm:px-4 md:w-1/3 flex-col  overflow-auto ${selectedConversation ? "hidden md:flex" : "w-full"}`}>
         <div ref={messageListRef}>
-        {specificMessage &&
-            <MessageItem key={specificMessage.id} message={specificMessage}
-            handleOnClick={handleMessageItemClick} isSelected={selectedMessage && selectedMessage.id === specificMessage.id}/>
-        }
-        {messages ? 
+        {/* {specificConversation &&
+            <MessageItem key={specificConversation.id} message={specificConversation}
+            handleOnClick={handleMessageItemClick} isSelected={selectedConversation && selectedConversation.id === specificConversation.id}/>
+        } */}
+        {conversations ? 
           <>
-          {messages.length ? messages.map((message) => {
-              if (specificMessage && message.id === specificMessage.id) {
-                return null; // Skip this message
-              }
+          {conversations.length ? conversations.map((conversation) => {
+              // if (specificConversation && message.id === specificConversation.id) {
+              //   return null; // Skip this message
+              // }
 
               return (
                 <MessageItem
-                  key={message.id}
-                  message={message}
+                  key={conversation.id}
+                  conversation={conversation}
                   handleOnClick={handleMessageItemClick}
-                  isSelected={selectedMessage && selectedMessage.id === message.id}
+                  isSelected={selectedConversation && selectedConversation.id === conversation.id}
                 />
               );
             }) : (
@@ -233,8 +195,8 @@ export default function SearchPage({ searchParams }) {
       <div className="sm:p-4 md:w-2/3">
       {!showMessageList &&  (
           <>
-          <MessageDetail selectedMessage={selectedMessage} handleBackButton={handleBackButton} />
-          {/* <ApplyScreen messageId={selectedMessage?.id} isModalOpening={isModalOpening} closeModalCallBack={closeModalCallBack}/> */}
+          <MessageDetail selectedConversation={selectedConversation} handleBackButton={handleBackButton} />
+          {/* <ApplyScreen messageId={selectedConversation?.id} isModalOpening={isModalOpening} closeModalCallBack={closeModalCallBack}/> */}
           <div className="sticky bottom-0 left-0 z-10 w-full p-4 bg-gray-100 border-t border-gray-200 sm:hidden">
             <div className="flex items-center justify-between">
               <div className='flex'></div>
