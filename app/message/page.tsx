@@ -70,6 +70,8 @@ export default function SearchPage({ searchParams }) {
   const [conversations, setConversations] = useState<any[]>([]);
   const [statusCount, setStatusCount] = useState({});
   const [specificConversation, setSpecificConversation] = useState<any>(false);
+  const [specificConversationMessage, setSpecificConversationMessage] = useState<any>(false);
+
 
   const pathname = usePathname();
   const isActive = (status = "0") => {
@@ -126,6 +128,7 @@ export default function SearchPage({ searchParams }) {
 
           if(page == 1 && data.specificConversation) {
             setSpecificConversation(data.specificConversation);
+            setSpecificConversationMessage(data.specificConversationMessage);
             handleMessageItemClick(data.specificConversation);
           } else {
             setSpecificConversation(false);
@@ -156,20 +159,20 @@ export default function SearchPage({ searchParams }) {
 <div className="flex flex-col flex-1 md:flex-row">
       <div className={`relative h-[calc(100vh_-_250px)] sm:h-[calc(100vh_-_200px)]  px-4 sm:px-4 md:w-1/3 flex-col  overflow-auto ${selectedConversation ? "hidden md:flex" : "w-full"}`}>
         <div ref={messageListRef}>
-        {/* {specificConversation &&
-            <MessageItem key={specificConversation.id} message={specificConversation}
+        {specificConversation &&
+            <MessageItem key={`xxx`} conversation={specificConversation}
             handleOnClick={handleMessageItemClick} isSelected={selectedConversation && selectedConversation.id === specificConversation.id}/>
-        } */}
+        }
         {conversations ? 
           <>
-          {conversations.length ? conversations.map((conversation) => {
+          {conversations.length ? conversations.map((conversation, index) => {
               // if (specificConversation && message.id === specificConversation.id) {
               //   return null; // Skip this message
               // }
 
               return (
                 <MessageItem
-                  key={conversation.id}
+                  key={index}
                   conversation={conversation}
                   handleOnClick={handleMessageItemClick}
                   isSelected={selectedConversation && selectedConversation.id === conversation.id}
