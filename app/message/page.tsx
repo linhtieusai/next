@@ -68,6 +68,8 @@ export default function SearchPage({ searchParams }) {
   const [isLoadingConversation, setIsLoadingConversation] = useState(false);
 
   const [conversations, setConversations] = useState<any[]>([]);
+  const [conversationContents, setConversationContents] = useState<any[]>([]);
+
   const [statusCount, setStatusCount] = useState({});
   const [specificConversation, setSpecificConversation] = useState<any>(false);
   const [specificConversationMessage, setSpecificConversationMessage] = useState<any>(false);
@@ -89,8 +91,53 @@ export default function SearchPage({ searchParams }) {
     setIsMoving(true);
   }
   const handleMessageItemClick = (conversation) => {
+    let apiUrl;
+    if(conversation.job_id) {
+      apiUrl = `http://localhost:3000/api/messageContent?jobId=${conversation.job_id}`;
+    }
+
+    if(conversation.application_id) {
+      apiUrl = `http://localhost:3000/api/messageContent?applicationId=${conversation.application_id}`;
+    }
+
     setSelectedConversation(conversation);
     setShowMessageList(false);
+
+    fetch(apiUrl)
+      .then(response => response.json())
+      .then(data =>  {
+          setConversationContent(data.conversationContents);
+
+          // if(page == 1 && data.specificConversation) {
+          //   setSpecificConversation(data.specificConversation);
+          //   setSpecificConversationMessage(data.specificConversationMessage);
+          //   handleMessageItemClick(data.specificConversation);
+          // } else {
+          //   setSpecificConversation(false);
+          // }
+        }).catch(error => {
+          console.error(error)
+        });
+
+    // if(page > 0) {
+    //   fetch(apiUrl)
+    //   .then(response => response.json())
+    //   .then(data =>  {
+    //       setConversations(data.conversations);
+
+    //       if(page == 1 && data.specificConversation) {
+    //         setSpecificConversation(data.specificConversation);
+    //         setSpecificConversationMessage(data.specificConversationMessage);
+    //         handleMessageItemClick(data.specificConversation);
+    //       } else {
+    //         setSpecificConversation(false);
+    //       }
+    //     }).catch(error => {
+    //       console.error(error)
+    //     });
+    // }
+
+   
   }
 
   const path = usePathname();
@@ -123,13 +170,15 @@ export default function SearchPage({ searchParams }) {
       fetch(apiUrl)
       .then(response => response.json())
       .then(data =>  {
-          // callBackMethod(data.totalPages, data.page);
           setConversations(data.conversations);
 
           if(page == 1 && data.specificConversation) {
             setSpecificConversation(data.specificConversation);
             setSpecificConversationMessage(data.specificConversationMessage);
             handleMessageItemClick(data.specificConversation);
+
+            setSelectedConversation(data.specificConversation);
+            setConversationContents(data.specificConversationContents);
           } else {
             setSpecificConversation(false);
           }
@@ -198,7 +247,7 @@ export default function SearchPage({ searchParams }) {
       <div className="sm:p-4 md:w-2/3">
       {!showMessageList &&  (
           <>
-          <MessageDetail selectedConversation={selectedConversation} handleBackButton={handleBackButton} />
+          <MessageDetail conversationContents={conversationContents} selectedConversation={selectedConversation} handleBackButton={handleBackButton} />
           {/* <ApplyScreen messageId={selectedConversation?.id} isModalOpening={isModalOpening} closeModalCallBack={closeModalCallBack}/> */}
           <div className="sticky bottom-0 left-0 z-10 w-full p-4 bg-gray-100 border-t border-gray-200 sm:hidden">
             <div className="flex items-center justify-between">

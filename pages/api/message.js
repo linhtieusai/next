@@ -129,7 +129,8 @@ export default async function handler(req, res) {
             queryLoadMessageSpecificData = `
                 SELECT
                 content,
-                created_at AS sent_time
+                created_at AS sent_time,
+                from_user_id, to_user_id
               FROM
                 messages
               WHERE
@@ -151,12 +152,17 @@ export default async function handler(req, res) {
     const data = await prisma.$transaction(prismaTransaction);
     console.log(data);
 
+    if(data[3] && data[3].length) {
+      data[2][0].last_message_content = data[3][data[3].length-1].content;
+      data[2][0].last_message_date = data[3][data[3].length-1].sent_time;
+    }
+
     res.status(201).json({
       conversations: data[0],
       total: data[1].conversation_count,
       page: page,
       specificConversation: data[2] ? data[2][0] : null,
-      specificConversationMessage: data[3] ?? null,
+      specificConversationContents: data[3] ?? null,
     });
 
   } catch (err) {
