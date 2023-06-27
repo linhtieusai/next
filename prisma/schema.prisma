@@ -211,6 +211,8 @@ model messages {
   from_user_id   Int?
   to_user_id     Int?
 
+  is_seen         Int?
+
   content       String   @db.LongText
 
 

@@ -15,7 +15,7 @@ import JobListSkeleton from '../../ui/rendering-job-list-skeleton'
 import JobDetailSkeleton from '../../ui/rendering-job-detail-skeleton'
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import Pagination from '../../components/Job/Pagination'
-import { MessageStatus } from '../../lib/const'
+// import { MessageStatus } from '../../lib/const'
 
 import MessageItem from '../../components/Message/MessageItem';
 
@@ -67,7 +67,7 @@ export default function SearchPage({ searchParams }) {
 
   const [isLoadingConversation, setIsLoadingConversation] = useState(false);
 
-  const [conversations, setConversations] = useState<any[]>([]);
+  const [conversations, setConversations] = useState<any[]>();
   const [conversationContents, setConversationContents] = useState<any[]>([]);
 
   const [statusCount, setStatusCount] = useState({});
@@ -106,7 +106,7 @@ export default function SearchPage({ searchParams }) {
     fetch(apiUrl)
       .then(response => response.json())
       .then(data =>  {
-          setConversationContent(data.conversationContents);
+          setConversationContents(data.conversationContents);
 
           // if(page == 1 && data.specificConversation) {
           //   setSpecificConversation(data.specificConversation);

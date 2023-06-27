@@ -30,6 +30,34 @@ function ConversationDetail({ conversationContents, selectedConversation, handle
     return colorClassName;
   }
 
+  const [text, setText] = useState('');
+  const handleKeyPress = async (event, selectedConversation) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+
+      let apiEndpoint;
+      if(selectedConversation.job_id) {
+        apiEndpoint = `http://localhost:3000/api/messageContent?jobId=${selectedConversation.job_id}`;
+      }
+  
+      if(selectedConversation.application_id) {
+        apiEndpoint = `http://localhost:3000/api/messageContent?applicationId=${selectedConversation.application_id}`;
+      }
+
+      // Call your API here using the 'text' state value
+      await fetch(apiEndpoint, {
+        method: 'POST',
+        body: JSON.stringify({ text }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      // Clear the text area content
+      setText('');
+    }
+  };
+
   return (
     <>
       {/* <div className="p-4 lg:w-2/3"> */}
@@ -66,7 +94,13 @@ function ConversationDetail({ conversationContents, selectedConversation, handle
             <div className="flex flex-col">
             <textarea id="message" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50
                 rounded-lg border border-gray-300 focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
-               placeholder="Write your content..."></textarea>
+               placeholder="Write your content..."
+               value={text}
+               onChange={(event) => setText(event.target.value)}
+               onKeyPress={(event) => handleKeyPress(event, selectedConversation)}
+            >
+
+               </textarea>
             </div>
           </div>
           </>
