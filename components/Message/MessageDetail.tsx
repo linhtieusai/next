@@ -8,6 +8,7 @@ import { Suspense } from "react";
 import { ApplicationStatus } from '../../lib/const';
 import Link from "next/link";
 import Image from 'next/image';
+import { useSession, signIn } from "next-auth/react";
 
 function ConversationDetail({ conversationContents, selectedConversation, handleBackButton }) {
 
@@ -30,29 +31,42 @@ function ConversationDetail({ conversationContents, selectedConversation, handle
     return colorClassName;
   }
 
+  const { data: session } = useSession();
+
   const [text, setText] = useState('');
   const handleKeyPress = async (event, selectedConversation) => {
     if (event.key === 'Enter') {
       event.preventDefault();
 
+      console.log(selectedConversation);
+
       let apiEndpoint;
-      if(selectedConversation.job_id) {
-        apiEndpoint = `http://localhost:3000/api/messageContent?jobId=${selectedConversation.job_id}`;
+      if(selectedConversation.is_job) {
+        apiEndpoint = `http://localhost:3000/api/newMessage?jobId=${selectedConversation.job_id}`;
       }
   
-      if(selectedConversation.application_id) {
-        apiEndpoint = `http://localhost:3000/api/messageContent?applicationId=${selectedConversation.application_id}`;
+      if(selectedConversation.is_application) {
+        apiEndpoint = `http://localhost:3000/api/newMessage?applicationId=${selectedConversation.application_id}`;
       }
 
       // Call your API here using the 'text' state value
-      await fetch(apiEndpoint, {
+      const response = await fetch(apiEndpoint, {
         method: 'POST',
         body: JSON.stringify({ text }),
         headers: {
-          'Content-Type': 'application/json',
+          // 'Content-Type': 'application/json',
+          Authorization: `Bearer ${session}`,
         },
       });
 
+      if (response.status === 201) {
+        const data = await response.json();
+        console.log(data);
+
+      } else {
+        // const data = await response.json();
+        // throw(data.message);
+      }
       // Clear the text area content
       setText('');
     }

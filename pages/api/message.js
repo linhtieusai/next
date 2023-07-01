@@ -93,6 +93,8 @@ export default async function handler(req, res) {
         if(applicationId) {
             querySpecificData = `
               SELECT
+                "a" AS is_application,
+                a.id as application_id,
                 title as job_title, source_id, source_site,
                 c.email as candidate_email,
                 c.name as candidate_name,
@@ -119,15 +121,17 @@ export default async function handler(req, res) {
         } else {
           querySpecificData = `
               SELECT
+                "a" AS is_job,
+                id as job_id,
                 title AS job_title, 
                 company_name, 
                 source_id, source_site
-                FROM job
-                WHERE id = ${jobId}
+              FROM job
+              WHERE id = ${jobId}
             `;
         
             queryLoadMessageSpecificData = `
-                SELECT
+              SELECT
                 content,
                 created_at AS sent_time,
                 from_user_id, to_user_id
