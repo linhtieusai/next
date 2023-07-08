@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Pagination } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { useSearchParams, usePathname  } from 'next/navigation';
@@ -31,10 +31,17 @@ function ConversationDetail({ conversationContents, selectedConversation, handle
     return colorClassName;
   }
 
+  const newMessageInputRef = useRef<HTMLInputElement>(null);
   const { data: session } = useSession();
 
   const [text, setText] = useState('');
   // const [loadedConversationContents, setLoadedConversationContents] = useState(conversationContents);
+
+  
+
+  useEffect(() => {
+    newMessageInputRef && newMessageInputRef.current?.focus();
+  }, [conversationContents]);
 
   const handleKeyPress = async (event, selectedConversation) => {
     if (event.key === 'Enter') {
@@ -118,6 +125,7 @@ function ConversationDetail({ conversationContents, selectedConversation, handle
                 rounded-lg border border-gray-300 focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
                placeholder="Write your content..."
                value={text}
+               ref={newMessageInputRef}
                onChange={(event) => setText(event.target.value)}
                onKeyPress={(event) => handleKeyPress(event, selectedConversation)}
             >
