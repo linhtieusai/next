@@ -34,34 +34,42 @@ function ConversationDetail({ conversationContents, selectedConversation, handle
   const { data: session } = useSession();
 
   const [text, setText] = useState('');
+  // const [loadedConversationContents, setLoadedConversationContents] = useState(conversationContents);
+
   const handleKeyPress = async (event, selectedConversation) => {
     if (event.key === 'Enter') {
       event.preventDefault();
 
+      console.log("handle keypress selectedConversation");
       console.log(selectedConversation);
 
       let apiEndpoint;
-      if(selectedConversation.is_job) {
+      if(selectedConversation.job_id) {
         apiEndpoint = `http://localhost:3000/api/newMessage?jobId=${selectedConversation.job_id}`;
       }
   
-      if(selectedConversation.is_application) {
+      if(selectedConversation.application_id) {
         apiEndpoint = `http://localhost:3000/api/newMessage?applicationId=${selectedConversation.application_id}`;
       }
+      
 
+      const formData = new FormData();
       // Call your API here using the 'text' state value
+      formData.append("text", text);
       const response = await fetch(apiEndpoint, {
         method: 'POST',
-        body: JSON.stringify({ text }),
-        headers: {
-          // 'Content-Type': 'application/json',
-          Authorization: `Bearer ${session}`,
-        },
+        body: formData,
       });
+      
+
+      console.log("check session");
+      console.log(session);
 
       if (response.status === 201) {
         const data = await response.json();
         console.log(data);
+
+        // setLoadedConversationContents(data.conversations);
 
       } else {
         // const data = await response.json();

@@ -100,13 +100,19 @@ export default function SearchPage({ searchParams }) {
       apiUrl = `http://localhost:3000/api/messageContent?applicationId=${conversation.application_id}`;
     }
 
+    console.log("selected conversation");
+    console.log(conversation);
+
     setSelectedConversation(conversation);
     setShowMessageList(false);
 
+    console.log("click message");
     fetch(apiUrl)
       .then(response => response.json())
       .then(data =>  {
-          setConversationContents(data.conversationContents);
+
+        console.log(data.contents);
+          setConversationContents(data.contents);
 
           // if(page == 1 && data.specificConversation) {
           //   setSpecificConversation(data.specificConversation);
@@ -247,7 +253,7 @@ export default function SearchPage({ searchParams }) {
       <div className="sm:p-4 md:w-2/3">
       {!showMessageList &&  (
           <>
-          <MessageDetail conversationContents={conversationContents} selectedConversation={selectedConversation} handleBackButton={handleBackButton} />
+          <MessageDetail key={selectedConversation.id} conversationContents={conversationContents} selectedConversation={selectedConversation} handleBackButton={handleBackButton} />
           {/* <ApplyScreen messageId={selectedConversation?.id} isModalOpening={isModalOpening} closeModalCallBack={closeModalCallBack}/> */}
           <div className="sticky bottom-0 left-0 z-10 w-full p-4 bg-gray-100 border-t border-gray-200 sm:hidden">
             <div className="flex items-center justify-between">

@@ -18,6 +18,8 @@ export default async function handler(req, res) {
       const session = await getSession({ req });
       const query = req.query;
 
+      console.log(session);
+
         const form = new formidable.IncomingForm({
           keepExtensions: true
         });

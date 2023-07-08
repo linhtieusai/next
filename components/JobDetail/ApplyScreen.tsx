@@ -152,10 +152,11 @@ const ApplyButton = ({jobId, presubmitInfo, isModalOpening, closeModalCallBack})
       const response = await fetch("/api/upload-csv", {
         method: "POST",
         body: formData,
-        headers: {
-          Authorization: `Bearer ${session}`,
-        },
+  
       });
+
+      console.log("check session");
+      console.log(session);
       if (response.status === 201) {
         //setResumeUrl(response.hashedResumeName);
         setResumeUploading(false);

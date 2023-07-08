@@ -1,34 +1,74 @@
 import { getSession } from 'next-auth/react';
+import formidable from 'formidable';
+import fs from 'fs';
+import path from 'path';
 import prisma from '../../lib/prisma';
+import { sendMail } from '../../lib/mail';
+
+import { NextRequest, NextResponse } from "next/server";
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
 
 export default async function handler(req, res) {
   try {
-    const session = await getSession({ req });
-    const query = req.query;
-    let { applicationId, jobId, text, file } = query;
+      const session = await getSession({ req });
+      const query = req.query;
 
-    if(!session) {
-      throw new Error ('Unauthorized');
-    }
 
-    await prisma.messages.create({
-      data: {
-        application_id: applicationId ?? null,
-        job_id: jobId ?? null,
-        from_user_id: session.user.id,
-        to_user_id: 0,
-        is_seen: 0,
-        content: text,
-      },
-    })
+      console.log(session);
+      let { applicationId, jobId, file } = query;
 
-    res.status(201).json({
-      success: 1,
+      const form = new formidable.IncomingForm({
+        keepExtensions: true
+      });
+
+      const formFields = await new Promise(function (resolve, reject) {
+        form.parse(req, function (err, fields, files) {
+        if (err) {
+            reject(err);
+            return;
+        }
+
+        // if(files ) {
+        //   console.log('write files');
+        //   const pdfFile = files.resume;
+        //   var rawData = fs.readFileSync(pdfFile.filepath);
+
+        //   fs.writeFileSync(`media/resume/${randomCharacter}.pdf`, rawData, function(err){
+        //       if(err) console.log(err)
+        //   });
+        // }
+
+          resolve({ fields});
+        }); // form.parse
     });
+
+    const { fields } = formFields;
+
+      await prisma.messages.create({
+        data: {
+          application_id: applicationId ? parseInt(applicationId) : null,
+          job_id: jobId ? parseInt(jobId) : null,
+          from_user_id: session.user.id,
+          to_user_id: 0,
+          is_seen: 0,
+          content: fields.text,
+        },
+      })
+  
+      res.status(201).json({
+        success: 1,
+      });
 
   } catch (err) {
     res.status(500).json({message: err.message});
+
   } finally {
     await prisma.$disconnect()
   }
+
 }
