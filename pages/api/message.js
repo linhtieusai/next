@@ -47,8 +47,8 @@ export default async function handler(req, res) {
           m.id,
           m.job_id,
           m.application_id,
-          MAX(m.created_at) AS last_message_date,
-          MAX(m.content) AS last_message_content,
+          m.created_at AS last_message_date,
+          m.content AS last_message_content,
           COALESCE(j.title, aj.title) AS job_title,
           COALESCE(j.source_site, aj.source_site) AS source_site,
           COALESCE(j.source_id, aj.source_id) AS source_id,
@@ -59,18 +59,20 @@ export default async function handler(req, res) {
           a.status as application_status
         FROM
           messages m
+        INNER JOIN (
+            SELECT job_id, application_id, MAX(id) AS max_id
+            FROM messages m
+            WHERE
+            ${whereQuery}
+            GROUP BY job_id, application_id
+            ORDER BY max_id DESC
+        ) AS sub
+        ON m.id = sub.max_id
         LEFT JOIN applications a ON m.application_id = a.id
         LEFT JOIN job j ON m.job_id = j.id
         LEFT JOIN applications app ON m.application_id = app.id
         LEFT JOIN job aj ON app.job_id = aj.id
         LEFT JOIN candidates c ON a.candidate_id = c.id
-        WHERE
-            ${whereQuery}
-        GROUP BY
-          m.job_id,
-          m.application_id
-        ORDER BY
-          last_message_date DESC
     `;
 
     let countConversationQuery = `

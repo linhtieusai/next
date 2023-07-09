@@ -31,7 +31,7 @@ function ConversationDetail({ conversationContents, selectedConversation, handle
     return colorClassName;
   }
 
-  const newMessageInputRef = useRef<HTMLInputElement>(null);
+  const newMessageInputRef = useRef<HTMLTextAreaElement>(null);
   const { data: session } = useSession();
 
   const [text, setText] = useState('');
@@ -93,8 +93,8 @@ function ConversationDetail({ conversationContents, selectedConversation, handle
         {selectedConversation ? (
           <>
           <div className="flex flex-col h-full text-sm justify-between p-2 overflow-auto border rounded">
-            <div className="flex flex-col">
-              <p className='ml-3 text-green-800 text-md'>
+            <div className="flex flex-col sticky top-0  border-b-2 border-gray-300">
+              <p className='p-2 ml-3 text-green-900 text-md'>
                 {selectedConversation.job_title}
               </p>
             </div>
@@ -123,7 +123,7 @@ function ConversationDetail({ conversationContents, selectedConversation, handle
             <div className="flex flex-col">
             <textarea id="message" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50
                 rounded-lg border border-gray-300 focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
-               placeholder="Write your content..."
+               placeholder="Send a message"
                value={text}
                ref={newMessageInputRef}
                onChange={(event) => setText(event.target.value)}
