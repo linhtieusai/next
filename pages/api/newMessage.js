@@ -49,7 +49,7 @@ export default async function handler(req, res) {
 
     const { fields } = formFields;
 
-      await prisma.messages.create({
+      const createdMessage = await prisma.messages.create({
         data: {
           application_id: applicationId ? parseInt(applicationId) : null,
           job_id: jobId ? parseInt(jobId) : null,
@@ -58,10 +58,12 @@ export default async function handler(req, res) {
           is_seen: 0,
           content: fields.text,
         },
-      })
+      });
+      // console.log(createdMessage);
   
       res.status(201).json({
         success: 1,
+        newMessage: createdMessage,
       });
 
   } catch (err) {

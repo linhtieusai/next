@@ -35,12 +35,17 @@ function ConversationDetail({ conversationContents, selectedConversation, handle
   const { data: session } = useSession();
 
   const [text, setText] = useState('');
-  // const [loadedConversationContents, setLoadedConversationContents] = useState(conversationContents);
+  const [loadedConversationContents, setLoadedConversationContents] = useState(conversationContents);
 
   
 
   useEffect(() => {
     newMessageInputRef && newMessageInputRef.current?.focus();
+
+    console.log("hahhaha");
+    console.log(conversationContents);
+
+    setLoadedConversationContents(conversationContents);
   }, [conversationContents]);
 
   const handleKeyPress = async (event, selectedConversation) => {
@@ -76,7 +81,8 @@ function ConversationDetail({ conversationContents, selectedConversation, handle
         const data = await response.json();
         console.log(data);
 
-        // setLoadedConversationContents(data.conversations);
+        loadedConversationContents.push(data.newMessage);
+        setLoadedConversationContents(loadedConversationContents);
 
       } else {
         // const data = await response.json();
@@ -99,7 +105,7 @@ function ConversationDetail({ conversationContents, selectedConversation, handle
               </p>
             </div>
             <div className='flex flex-col content-end grow'>
-                {conversationContents && conversationContents.map((message, index)  => (
+                {loadedConversationContents && loadedConversationContents.map((message, index)  => (
                   <>
                       {message.from_user_id === 0 ? (
                         <div className='flex items-center max-w-[50%]'>

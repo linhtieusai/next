@@ -34,7 +34,7 @@ export default async function handler(req, res) {
         skip: (page - 1) * 10,
         orderBy: [
           {
-            id: 'desc',
+            id: 'asc',
           },
         ],
         where: whereQuery
